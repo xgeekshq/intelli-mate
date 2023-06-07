@@ -1,0 +1,6 @@
+package.json
+dist
+package-lock.json
+CHANGELOG.md
+node_modules
+.contentlayer
