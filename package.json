@@ -4,9 +4,8 @@
   "description": "An open-source solution for your company to learn on steroids with the help of AI",
   "private": true,
   "scripts": {
-    "start:dev:all": "nx run-many -t start:dev",
     "lint:all": "npm run lint --workspaces",
-    "lint:fix:all": "npm run lint --workspaces",
+    "lint:fix:all": "npm run lint:fix --workspaces",
     "prepare": "husky install"
   },
   "homepage": "https://github.com/xgeekshq/intelli-mate#readme",
@@ -25,7 +24,6 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
-    "husky": "^8.0.0",
-    "nx": "16.3.2"
+    "husky": "^8.0.0"
   }
 }
