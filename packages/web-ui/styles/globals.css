@@ -34,6 +34,8 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+    --navbar-height: 65px;
   }
 
   .dark {
