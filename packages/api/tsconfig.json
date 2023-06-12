@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/auth/*": ["./src/auth/*"],
+      "@/database/*": ["./src/database/*"],
+      "@/rooms/*": ["./src/rooms/*"],
+      "@/types/*": ["../types/*"]
+    }
   }
 }

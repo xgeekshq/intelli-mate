@@ -1,4 +1,22 @@
-import { Controller } from '@nestjs/common';
+import { ClerkAuthGuard } from '@/auth/guards/clerk.auth.guard';
+import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto';
+import { CreateRoomResponseDto } from '@/types/rooms/create-room.response.dto';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+
+import { CreateRoomUsecase } from './usecases/create-room.usecase';
 
 @Controller('rooms')
-export class RoomsController {}
+@ApiTags('rooms')
+export class RoomsController {
+  constructor(private readonly createRoomUsecase: CreateRoomUsecase) {}
+
+  @Post()
+  @ApiCreatedResponse({ type: CreateRoomResponseDto })
+  @UseGuards(ClerkAuthGuard)
+  createRoom(
+    @Body() createRoomRequestDto: CreateRoomRequestDto
+  ): Promise<CreateRoomResponseDto> {
+    return this.createRoomUsecase.execute(createRoomRequestDto);
+  }
+}
