@@ -1,66 +1,18 @@
+import { Lock } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
 
 import { Room } from '../../types/room';
 
-const rooms = [
-  'inicio',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'd',
-  'a',
-  'b',
-  'c',
-  'fim',
+const rooms: Room[] = [
+  { name: 'start', private: true },
+  { name: 'a', private: false },
+  { name: 'b', private: false },
+  { name: 'c', private: false },
+  { name: 'd', private: false },
+  { name: 'end', private: true },
 ];
 
 export function Rooms() {
@@ -78,14 +30,15 @@ export function Rooms() {
       </div>
       <ScrollArea className="flex-1 px-2">
         <div className="space-y-1 p-2">
-          {rooms?.map((playlist, i) => (
+          {rooms?.map((room, i) => (
             <Button
-              key={`${playlist}-${i}`}
+              key={`${room}-${i}`}
               variant="ghost"
               size="sm"
-              className="w-full justify-start font-normal"
+              className="w-full justify-start gap-2 font-normal"
             >
-              {playlist}
+              {room.private && <Lock className="h-4 w-4" />}
+              {room.name}
             </Button>
           ))}
         </div>
