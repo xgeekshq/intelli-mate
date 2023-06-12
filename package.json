@@ -4,7 +4,6 @@
   "description": "An open-source solution for your company to learn on steroids with the help of AI",
   "private": true,
   "scripts": {
-    "start:dev:all": "nx run-many -t start:dev",
     "lint:all": "npm run lint --workspaces",
     "lint:fix:all": "npm run lint:fix --workspaces",
     "prepare": "husky install"
