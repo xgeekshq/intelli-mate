@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev:all": "nx run-many -t start:dev",
     "lint:all": "npm run lint --workspaces",
-    "lint:fix:all": "npm run lint --workspaces",
+    "lint:fix:all": "npm run lint:fix --workspaces",
     "prepare": "husky install"
   },
   "homepage": "https://github.com/xgeekshq/intelli-mate#readme",
