@@ -1,9 +1,9 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: 'Next.js',
+  name: 'IntelliMate',
   description:
-    'Beautifully designed components built with Radix UI and Tailwind CSS.',
+    'Perfect solution to collaborate during an intensive prompt drilling session',
   mainNav: [
     {
       title: 'Home',
