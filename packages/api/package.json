@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@anatine/zod-nestjs": "^1.10.0",
-    "@anatine/zod-openapi": "^1.14.0",
     "@clerk/clerk-sdk-node": "^4.10.4",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",
