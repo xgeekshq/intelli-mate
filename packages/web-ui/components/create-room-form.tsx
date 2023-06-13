@@ -26,15 +26,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-// type CreateRoomFormProps = {
-//   onSubmit?: (values: Room) => Promise<void>;
-// };
-
 const formSchema = z.object({
   name: z.string().min(2, {
     message: 'Room name must be at least 2 characters.',
   }),
   private: z.boolean().default(false).optional(),
+  owner: z.string(),
 });
 
 export function CreateRoomForm() {
@@ -45,10 +42,11 @@ export function CreateRoomForm() {
     defaultValues: {
       name: '',
       private: false,
+      owner: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     setOpen(false);
   }
