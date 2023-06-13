@@ -6,6 +6,8 @@ import { Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import { CreateRoomRequestSchema } from '@/types/rooms/create-room.request.dto';
+import { CreateRoomRequestDtoType } from '@/types/rooms/create-room.request.dto.d';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -37,8 +39,8 @@ const formSchema = z.object({
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateRoomRequestDtoType>({
+    resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
       private: false,
@@ -46,7 +48,7 @@ export function CreateRoomForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: CreateRoomRequestDtoType) {
     console.log(values);
     setOpen(false);
   }
