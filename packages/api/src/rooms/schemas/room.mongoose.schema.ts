@@ -5,6 +5,7 @@ export const RoomSchema = new mongoose.Schema({
     type: String,
     minlength: 3,
     maxlength: 50,
+    unique: true,
     required: true,
   },
   private: {

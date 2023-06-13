@@ -1,8 +1,8 @@
-import { DATABASE_CONNECTION_KEY } from '@/types/constants/database';
+import { DATABASE_CONNECTION_KEY } from '@/common/constants/database';
 import {
   DB_ROOM_MODEL_KEY,
   DB_ROOM_MODEL_NAME,
-} from '@/types/constants/models/room';
+} from '@/common/constants/models/room';
 import { Connection } from 'mongoose';
 
 import { RoomSchema } from './schemas/room.mongoose.schema';

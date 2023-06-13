@@ -1,10 +1,9 @@
-import { DB_ROOM_MODEL_KEY } from '@/types/constants/models/room';
+import { DB_ROOM_MODEL_KEY } from '@/common/constants/models/room';
+import { Room } from '@/common/types/room';
+import { Usecase } from '@/common/types/usecase';
 import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto';
-import { type Room } from '@/types/rooms/room';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-
-import { Usecase } from '../../types/usecase';
 
 @Injectable()
 export class CreateRoomUsecase implements Usecase {
