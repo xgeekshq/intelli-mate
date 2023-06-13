@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
+import { Rooms } from '@/components/rooms';
 import { SiteHeader } from '@/components/site-header';
 import { ThemeProvider } from '@/components/theme-provider';
 

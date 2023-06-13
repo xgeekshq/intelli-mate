@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 import { siteConfig } from '@/config/site';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { MainNav } from '@/components/main-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -30,7 +30,14 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
-            <UserButton afterSignOutUrl="/" />
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal" afterSignInUrl="/rooms">
+                <Button value="ghost">Sign in</Button>
+              </SignInButton>
+            </SignedOut>
           </nav>
         </div>
       </div>

@@ -28,14 +28,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Room name must be at least 2 characters.',
-  }),
-  private: z.boolean().default(false).optional(),
-  owner: z.string(),
-});
-
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
 
