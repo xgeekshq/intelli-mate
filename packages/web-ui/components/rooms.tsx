@@ -4,9 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
 
-import { Room } from '../../types/room';
-
-const rooms: Room[] = [
+const rooms: any[] = [
   { name: 'start', private: true },
   { name: 'a', private: false },
   { name: 'b', private: false },
@@ -16,10 +14,6 @@ const rooms: Room[] = [
 ];
 
 export function Rooms() {
-  const handleSubmit = async (values: Room) => {
-    console.log(values);
-  };
-
   return (
     <div className="flex h-full w-40 flex-col border-r pt-2">
       <div className="flex items-center">
