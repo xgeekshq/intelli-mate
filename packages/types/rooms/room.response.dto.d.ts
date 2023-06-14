@@ -1,4 +1,4 @@
+import { RoomResponseSchema } from "./room.response.dto";
 import { z } from "zod";
-import { CreateRoomResponseSchema } from './create-room.response.dto';
 
-export type CreateRoomResponseDtoType = z.infer<typeof CreateRoomResponseSchema>;
+export type RoomResponseDtoType = z.infer<typeof RoomResponseSchema>;
