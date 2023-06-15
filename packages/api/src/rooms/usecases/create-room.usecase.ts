@@ -1,7 +1,8 @@
 import { Usecase } from '@/common/types/usecase';
+import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
+import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { RoomsRepository } from '@/rooms/rooms.repository';
-import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto';
-import { CreateRoomResponseSchema } from '@/types/rooms/create-room.response.dto';
+import { RoomResponseSchema } from '@/types/rooms/room.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -11,10 +12,10 @@ export class CreateRoomUsecase implements Usecase {
   async execute(
     userId: string,
     createRoomRequestDto: CreateRoomRequestDto
-  ): Promise<CreateRoomRequestDto> {
+  ): Promise<RoomResponseDto> {
     try {
       const room = await this.roomsRepository.create(createRoomRequestDto);
-      return CreateRoomResponseSchema.parse(room);
+      return RoomResponseSchema.parse(room);
     } catch (e) {}
   }
 }

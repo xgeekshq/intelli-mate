@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { CreateRoomRequestSchema } from '@/types/rooms/create-room.request.dto';
-import { CreateRoomRequestDtoType } from '@/types/rooms/create-room.request.dto.d';
+import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto.d';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -31,7 +31,7 @@ import { Input } from '@/components/ui/input';
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CreateRoomRequestDtoType>({
+  const form = useForm<CreateRoomRequestDto>({
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
@@ -40,7 +40,7 @@ export function CreateRoomForm() {
     },
   });
 
-  async function onSubmit(values: CreateRoomRequestDtoType) {
+  async function onSubmit(values: CreateRoomRequestDto) {
     console.log(values);
     setOpen(false);
   }

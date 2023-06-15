@@ -1,4 +1,3 @@
-// import { createZodDto } from "@anatine/zod-nestjs";
 import { z } from "zod";
 
 export const CreateRoomRequestSchema = z.object({
@@ -9,7 +8,3 @@ export const CreateRoomRequestSchema = z.object({
   private: z.boolean().default(false),
   owner: z.string(),
 });
-
-// export class CreateRoomRequestDto extends createZodDto(
-//   CreateRoomRequestSchema
-// ) {}

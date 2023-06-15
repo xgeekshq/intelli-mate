@@ -1,6 +1,6 @@
 import { DB_ROOM_MODEL_KEY } from '@/common/constants/models/room';
 import { Room } from '@/common/types/room';
-import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto';
+import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
