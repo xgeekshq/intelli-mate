@@ -14,7 +14,5 @@ import { RoomsModule } from './rooms/rooms.module';
     DatabaseModule,
     AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

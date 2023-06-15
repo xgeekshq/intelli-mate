@@ -1,6 +1,5 @@
+import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { Module } from '@nestjs/common';
-
-import { ClerkAuthGuard } from './guards/clerk.auth.guard';
 
 @Module({
   providers: [ClerkAuthGuard],

@@ -7,7 +7,7 @@ import { Connection } from 'mongoose';
 
 import { RoomSchema } from './schemas/room.mongoose.schema';
 
-export const roomsProviders = [
+export const roomsMongooseProviders = [
   {
     provide: DB_ROOM_MODEL_KEY,
     useFactory: (connection: Connection) =>

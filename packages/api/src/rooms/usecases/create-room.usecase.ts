@@ -1,20 +1,20 @@
-import { DB_ROOM_MODEL_KEY } from '@/common/constants/models/room';
-import { Room } from '@/common/types/room';
 import { Usecase } from '@/common/types/usecase';
+import { RoomsRepository } from '@/rooms/rooms.repository';
 import { CreateRoomRequestDto } from '@/types/rooms/create-room.request.dto';
-import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { CreateRoomResponseSchema } from '@/types/rooms/create-room.response.dto';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CreateRoomUsecase implements Usecase {
-  constructor(
-    @Inject(DB_ROOM_MODEL_KEY)
-    private roomModel: Model<Room>
-  ) {}
+  constructor(private readonly roomsRepository: RoomsRepository) {}
 
-  execute(
+  async execute(
+    userId: string,
     createRoomRequestDto: CreateRoomRequestDto
   ): Promise<CreateRoomRequestDto> {
-    return null;
+    try {
+      const room = await this.roomsRepository.create(createRoomRequestDto);
+      return CreateRoomResponseSchema.parse(room);
+    } catch (e) {}
   }
 }
