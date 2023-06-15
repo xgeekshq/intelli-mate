@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Lock } from 'lucide-react';
 
-import { RoomResponseDto } from '@/types/rooms/room.response.dto.d';
+import { RoomResponseDtoType } from '@/types/rooms/room.response.dto.d';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
 
 type RoomsProps = {
-  rooms: RoomResponseDto[];
+  rooms: RoomResponseDtoType[];
 };
 export function Rooms({ rooms }: RoomsProps) {
   const params = useParams();
