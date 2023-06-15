@@ -1,4 +1,8 @@
 import '@/styles/globals.css';
+import { cookies } from 'next/headers';
+import { clerkClient } from '@/api/client';
+import { auth } from '@clerk/nextjs';
+
 import { Rooms } from '@/components/rooms';
 
 interface RootLayoutProps {
@@ -13,7 +17,7 @@ const rooms: any = [
   { name: 'd', private: false },
   { name: 'end', private: true },
 ];
-export default function RoomsLayout({ children }: RootLayoutProps) {
+export default async function RoomsLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full">
       <Rooms rooms={rooms} />
