@@ -6,18 +6,18 @@ interface RootLayoutProps {
 }
 
 const rooms: any = [
-  { name: 'start', private: true },
-  { name: 'a', private: false },
-  { name: 'b', private: false },
-  { name: 'c', private: false },
-  { name: 'd', private: false },
-  { name: 'end', private: true },
+  { name: 'Management', private: true },
+  { name: 'DDD', private: false },
+  { name: 'Frontend', private: false },
+  { name: 'ETFs', private: true },
+  { name: 'Confluence', private: false },
+  { name: 'Ramos-team', private: true },
 ];
 export default async function RoomsLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full">
       <Rooms rooms={rooms} />
-      <div>{children}</div>
+      <div className="w-full">{children}</div>
     </div>
   );
 }
