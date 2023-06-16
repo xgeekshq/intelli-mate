@@ -33,11 +33,6 @@ export function SiteHeader() {
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal" afterSignInUrl="/rooms">
-                <Button value="ghost">Sign in</Button>
-              </SignInButton>
-            </SignedOut>
           </nav>
         </div>
       </div>
