@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 
 import { siteConfig } from '@/config/site';
 import { Button, buttonVariants } from '@/components/ui/button';
