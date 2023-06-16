@@ -1,4 +1,3 @@
-import { createZodDto } from "@anatine/zod-nestjs";
 import { z } from "zod";
 
 export const RoomResponseSchema = z.object({
@@ -8,5 +7,3 @@ export const RoomResponseSchema = z.object({
   owner: z.string(),
   members: z.array(z.string()),
 });
-
-export class RoomResponseDto extends createZodDto(RoomResponseSchema) {}

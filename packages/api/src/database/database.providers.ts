@@ -1,4 +1,4 @@
-import { DATABASE_CONNECTION_KEY } from '@/types/constants/database';
+import { DATABASE_CONNECTION_KEY } from '@/common/constants/database';
 import { ConfigService } from '@nestjs/config';
 import * as mongoose from 'mongoose';
 
