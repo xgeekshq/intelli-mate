@@ -2,8 +2,21 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ListPublicRoomsUsecase } from '@/rooms/usecases/list-public-rooms.usecase';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateRoomUsecase } from './usecases/create-room.usecase';
 
@@ -14,7 +27,19 @@ import { CreateRoomUsecase } from './usecases/create-room.usecase';
 @ApiTags('rooms')
 @UseGuards(ClerkAuthGuard)
 export class RoomsController {
-  constructor(private readonly createRoomUsecase: CreateRoomUsecase) {}
+  constructor(
+    private readonly listPublicRoomsUsecase: ListPublicRoomsUsecase,
+    private readonly createRoomUsecase: CreateRoomUsecase
+  ) {}
+
+  @Get('public')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto, isArray: true })
+  @ApiOperation({ description: 'List all public rooms' })
+  @UseGuards(ClerkAuthGuard)
+  listPublicRooms(@Request() req: Request): Promise<RoomResponseDto[]> {
+    return this.listPublicRoomsUsecase.execute(req.auth.userId);
+  }
 
   @Post()
   @ApiClerkAuthHeaders()

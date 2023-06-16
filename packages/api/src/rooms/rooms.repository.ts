@@ -11,7 +11,11 @@ export class RoomsRepository {
     private roomModel: Model<Room>
   ) {}
 
-  async create(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
+  async findAllPublicRooms(): Promise<Room[]> {
+    return this.roomModel.find({ private: false });
+  }
+
+  async createRoom(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
     const room = new this.roomModel(createRoomRequestDto);
     room.members.push(createRoomRequestDto.owner);
     await room.save();
