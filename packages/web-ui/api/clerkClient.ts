@@ -1,7 +1,3 @@
-import getConfig from 'next/config';
-
-const { serverRuntimeConfig, publicRuntimeConfig } = getConfig() || {};
-
 type ClerkFetcherParamsType = {
   url: string;
   options?: RequestInit;
