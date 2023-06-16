@@ -6,4 +6,6 @@ export const RoomResponseSchema = z.object({
   private: z.boolean().default(false),
   owner: z.string(),
   members: z.array(z.string()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
