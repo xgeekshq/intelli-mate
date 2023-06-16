@@ -6,7 +6,10 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomUsecase } from './usecases/create-room.usecase';
 
-@Controller('rooms')
+@Controller({
+  path: 'rooms',
+  version: '1',
+})
 @ApiTags('rooms')
 @UseGuards(ClerkAuthGuard)
 export class RoomsController {
