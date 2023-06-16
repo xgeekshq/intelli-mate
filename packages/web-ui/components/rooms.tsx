@@ -25,9 +25,8 @@ export function Rooms({ rooms }: RoomsProps) {
       <ScrollArea className="flex-1 px-2">
         <div className="space-y-1 p-2">
           {rooms.map((room, i) => (
-            <Link href={`/rooms/${room.name}`}>
+            <Link key={`${room.name}`} href={`/rooms/${room.name}`}>
               <Button
-                key={`${room.name}`}
                 variant="ghost"
                 size="sm"
                 className={`w-full justify-start gap-2 ${

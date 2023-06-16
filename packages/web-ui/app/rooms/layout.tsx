@@ -13,7 +13,7 @@ const rooms: any = [
   { name: 'd', private: false },
   { name: 'end', private: true },
 ];
-export default function RoomsLayout({ children }: RootLayoutProps) {
+export default async function RoomsLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full">
       <Rooms rooms={rooms} />
