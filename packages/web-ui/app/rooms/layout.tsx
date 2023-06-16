@@ -1,8 +1,4 @@
 import '@/styles/globals.css';
-import { cookies } from 'next/headers';
-import { clerkClient } from '@/api/client';
-import { auth } from '@clerk/nextjs';
-
 import { Rooms } from '@/components/rooms';
 
 interface RootLayoutProps {
