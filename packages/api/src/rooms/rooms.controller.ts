@@ -2,7 +2,7 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
-import { ListPublicRoomsUsecase } from '@/rooms/usecases/list-public-rooms.usecase';
+import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import {
   Body,
   Controller,
@@ -28,7 +28,7 @@ import { CreateRoomUsecase } from './usecases/create-room.usecase';
 @UseGuards(ClerkAuthGuard)
 export class RoomsController {
   constructor(
-    private readonly listPublicRoomsUsecase: ListPublicRoomsUsecase,
+    private readonly listPublicRoomsUsecase: FindPublicRoomsUsecase,
     private readonly createRoomUsecase: CreateRoomUsecase
   ) {}
 
@@ -37,7 +37,7 @@ export class RoomsController {
   @ApiOkResponse({ type: RoomResponseDto, isArray: true })
   @ApiOperation({ description: 'List all public rooms' })
   @UseGuards(ClerkAuthGuard)
-  listPublicRooms(@Request() req: Request): Promise<RoomResponseDto[]> {
+  findPublicRooms(@Request() req: Request): Promise<RoomResponseDto[]> {
     return this.listPublicRoomsUsecase.execute(req.auth.userId);
   }
 

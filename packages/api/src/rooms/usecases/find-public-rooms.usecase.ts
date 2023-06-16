@@ -5,7 +5,7 @@ import { RoomResponseSchema } from '@/types/rooms/room.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ListPublicRoomsUsecase implements Usecase {
+export class FindPublicRoomsUsecase implements Usecase {
   constructor(private readonly roomsRepository: RoomsRepository) {}
 
   async execute(userId: string): Promise<RoomResponseDto[]> {
