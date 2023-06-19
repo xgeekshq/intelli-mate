@@ -2,10 +2,7 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
-import {
-  DuplicateRoomNameException,
-  DuplicateRoomNameExceptionSchema,
-} from '@/rooms/exceptions/duplicate-room-name.exception';
+import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import {
