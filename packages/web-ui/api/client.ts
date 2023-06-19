@@ -15,7 +15,7 @@ const myFetch = createFetch(
   process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || ''
 );
 
-async function clerkClient({
+async function client({
   url,
   options,
   sessionId,
@@ -31,4 +31,4 @@ async function clerkClient({
     },
   });
 }
-export { clerkClient };
+export { client };
