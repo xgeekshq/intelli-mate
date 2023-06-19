@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { RoomResponseDto } from '@/common/types/rooms/room.response.dto.d';
+import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { Lock } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';

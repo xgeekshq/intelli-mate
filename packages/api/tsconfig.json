@@ -18,11 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/auth/*": ["./src/auth/*"],
-      "@/common/*": ["./src/common/*"],
-      "@/database/*": ["./src/database/*"],
-      "@/rooms/*": ["./src/rooms/*"],
-      "@/types/*": ["../types/*"]
+      "@/*": ["./src/*"],
+      "@/contract/*": ["../contract/*"]
     }
   }
 }
