@@ -1,8 +1,8 @@
 import { Usecase } from '@/common/types/usecase';
+import { RoomResponseSchema } from '@/contract/rooms/room.response.dto';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { RoomsRepository } from '@/rooms/rooms.repository';
-import { RoomResponseSchema } from '@/types/rooms/room.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

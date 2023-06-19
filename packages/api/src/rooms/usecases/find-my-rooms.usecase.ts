@@ -5,13 +5,13 @@ import { RoomsRepository } from '@/rooms/rooms.repository';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class FindPublicRoomsUsecase implements Usecase {
+export class FindMyRoomsUsecase implements Usecase {
   constructor(private readonly roomsRepository: RoomsRepository) {}
 
   async execute(userId: string): Promise<RoomResponseDto[]> {
     try {
-      const publicRooms = await this.roomsRepository.findAllPublicRooms();
-      return publicRooms.map((room) => RoomResponseSchema.parse(room));
+      const myRooms = await this.roomsRepository.findMyRooms(userId);
+      return myRooms.map((room) => RoomResponseSchema.parse(room));
     } catch (e) {}
   }
 }

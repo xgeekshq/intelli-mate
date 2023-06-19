@@ -5,6 +5,7 @@ import { RoomsController } from '@/rooms/rooms.controller';
 import { roomsMongooseProviders } from '@/rooms/rooms.mongoose.providers';
 import { RoomsRepository } from '@/rooms/rooms.repository';
 import { CreateRoomUsecase } from '@/rooms/usecases/create-room.usecase';
+import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { Module } from '@nestjs/common';
 
@@ -20,6 +21,7 @@ import { Module } from '@nestjs/common';
     RoomsRepository,
     CreateRoomUsecase,
     FindPublicRoomsUsecase,
+    FindMyRoomsUsecase,
   ],
 })
 export class RoomsModule {}

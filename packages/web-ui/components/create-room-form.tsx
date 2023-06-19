@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CreateRoomRequestSchema } from '@/common/types/rooms/create-room.request.dto';
-import { CreateRoomRequestDto } from '@/common/types/rooms/create-room.request.dto.d';
+import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
+import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
