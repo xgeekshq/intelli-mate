@@ -13,6 +13,8 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+  app.enableCors();
+
   app.useGlobalPipes(new ZodValidationPipe());
 
   const configService = app.get(ConfigService);
