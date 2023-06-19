@@ -2,6 +2,10 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
+import {
+  DuplicateRoomNameException,
+  DuplicateRoomNameExceptionSchema,
+} from '@/rooms/exceptions/duplicate-room-name.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import {
@@ -13,6 +17,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -53,6 +58,7 @@ export class RoomsController {
   @Post()
   @ApiClerkAuthHeaders()
   @ApiCreatedResponse({ type: RoomResponseDto })
+  @ApiConflictResponse({ schema: DuplicateRoomNameExceptionSchema })
   @ApiOperation({ description: 'Create a new room' })
   createRoom(
     @Request() req: Request,
