@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
 import { RoomResponseSchema } from '@/contract/rooms/room.response.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
@@ -12,6 +13,8 @@ export class FindMyRoomsUsecase implements Usecase {
     try {
       const myRooms = await this.roomsRepository.findMyRooms(userId);
       return myRooms.map((room) => RoomResponseSchema.parse(room));
-    } catch (e) {}
+    } catch (e) {
+      throw new InternalServerErrorException(e.message);
+    }
   }
 }

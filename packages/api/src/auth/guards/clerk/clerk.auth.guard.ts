@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { UserUnauthorizedException } from '@/auth/exceptions/user-unauthorized.exception';
 import { AuthGuard } from '@/auth/guards/guard';
 import { sessions } from '@clerk/clerk-sdk-node';
 import { ExecutionContext, Injectable } from '@nestjs/common';
@@ -18,9 +19,8 @@ export class ClerkAuthGuard extends AuthGuard {
           request['auth'] = session;
           resolve(true);
         })
-        .catch((err) => {
-          console.error(err);
-          reject('User is not authenticated');
+        .catch(() => {
+          reject(new UserUnauthorizedException());
         });
     });
   }
