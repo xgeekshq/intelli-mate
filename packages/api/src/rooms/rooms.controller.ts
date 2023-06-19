@@ -1,10 +1,14 @@
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
+import { UserNotFoundExceptionSchema } from '@/common/exceptions/user-not-found.exception';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
+import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
+import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
+import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
 import {
   Body,
   Controller,
@@ -14,8 +18,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -33,7 +39,8 @@ export class RoomsController {
   constructor(
     private readonly findPublicRoomsUsecase: FindPublicRoomsUsecase,
     private readonly findMyRoomsUsecase: FindMyRoomsUsecase,
-    private readonly createRoomUsecase: CreateRoomUsecase
+    private readonly createRoomUsecase: CreateRoomUsecase,
+    private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase
   ) {}
 
   @Get('public')
@@ -64,6 +71,22 @@ export class RoomsController {
     return this.createRoomUsecase.execute(
       req.auth.userId,
       createRoomRequestDto
+    );
+  }
+
+  @Post('invite')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto })
+  @ApiNotFoundResponse({ schema: UserNotFoundExceptionSchema })
+  @ApiBadRequestResponse({ schema: UserAlreadyInRoomExceptionSchema })
+  @ApiOperation({ description: 'Invite a user to a room' })
+  inviteUserToRoom(
+    @Request() req: Request,
+    @Body() inviteUserToRoomRequestDto: InviteUserToRoomRequestDto
+  ): Promise<RoomResponseDto> {
+    return this.inviteUserToRoomUsecase.execute(
+      req.auth.userId,
+      inviteUserToRoomRequestDto
     );
   }
 }
