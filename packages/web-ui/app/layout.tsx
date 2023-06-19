@@ -5,7 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
-import { Rooms } from '@/components/rooms';
+import { Toaster } from '@/components/ui/toaster';
 import { SiteHeader } from '@/components/site-header';
 import { ThemeProvider } from '@/components/theme-provider';
 
@@ -49,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="h-[calc(100vh-65px)]">{children}</div>
             </div>
           </ThemeProvider>
+          <Toaster />
         </body>
       </ClerkProvider>
     </html>

@@ -11,23 +11,24 @@ function createFetch(baseUrl: string) {
   };
 }
 
-const myFetch = createFetch(process.env.API_URL || '');
-async function clerkClient({
+const myFetch = createFetch(
+  process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || ''
+);
+
+async function client({
   url,
   options,
   sessionId,
   jwtToken,
 }: ClerkFetcherParamsType) {
-  const res = await myFetch(url, {
+  return await myFetch(url, {
     ...options,
     headers: {
       ...options?.headers,
+      'Content-Type': 'application/json',
       'X-Clerk-Session-Id': sessionId,
       'X-Clerk-Jwt-Token': jwtToken,
     },
   });
-
-  return res.json();
 }
-
-export { clerkClient };
+export { client };

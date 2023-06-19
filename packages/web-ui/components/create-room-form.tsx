@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { client } from '@/api/client';
+import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
+import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { getCookie } from 'cookies-next';
 import { Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -27,22 +30,48 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { ToastAction } from '@/components/ui/toast';
+import { toast, useToast } from '@/components/ui/use-toast';
 
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const { userId, sessionId } = useAuth();
+  const token = getCookie('__session');
 
   const form = useForm<CreateRoomRequestDto>({
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
       private: false,
-      owner: '',
+      owner: !!userId ? userId : '',
     },
   });
 
   async function onSubmit(values: CreateRoomRequestDto) {
-    console.log(values);
-    setOpen(false);
+    try {
+      const res = await client({
+        url: Endpoints.rooms.createRoom(),
+        options: { method: 'POST', body: JSON.stringify(values) },
+        sessionId: sessionId ? sessionId : '',
+        jwtToken: token ? token.toString() : '',
+      });
+      if (!res.ok) {
+        const { error } = JSON.parse(await res.text());
+
+        toast({
+          title: error,
+          variant: 'destructive',
+        });
+        return;
+      }
+      setOpen(false);
+      toast({
+        title: 'Room created successfully!',
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (

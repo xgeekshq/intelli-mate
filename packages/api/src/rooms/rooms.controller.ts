@@ -6,6 +6,7 @@ import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.req
 import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
+import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
@@ -66,6 +67,7 @@ export class RoomsController {
   @Post()
   @ApiClerkAuthHeaders()
   @ApiCreatedResponse({ type: RoomResponseDto })
+  @ApiBadRequestResponse({ schema: OwnerMustBeLoggedExceptionSchema })
   @ApiConflictResponse({ schema: DuplicateRoomNameExceptionSchema })
   @ApiOperation({ description: 'Create a new room' })
   createRoom(
