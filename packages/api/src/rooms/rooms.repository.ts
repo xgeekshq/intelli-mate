@@ -25,4 +25,11 @@ export class RoomsRepository {
     await room.save();
     return room;
   }
+
+  async inviteUserToRoom(userId: string, roomId: string): Promise<Room> {
+    const room = await this.roomModel.findById(roomId);
+    room.members.push(userId);
+    await room.save();
+    return room;
+  }
 }
