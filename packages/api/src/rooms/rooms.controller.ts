@@ -3,13 +3,20 @@ import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.
 import { UserNotFoundExceptionSchema } from '@/common/exceptions/user-not-found.exception';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
+import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
+import {
+  OwnerCannotLeaveRoomException,
+  OwnerCannotLeaveRoomExceptionSchema,
+} from '@/rooms/exceptions/owner-cannot-leave-room.exception';
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
+import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
+import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
 import {
   Body,
   Controller,
@@ -41,7 +48,8 @@ export class RoomsController {
     private readonly findPublicRoomsUsecase: FindPublicRoomsUsecase,
     private readonly findMyRoomsUsecase: FindMyRoomsUsecase,
     private readonly createRoomUsecase: CreateRoomUsecase,
-    private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase
+    private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase,
+    private readonly leaveRoomUsecase: LeaveRoomUsecase
   ) {}
 
   @Get('public')
@@ -90,5 +98,18 @@ export class RoomsController {
       req.auth.userId,
       inviteUserToRoomRequestDto
     );
+  }
+
+  @Post('leave')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto })
+  @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
+  @ApiBadRequestResponse({ schema: OwnerCannotLeaveRoomExceptionSchema })
+  @ApiOperation({ description: 'Leave a room' })
+  leaveRoom(
+    @Request() req: Request,
+    @Body() leaveRoomRequestDto: LeaveRoomRequestDto
+  ): Promise<RoomResponseDto> {
+    return this.leaveRoomUsecase.execute(req.auth.userId, leaveRoomRequestDto);
   }
 }
