@@ -22,6 +22,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -90,6 +92,7 @@ export class RoomsController {
   }
 
   @Post('invite')
+  @HttpCode(HttpStatus.OK)
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: RoomResponseDto })
   @ApiNotFoundResponse({ schema: UserNotFoundExceptionSchema })
@@ -106,6 +109,7 @@ export class RoomsController {
   }
 
   @Post('leave')
+  @HttpCode(HttpStatus.OK)
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: RoomResponseDto })
   @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
@@ -119,6 +123,7 @@ export class RoomsController {
   }
 
   @Patch('settings/:id')
+  @HttpCode(HttpStatus.ACCEPTED)
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: RoomResponseDto })
   @ApiBadRequestResponse({ schema: NoRoomSettingsDefinedExceptionSchema })

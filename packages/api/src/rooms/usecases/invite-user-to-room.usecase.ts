@@ -5,6 +5,7 @@ import { Usecase } from '@/common/types/usecase';
 import { RoomResponseSchema } from '@/contract/rooms/room.response.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
+import { RoomNotFoundException } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomException } from '@/rooms/exceptions/user-already-in-room.exception';
 import { RoomsRepository } from '@/rooms/rooms.repository';
 import { Injectable } from '@nestjs/common';
@@ -27,8 +28,13 @@ export class InviteUserToRoomUsecase implements Usecase {
       throw new UserNotFoundException();
     }
 
-    const userRooms = await this.roomsRepository.findMyRooms(user.id);
-    if (userRooms.find((room) => room.members.includes(user.id))) {
+    const existingRoom = await this.roomsRepository.findRoom(
+      inviteUserToRoomRequestDto.roomId
+    );
+    if (!existingRoom) {
+      throw new RoomNotFoundException();
+    }
+    if (existingRoom.members.includes(inviteUserToRoomRequestDto.user)) {
       throw new UserAlreadyInRoomException();
     }
 
