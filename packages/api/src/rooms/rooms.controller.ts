@@ -5,7 +5,10 @@ import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
 import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
+import { UpdateRoomSettingsRequestDto } from '@/rooms/dtos/update-room-settings.request.dto';
 import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
+import { NoRoomSettingsDefinedExceptionSchema } from '@/rooms/exceptions/no-room-settings-defined.exception';
+import { NotRoomOwnerExceptionSchema } from '@/rooms/exceptions/not-room-owner.exception';
 import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-cannot-leave-room.exception';
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
@@ -14,10 +17,13 @@ import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
 import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
+import { UpdateRoomSettingsUsecase } from '@/rooms/usecases/update-room-settings.usecase';
 import {
   Body,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -26,6 +32,7 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -46,7 +53,8 @@ export class RoomsController {
     private readonly findMyRoomsUsecase: FindMyRoomsUsecase,
     private readonly createRoomUsecase: CreateRoomUsecase,
     private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase,
-    private readonly leaveRoomUsecase: LeaveRoomUsecase
+    private readonly leaveRoomUsecase: LeaveRoomUsecase,
+    private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase
   ) {}
 
   @Get('public')
@@ -108,5 +116,23 @@ export class RoomsController {
     @Body() leaveRoomRequestDto: LeaveRoomRequestDto
   ): Promise<RoomResponseDto> {
     return this.leaveRoomUsecase.execute(req.auth.userId, leaveRoomRequestDto);
+  }
+
+  @Patch('settings/:id')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto })
+  @ApiBadRequestResponse({ schema: NoRoomSettingsDefinedExceptionSchema })
+  @ApiForbiddenResponse({ schema: NotRoomOwnerExceptionSchema })
+  @ApiOperation({ description: 'Update room settings' })
+  updateRoomSettings(
+    @Request() req: Request,
+    @Param('id') roomId: string,
+    @Body() updateRoomSettingsRequestDto: UpdateRoomSettingsRequestDto
+  ): Promise<RoomResponseDto> {
+    return this.updateRoomSettingsUsecase.execute(
+      req.auth.userId,
+      roomId,
+      updateRoomSettingsRequestDto
+    );
   }
 }
