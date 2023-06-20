@@ -24,6 +24,10 @@ export class RoomsRepository {
     return this.roomModel.findById(roomId);
   }
 
+  async findRoomByName(roomName: string): Promise<Room> {
+    return this.roomModel.findOne({ name: roomName });
+  }
+
   async createRoom(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
     const room = new this.roomModel(createRoomRequestDto);
     room.members.push(createRoomRequestDto.owner);
