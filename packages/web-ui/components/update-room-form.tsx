@@ -72,7 +72,8 @@ export function UpdateRoomForm() {
   }
 
   return (
-    <div className="rounded-lg border p-4">
+    <div className="flex flex-col gap-2 rounded-lg border p-4">
+      <p className="text-sm font-bold">Update Room</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
