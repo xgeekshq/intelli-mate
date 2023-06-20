@@ -25,6 +25,7 @@ interface SearchListProps<T> {
   searchPlaceholder: string;
   notFoundText: string;
   additionalText: string;
+  width?: string;
 }
 export function SearchList<T extends SearchListType & { isMember?: boolean }>({
   data,
@@ -32,6 +33,7 @@ export function SearchList<T extends SearchListType & { isMember?: boolean }>({
   searchPlaceholder,
   notFoundText,
   additionalText = '',
+  width = 'w-96',
 }: SearchListProps<T>) {
   return (
     <Popover>
@@ -39,7 +41,7 @@ export function SearchList<T extends SearchListType & { isMember?: boolean }>({
         <Button
           variant="outline"
           role="combobox"
-          className="w-96 justify-between text-muted-foreground"
+          className={`${width} justify-between text-muted-foreground`}
         >
           {searchText}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
