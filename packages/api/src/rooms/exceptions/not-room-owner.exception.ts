@@ -16,7 +16,7 @@ export const NotRoomOwnerExceptionSchema = {
     },
     error: {
       type: 'string',
-      example: 'Only a room owner can edit its settings',
+      example: 'Only the room owner can edit its settings',
     },
   },
   required: ['statusCode', 'message', 'error'],
