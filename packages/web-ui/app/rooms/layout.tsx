@@ -1,19 +1,34 @@
 import '@/styles/globals.css';
+import { cookies } from 'next/headers';
+import { client } from '@/api/client';
+import Endpoints from '@/api/endpoints';
+import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
+import { auth } from '@clerk/nextjs';
+
 import { Rooms } from '@/components/rooms';
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
+const getMyRooms = async () => {
+  try {
+    const nextCookies = cookies();
+    const clerkJwtToken = nextCookies.get('__session');
+    const { sessionId } = auth();
+    const res = await client({
+      url: Endpoints.rooms.getMyRooms(),
+      options: { method: 'GET' },
+      sessionId: sessionId ? sessionId : '',
+      jwtToken: clerkJwtToken ? clerkJwtToken.value : '',
+    });
+    return res.json();
+  } catch (e) {
+    console.log(e);
+  }
+};
 
-const rooms: any = [
-  { name: 'Management', private: true },
-  { name: 'DDD', private: false },
-  { name: 'Frontend', private: false },
-  { name: 'ETFs', private: true },
-  { name: 'Confluence', private: false },
-  { name: 'Ramos-team', private: true },
-];
 export default async function RoomsLayout({ children }: RootLayoutProps) {
+  const rooms: RoomResponseDto[] = await getMyRooms();
   return (
     <div className="flex h-full">
       <Rooms rooms={rooms} />

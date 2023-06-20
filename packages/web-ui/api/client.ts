@@ -21,7 +21,7 @@ async function client({
   sessionId,
   jwtToken,
 }: ClerkFetcherParamsType) {
-  return await myFetch(url, {
+  const res = await myFetch(url, {
     ...options,
     headers: {
       ...options?.headers,
@@ -30,5 +30,7 @@ async function client({
       'X-Clerk-Jwt-Token': jwtToken,
     },
   });
+
+  return res;
 }
 export { client };

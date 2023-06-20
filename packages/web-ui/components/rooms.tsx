@@ -16,7 +16,7 @@ export function Rooms({ rooms }: RoomsProps) {
   const params = useParams();
   return (
     <div className="flex h-full w-40 flex-col border-r pt-2">
-      <div className="flex items-center">
+      <div className="flex items-center border-b">
         <Link
           className="relative px-6 text-lg font-semibold tracking-tight"
           href={'/rooms'}
@@ -25,19 +25,23 @@ export function Rooms({ rooms }: RoomsProps) {
         </Link>
         <CreateRoomForm />
       </div>
-      <ScrollArea className="flex-1 px-2">
-        <div className="space-y-1 p-2">
+      <ScrollArea className="flex-1 px-2 pt-2">
+        <div className="space-y-1">
           {rooms.map((room, i) => (
             <Link key={`${room.name}`} href={`/rooms/${room.name}`}>
               <Button
                 variant="ghost"
                 size="sm"
-                className={`w-full justify-start gap-2 ${
-                  room.name === params.room ? 'font-bold' : 'font-normal'
-                }`}
+                className="w-full justify-between"
               >
+                <p
+                  className={`max-w-[90px] overflow-hidden text-clip ${
+                    room.name === params.room ? 'font-bold' : 'font-normal'
+                  }`}
+                >
+                  {room.name}
+                </p>
                 {room.private && <Lock className="h-4 w-4" />}
-                {room.name}
               </Button>
             </Link>
           ))}
