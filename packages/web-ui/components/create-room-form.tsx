@@ -56,7 +56,6 @@ export function CreateRoomForm() {
         sessionId: sessionId ? sessionId : '',
         jwtToken: token ? token.toString() : '',
       });
-      console.log(res);
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
 

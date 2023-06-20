@@ -50,7 +50,7 @@ export default async function Rooms() {
         notFoundText="Room not found."
         searchPlaceholder="Type a room name"
         searchText="Search for a room"
-        additionalText="Already joined!"
+        additionalText="Already joined"
       />
     </div>
   );
