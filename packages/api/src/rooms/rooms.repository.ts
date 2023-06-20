@@ -1,6 +1,7 @@
 import { DB_ROOM_MODEL_KEY } from '@/common/constants/models/room';
 import { Room } from '@/common/types/room';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
+import { UpdateRoomSettingsRequestDto } from '@/rooms/dtos/update-room-settings.request.dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
@@ -39,6 +40,20 @@ export class RoomsRepository {
 
   async leaveRoom(userId: string, room: Room): Promise<Room> {
     room.members = room.members.filter((user) => user !== userId);
+    await room.save();
+    return room;
+  }
+
+  async updateRoomSettings(
+    updateRoomSettingsRequestDto: UpdateRoomSettingsRequestDto,
+    room: Room
+  ): Promise<Room> {
+    if (updateRoomSettingsRequestDto.name !== undefined) {
+      room.name = updateRoomSettingsRequestDto.name;
+    }
+    if (updateRoomSettingsRequestDto.private !== undefined) {
+      room.private = updateRoomSettingsRequestDto.private;
+    }
     await room.save();
     return room;
   }
