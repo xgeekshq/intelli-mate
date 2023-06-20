@@ -7,10 +7,7 @@ import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { UpdateRoomSettingsRequestDto } from '@/rooms/dtos/update-room-settings.request.dto';
 import { DuplicateRoomNameExceptionSchema } from '@/rooms/exceptions/duplicate-room-name.exception';
-import {
-  NoRoomSettingsDefinedException,
-  NoRoomSettingsDefinedExceptionSchema,
-} from '@/rooms/exceptions/no-room-settings-defined.exception';
+import { NoRoomSettingsDefinedExceptionSchema } from '@/rooms/exceptions/no-room-settings-defined.exception';
 import { NotRoomOwnerExceptionSchema } from '@/rooms/exceptions/not-room-owner.exception';
 import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-cannot-leave-room.exception';
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
