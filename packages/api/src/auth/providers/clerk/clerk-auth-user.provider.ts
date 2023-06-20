@@ -10,4 +10,8 @@ export class ClerkAuthUserProvider implements Provider {
     const userList = await users.getUserList();
     return userList.find((u) => u.id === id);
   }
+
+  findUsers(ids: string[]): Promise<User[]> {
+    return users.getUserList({ userId: ids });
+  }
 }

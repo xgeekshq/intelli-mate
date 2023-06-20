@@ -8,6 +8,7 @@ import { CreateRoomUsecase } from '@/rooms/usecases/create-room.usecase';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
+import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -24,6 +25,7 @@ import { Module } from '@nestjs/common';
     FindPublicRoomsUsecase,
     FindMyRoomsUsecase,
     InviteUserToRoomUsecase,
+    LeaveRoomUsecase,
   ],
 })
 export class RoomsModule {}

@@ -19,6 +19,10 @@ export class RoomsRepository {
     return this.roomModel.find({ members: { $in: [userId] } });
   }
 
+  async findRoom(roomId: string): Promise<Room> {
+    return this.roomModel.findById(roomId);
+  }
+
   async createRoom(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
     const room = new this.roomModel(createRoomRequestDto);
     room.members.push(createRoomRequestDto.owner);
@@ -29,6 +33,12 @@ export class RoomsRepository {
   async inviteUserToRoom(userId: string, roomId: string): Promise<Room> {
     const room = await this.roomModel.findById(roomId);
     room.members.push(userId);
+    await room.save();
+    return room;
+  }
+
+  async leaveRoom(userId: string, room: Room): Promise<Room> {
+    room.members = room.members.filter((user) => user !== userId);
     await room.save();
     return room;
   }
