@@ -2,7 +2,8 @@
 
 import { ChevronsUpDown } from 'lucide-react';
 
-import { SearchListType } from '@/types/searchList';
+import { PublicRoomsLisType, SearchListType } from '@/types/searchList';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -18,18 +19,20 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-type SearchListProps = {
-  data: SearchListType[];
+interface SearchListProps<T> {
+  data: T[];
   searchText: string;
   searchPlaceholder: string;
   notFoundText: string;
-};
-export function SearchList({
+  additionalText: string;
+}
+export function SearchList<T extends SearchListType & { isMember?: boolean }>({
   data,
   searchText,
   searchPlaceholder,
   notFoundText,
-}: SearchListProps) {
+  additionalText = '',
+}: SearchListProps<T>) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -48,9 +51,16 @@ export function SearchList({
             <CommandInput placeholder={searchPlaceholder} />
             <CommandEmpty>{notFoundText}</CommandEmpty>
             <CommandGroup>
-              {data.map((room: SearchListType) => (
-                <CommandItem value={room.value} key={room.value}>
-                  {room.label}
+              {data.map((item: T) => (
+                <CommandItem
+                  className="flex justify-between hover:cursor-pointer"
+                  value={item.value}
+                  key={item.value}
+                >
+                  {item.label}
+                  {item.isMember && (
+                    <Badge variant="outline">{additionalText}</Badge>
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>
