@@ -30,8 +30,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ToastAction } from '@/components/ui/toast';
-import { toast, useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
@@ -58,7 +57,6 @@ export function CreateRoomForm() {
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
-
         toast({
           title: error,
           variant: 'destructive',
@@ -77,8 +75,8 @@ export function CreateRoomForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="cenas">
-          <Plus className="h-4 w-4" />
+        <Button variant="ghost">
+          <Plus className="h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
