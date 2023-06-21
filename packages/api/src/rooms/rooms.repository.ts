@@ -13,7 +13,7 @@ export class RoomsRepository {
   ) {}
 
   async findAllPublicRooms(): Promise<Room[]> {
-    return this.roomModel.find({ private: false });
+    return this.roomModel.find({ isPrivate: false });
   }
 
   async findMyRooms(userId: string): Promise<Room[]> {
