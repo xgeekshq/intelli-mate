@@ -24,9 +24,13 @@ export class AuthController {
     isArray: true,
     type: String,
     description: 'List of user ids to fetch from auth provider',
+    required: false,
   })
   @ApiOkResponse({ type: UserResponseDto, isArray: true })
-  @ApiOperation({ description: 'Get a list of users' })
+  @ApiOperation({
+    description:
+      'Get a list of users. If id list is specified, it fetches all from that array. If no query param is sent, it fetches all users.',
+  })
   async findUsers(
     @Query('userIds')
     userIds: string[]
