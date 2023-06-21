@@ -27,7 +27,7 @@ export class AuthController {
   })
   @ApiOkResponse({ type: UserResponseDto, isArray: true })
   @ApiOperation({ description: 'Get a list of users' })
-  async findPublicRooms(
+  async findUsers(
     @Query('userIds')
     userIds: string[]
   ): Promise<UserResponseDto[]> {

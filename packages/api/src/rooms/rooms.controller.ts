@@ -1,6 +1,8 @@
+import { UserResponseDto } from '@/auth/dtos/user.response.dto';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { UserNotFoundExceptionSchema } from '@/common/exceptions/user-not-found.exception';
+import { UserResponseSchema } from '@/contract/auth/user.response.dto';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
 import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
@@ -13,8 +15,13 @@ import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-ca
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
+import {
+  UserNotRoomMemberException,
+  UserNotRoomMemberExceptionSchema,
+} from '@/rooms/exceptions/user-not-room-member.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
+import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
 import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
 import { UpdateRoomSettingsUsecase } from '@/rooms/usecases/update-room-settings.usecase';
@@ -27,6 +34,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -38,6 +46,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -56,7 +65,8 @@ export class RoomsController {
     private readonly createRoomUsecase: CreateRoomUsecase,
     private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase,
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
-    private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase
+    private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase,
+    private readonly findRoomByNameUsecase: FindRoomByNameUsecase
   ) {}
 
   @Get('public')
@@ -73,6 +83,19 @@ export class RoomsController {
   @ApiOperation({ description: 'List my rooms' })
   findMyRooms(@Request() req: Request): Promise<RoomResponseDto[]> {
     return this.findMyRoomsUsecase.execute(req.auth.userId);
+  }
+
+  @Get('name/:name')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto })
+  @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
+  @ApiBadRequestResponse({ schema: UserNotRoomMemberExceptionSchema })
+  @ApiOperation({ description: 'Get a single room by name' })
+  async findRoomByName(
+    @Request() req: Request,
+    @Param('name') roomName: string
+  ): Promise<RoomResponseDto> {
+    return this.findRoomByNameUsecase.execute(req.auth.userId, roomName);
   }
 
   @Post()
