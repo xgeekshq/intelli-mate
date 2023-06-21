@@ -15,6 +15,10 @@ import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-ca
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
+import {
+  UserNotRoomMemberException,
+  UserNotRoomMemberExceptionSchema,
+} from '@/rooms/exceptions/user-not-room-member.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
@@ -81,21 +85,17 @@ export class RoomsController {
     return this.findMyRoomsUsecase.execute(req.auth.userId);
   }
 
-  @Get('name')
+  @Get('name/:name')
   @ApiClerkAuthHeaders()
-  @ApiQuery({
-    name: 'roomName',
-    type: String,
-    description: 'Room name to find in database',
-  })
   @ApiOkResponse({ type: RoomResponseDto })
+  @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
+  @ApiBadRequestResponse({ schema: UserNotRoomMemberExceptionSchema })
   @ApiOperation({ description: 'Get a single room by name' })
   async findRoomByName(
     @Request() req: Request,
-    @Query('roomName')
-    roomName: string
+    @Param('name') roomName: string
   ): Promise<RoomResponseDto> {
-    return this.findRoomByNameUsecase.execute(roomName, req.auth.userId);
+    return this.findRoomByNameUsecase.execute(req.auth.userId, roomName);
   }
 
   @Post()

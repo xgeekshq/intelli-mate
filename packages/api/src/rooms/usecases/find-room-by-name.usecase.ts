@@ -11,7 +11,7 @@ import { Injectable } from '@nestjs/common';
 export class FindRoomByNameUsecase implements Usecase {
   constructor(private readonly roomsRepository: RoomsRepository) {}
 
-  async execute(roomName: string, userId: string): Promise<RoomResponseDto> {
+  async execute(userId: string, roomName: string): Promise<RoomResponseDto> {
     const room = await this.roomsRepository.findRoomByName(roomName);
 
     if (!room) {
