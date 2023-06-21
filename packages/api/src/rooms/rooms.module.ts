@@ -9,6 +9,7 @@ import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
+import { JoinRoomUsecase } from '@/rooms/usecases/join-room.usecase';
 import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
 import { UpdateRoomSettingsUsecase } from '@/rooms/usecases/update-room-settings.usecase';
 import { Module } from '@nestjs/common';
@@ -30,6 +31,7 @@ import { Module } from '@nestjs/common';
     LeaveRoomUsecase,
     UpdateRoomSettingsUsecase,
     FindRoomByNameUsecase,
+    JoinRoomUsecase,
   ],
 })
 export class RoomsModule {}

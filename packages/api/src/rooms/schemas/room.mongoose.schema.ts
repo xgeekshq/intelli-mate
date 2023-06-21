@@ -10,11 +10,11 @@ export const RoomSchema = new mongoose.Schema(
       index: true,
       required: true,
     },
-    private: {
+    isPrivate: {
       type: Boolean,
       default: false,
     },
-    owner: {
+    ownerId: {
       type: String,
       required: true,
     },

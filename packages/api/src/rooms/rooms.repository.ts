@@ -30,13 +30,18 @@ export class RoomsRepository {
 
   async createRoom(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
     const room = new this.roomModel(createRoomRequestDto);
-    room.members.push(createRoomRequestDto.owner);
+    room.members.push(createRoomRequestDto.ownerId);
     await room.save();
     return room;
   }
 
-  async inviteUserToRoom(userId: string, roomId: string): Promise<Room> {
-    const room = await this.roomModel.findById(roomId);
+  async inviteUserToRoom(userId: string, room: Room): Promise<Room> {
+    room.members.push(userId);
+    await room.save();
+    return room;
+  }
+
+  async joinRoom(userId: string, room: Room): Promise<Room> {
     room.members.push(userId);
     await room.save();
     return room;
@@ -55,8 +60,8 @@ export class RoomsRepository {
     if (updateRoomSettingsRequestDto.name !== undefined) {
       room.name = updateRoomSettingsRequestDto.name;
     }
-    if (updateRoomSettingsRequestDto.private !== undefined) {
-      room.private = updateRoomSettingsRequestDto.private;
+    if (updateRoomSettingsRequestDto.isPrivate !== undefined) {
+      room.isPrivate = updateRoomSettingsRequestDto.isPrivate;
     }
     await room.save();
     return room;

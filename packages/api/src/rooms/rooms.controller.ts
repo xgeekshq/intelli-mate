@@ -3,6 +3,7 @@ import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.
 import { UserNotFoundExceptionSchema } from '@/common/exceptions/user-not-found.exception';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
+import { JoinRoomRequestDto } from '@/rooms/dtos/join-room.request.dto';
 import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { UpdateRoomSettingsRequestDto } from '@/rooms/dtos/update-room-settings.request.dto';
@@ -11,6 +12,7 @@ import { NoRoomSettingsDefinedExceptionSchema } from '@/rooms/exceptions/no-room
 import { NotRoomOwnerExceptionSchema } from '@/rooms/exceptions/not-room-owner.exception';
 import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-cannot-leave-room.exception';
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
+import { RoomIsPrivateExceptionSchema } from '@/rooms/exceptions/room-is-private.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
 import { UserNotRoomMemberExceptionSchema } from '@/rooms/exceptions/user-not-room-member.exception';
@@ -121,6 +123,24 @@ export class RoomsController {
     return this.inviteUserToRoomUsecase.execute(
       req.auth.userId,
       inviteUserToRoomRequestDto
+    );
+  }
+
+  @Post('join')
+  @HttpCode(HttpStatus.OK)
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: RoomResponseDto })
+  @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
+  @ApiForbiddenResponse({ schema: RoomIsPrivateExceptionSchema })
+  @ApiBadRequestResponse({ schema: UserAlreadyInRoomExceptionSchema })
+  @ApiOperation({ description: 'Join a public room' })
+  joinRoom(
+    @Request() req: Request,
+    @Body() joinRoomRequestDto: JoinRoomRequestDto
+  ): Promise<RoomResponseDto> {
+    return this.inviteUserToRoomUsecase.execute(
+      req.auth.userId,
+      joinRoomRequestDto
     );
   }
 
