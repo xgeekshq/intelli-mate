@@ -1,8 +1,6 @@
-import { UserResponseDto } from '@/auth/dtos/user.response.dto';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { UserNotFoundExceptionSchema } from '@/common/exceptions/user-not-found.exception';
-import { UserResponseSchema } from '@/contract/auth/user.response.dto';
 import { CreateRoomRequestDto } from '@/rooms/dtos/create-room.request.dto';
 import { InviteUserToRoomRequestDto } from '@/rooms/dtos/invite-user-to-room.request.dto';
 import { LeaveRoomRequestDto } from '@/rooms/dtos/leave-room.request.dto';
@@ -15,10 +13,7 @@ import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-ca
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
-import {
-  UserNotRoomMemberException,
-  UserNotRoomMemberExceptionSchema,
-} from '@/rooms/exceptions/user-not-room-member.exception';
+import { UserNotRoomMemberExceptionSchema } from '@/rooms/exceptions/user-not-room-member.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
@@ -34,7 +29,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -46,7 +40,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
