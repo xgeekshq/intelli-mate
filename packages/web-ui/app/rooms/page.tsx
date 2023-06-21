@@ -4,9 +4,27 @@ import Endpoints from '@/api/endpoints';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { auth } from '@clerk/nextjs';
 
-import { PublicRoomsLisType } from '@/types/searchList';
+import { PublicRoomsListType } from '@/types/searchList';
+import { Badge } from '@/components/ui/badge';
+import { CommandItem } from '@/components/ui/command';
 import { SearchList } from '@/components/search-list';
 
+const RoomSearchListItems = ({ data }: { data: PublicRoomsListType[] }) => {
+  return (
+    <>
+      {data.map((item) => (
+        <CommandItem
+          className="flex justify-between hover:cursor-pointer"
+          value={item.value}
+          key={item.value}
+        >
+          {item.label}
+          {item.isMember && <Badge variant="outline">Already joined</Badge>}
+        </CommandItem>
+      ))}
+    </>
+  );
+};
 const getPublicRooms = async () => {
   try {
     const { sessionId } = auth();
@@ -24,9 +42,11 @@ const getPublicRooms = async () => {
   }
 };
 
-const searchRoomsList = (rooms: RoomResponseDto[]): PublicRoomsLisType[] => {
+const getSearchRoomsList = (
+  rooms: RoomResponseDto[]
+): PublicRoomsListType[] => {
   const { userId } = auth();
-  return rooms.map((room: RoomResponseDto): PublicRoomsLisType => {
+  return rooms.map((room) => {
     return {
       label: room.name,
       value: room.name,
@@ -35,7 +55,8 @@ const searchRoomsList = (rooms: RoomResponseDto[]): PublicRoomsLisType[] => {
   });
 };
 export default async function Rooms() {
-  const publicRoomsSearchList = searchRoomsList(await getPublicRooms());
+  const publicRoomsSearchList = getSearchRoomsList(await getPublicRooms());
+  console.log(publicRoomsSearchList);
   return (
     <div className="flex h-full w-full flex-col items-center gap-20 py-24">
       <p className="w-2/3 text-center text-2xl">
@@ -45,13 +66,13 @@ export default async function Rooms() {
         and boost productivity. Say goodbye to scattered conversations and hello
         to streamlined teamwork.
       </p>
-      <SearchList<PublicRoomsLisType>
-        data={publicRoomsSearchList}
+      <SearchList
         notFoundText="Room not found."
         searchPlaceholder="Type a room name"
         searchText="Search for a room"
-        additionalText="Already joined"
-      />
+      >
+        <RoomSearchListItems data={publicRoomsSearchList} />
+      </SearchList>
     </div>
   );
 }

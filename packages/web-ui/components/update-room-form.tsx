@@ -1,28 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { client } from '@/api/client';
 import Endpoints from '@/api/endpoints';
-import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
-import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
 import { UpdateRoomSettingsRequestSchema } from '@/contract/rooms/update-room-settings.request.dto';
 import { UpdateRoomSettingsRequestDto } from '@/contract/rooms/update-room-settings.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getCookie } from 'cookies-next';
-import { Lock, Plus } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -34,7 +24,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
-export function UpdateRoomForm() {
+interface UpdateRoomFormProps {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+}
+export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
+  const router = useRouter();
   const { toast } = useToast();
   const { sessionId } = useAuth();
   const token = getCookie('__session');
@@ -42,15 +38,15 @@ export function UpdateRoomForm() {
   const form = useForm<UpdateRoomSettingsRequestDto>({
     resolver: zodResolver(UpdateRoomSettingsRequestSchema),
     defaultValues: {
-      name: '',
-      private: false,
+      name: name,
+      isPrivate: isPrivate,
     },
   });
 
   async function onSubmit(values: UpdateRoomSettingsRequestDto) {
     try {
       const res = await client({
-        url: Endpoints.rooms.updateRoom('roomId'),
+        url: Endpoints.rooms.updateRoom(id),
         options: { method: 'PATCH', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',
         jwtToken: token ? token.toString() : '',
@@ -66,6 +62,7 @@ export function UpdateRoomForm() {
       toast({
         title: 'Room updated successfully!',
       });
+      router.push(`/rooms/${values.name}/settings`);
     } catch (e) {
       console.log(e);
     }
@@ -91,7 +88,7 @@ export function UpdateRoomForm() {
           />
           <FormField
             control={form.control}
-            name="private"
+            name="isPrivate"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-2 space-y-0">
                 <Lock className="h-4 w-4" />
@@ -107,7 +104,7 @@ export function UpdateRoomForm() {
           />
           <div className="flex w-full justify-end">
             <Button variant="success" type="submit">
-              Submit
+              Save
             </Button>
           </div>
         </form>
