@@ -23,7 +23,7 @@ export class LeaveRoomUsecase implements Usecase {
       throw new RoomNotFoundException();
     }
 
-    if (existingRoom.owner === userId) {
+    if (existingRoom.ownerId === userId) {
       throw new OwnerCannotLeaveRoomException();
     }
 

@@ -26,7 +26,7 @@ export class JoinRoomUsecase implements Usecase {
     if (existingRoom.members.includes(userId)) {
       throw new UserAlreadyInRoomException();
     }
-    if (existingRoom.private) {
+    if (existingRoom.isPrivate) {
       throw new RoomIsPrivateException();
     }
 

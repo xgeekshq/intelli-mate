@@ -61,7 +61,7 @@ export class RoomsRepository {
       room.name = updateRoomSettingsRequestDto.name;
     }
     if (updateRoomSettingsRequestDto.isPrivate !== undefined) {
-      room.private = updateRoomSettingsRequestDto.isPrivate;
+      room.isPrivate = updateRoomSettingsRequestDto.isPrivate;
     }
     await room.save();
     return room;

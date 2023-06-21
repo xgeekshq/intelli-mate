@@ -18,7 +18,7 @@ export class UpdateRoomSettingsUsecase implements Usecase {
     updateRoomSettingsRequestDto: UpdateRoomSettingsRequestDto
   ): Promise<RoomResponseDto> {
     const existingRoom = await this.roomsRepository.findRoom(roomId);
-    if (existingRoom.owner !== userId) {
+    if (existingRoom.ownerId !== userId) {
       throw new NotRoomOwnerException();
     }
 
