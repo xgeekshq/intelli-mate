@@ -3,7 +3,7 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { UserResponseSchema } from '@/contract/auth/user.response.dto';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -17,6 +17,15 @@ import {
 export class AuthController {
   constructor(private readonly clerkAuthUserProvider: ClerkAuthUserProvider) {}
 
+  @Get('users/:id')
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: UserResponseDto })
+  @ApiOperation({ description: 'Get a single user' })
+  async findUser(@Param('id') userId: string) {
+    const user = await this.clerkAuthUserProvider.findUser(userId);
+    return UserResponseSchema.parse(user);
+  }
+
   @Get('users')
   @ApiClerkAuthHeaders()
   @ApiQuery({
@@ -24,9 +33,13 @@ export class AuthController {
     isArray: true,
     type: String,
     description: 'List of user ids to fetch from auth provider',
+    required: false,
   })
   @ApiOkResponse({ type: UserResponseDto, isArray: true })
-  @ApiOperation({ description: 'Get a list of users' })
+  @ApiOperation({
+    description:
+      'Get a list of users. If id list is specified, it fetches all from that array. If no query param is sent, it fetches all users.',
+  })
   async findUsers(
     @Query('userIds')
     userIds: string[]
