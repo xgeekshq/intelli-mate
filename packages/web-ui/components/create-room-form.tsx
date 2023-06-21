@@ -42,8 +42,8 @@ export function CreateRoomForm() {
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
-      private: false,
-      owner: !!userId ? userId : '',
+      isPrivate: false,
+      ownerId: !!userId ? userId : '',
     },
   });
 
@@ -102,7 +102,7 @@ export function CreateRoomForm() {
               />
               <FormField
                 control={form.control}
-                name="private"
+                name="isPrivate"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <Lock className="h-4 w-4" />

@@ -41,7 +41,7 @@ export function Rooms({ rooms }: RoomsProps) {
                 >
                   {room.name}
                 </p>
-                {room.private && <Lock className="h-4 w-4" />}
+                {room.isPrivate && <Lock className="h-4 w-4" />}
               </Button>
             </Link>
           ))}

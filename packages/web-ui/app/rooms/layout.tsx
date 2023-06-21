@@ -32,7 +32,7 @@ export default async function RoomsLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full">
       <Rooms rooms={rooms} />
-      <div className="w-full">{children}</div>
+      <div className="h-full w-full">{children}</div>
     </div>
   );
 }
