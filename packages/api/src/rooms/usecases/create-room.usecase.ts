@@ -16,7 +16,7 @@ export class CreateRoomUsecase implements Usecase {
     userId: string,
     createRoomRequestDto: CreateRoomRequestDto
   ): Promise<RoomResponseDto> {
-    if (createRoomRequestDto.owner !== userId) {
+    if (createRoomRequestDto.ownerId !== userId) {
       throw new OwnerMustBeLoggedException();
     }
 
