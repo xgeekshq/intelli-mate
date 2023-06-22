@@ -5,6 +5,7 @@ export interface SearchListType {
 
 export interface PublicRoomsListType extends SearchListType {
   isMember: boolean;
+  roomId: string;
 }
 
 export interface UserListType extends SearchListType {
