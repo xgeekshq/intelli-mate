@@ -1,6 +1,6 @@
 'use client';
 
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { InviteUserToRoomRequestDto } from '@/contract/rooms/invite-user-to-room.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
@@ -25,7 +25,7 @@ export default function UserSearchItems({
   const token = getCookie('__session');
   async function onInviteUser(values: InviteUserToRoomRequestDto) {
     try {
-      const res = await client({
+      const res = await apiClient({
         url: Endpoints.rooms.inviteToRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',

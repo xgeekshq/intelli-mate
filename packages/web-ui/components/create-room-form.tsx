@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
@@ -49,7 +49,7 @@ export function CreateRoomForm() {
 
   async function onSubmit(values: CreateRoomRequestDto) {
     try {
-      const res = await client({
+      const res = await apiClient({
         url: Endpoints.rooms.createRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',
