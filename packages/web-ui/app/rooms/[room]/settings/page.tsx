@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
@@ -46,7 +46,7 @@ const getRoom = async (
   roomName: string
 ) => {
   try {
-    const res = await client({
+    const res = await apiClient({
       url: Endpoints.rooms.getRoomByName(roomName),
       options: { method: 'GET' },
       sessionId: sessionId,
@@ -63,7 +63,7 @@ const getOwner = async (
   ownerId: string
 ) => {
   try {
-    const res = await client({
+    const res = await apiClient({
       url: Endpoints.users.getUser(ownerId),
       options: { method: 'GET' },
       sessionId: sessionId,
@@ -77,7 +77,7 @@ const getOwner = async (
 
 const getAllUsers = async (sessionId: string, clerkJwtToken: string) => {
   try {
-    const res = await client({
+    const res = await apiClient({
       url: Endpoints.users.getUsers(),
       options: { method: 'GET' },
       sessionId: sessionId,
@@ -95,7 +95,7 @@ const getRoomMembers = async (
   members: string[]
 ) => {
   try {
-    const res = await client({
+    const res = await apiClient({
       url: Endpoints.users.getUsers(members),
       options: { method: 'GET' },
       sessionId: sessionId,
@@ -112,7 +112,7 @@ const getUserList = (users: UserResponseDto[]): UserListType[] => {
     return {
       label:
         user.firstName && user.lastName
-          ? `${user.firstName} ${user.firstName}`
+          ? `${user.firstName} ${user.lastName}`
           : '',
       value: user.username,
       imageUrl: user.profileImageUrl,

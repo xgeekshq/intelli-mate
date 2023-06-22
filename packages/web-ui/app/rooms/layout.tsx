@@ -1,6 +1,6 @@
 import '@/styles/globals.css';
 import { cookies } from 'next/headers';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { auth } from '@clerk/nextjs';
@@ -15,7 +15,7 @@ const getMyRooms = async () => {
     const nextCookies = cookies();
     const clerkJwtToken = nextCookies.get('__session');
     const { sessionId } = auth();
-    const res = await client({
+    const res = await apiClient({
       url: Endpoints.rooms.getMyRooms(),
       options: { method: 'GET' },
       sessionId: sessionId ? sessionId : '',
