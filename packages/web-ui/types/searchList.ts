@@ -3,6 +3,11 @@ export interface SearchListType {
   value: string;
 }
 
-export interface PublicRoomsLisType extends SearchListType {
+export interface PublicRoomsListType extends SearchListType {
   isMember: boolean;
+}
+
+export interface UserListType extends SearchListType {
+  imageUrl: string;
+  userId: string;
 }

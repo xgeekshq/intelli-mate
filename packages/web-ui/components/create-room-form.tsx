@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
@@ -30,8 +30,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ToastAction } from '@/components/ui/toast';
-import { toast, useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
@@ -43,14 +42,14 @@ export function CreateRoomForm() {
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
-      private: false,
-      owner: !!userId ? userId : '',
+      isPrivate: false,
+      ownerId: !!userId ? userId : '',
     },
   });
 
   async function onSubmit(values: CreateRoomRequestDto) {
     try {
-      const res = await client({
+      const res = await apiClient({
         url: Endpoints.rooms.createRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',
@@ -58,7 +57,6 @@ export function CreateRoomForm() {
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
-
         toast({
           title: error,
           variant: 'destructive',
@@ -77,8 +75,8 @@ export function CreateRoomForm() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="cenas">
-          <Plus className="h-4 w-4" />
+        <Button variant="ghost">
+          <Plus className="h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -104,7 +102,7 @@ export function CreateRoomForm() {
               />
               <FormField
                 control={form.control}
-                name="private"
+                name="isPrivate"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <Lock className="h-4 w-4" />

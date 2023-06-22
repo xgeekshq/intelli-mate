@@ -1,16 +1,15 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { ChevronsUpDown } from 'lucide-react';
 
-import { PublicRoomsLisType, SearchListType } from '@/types/searchList';
-import { Badge } from '@/components/ui/badge';
+import { SearchListType } from '@/types/searchList';
 import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
 } from '@/components/ui/command';
 import {
   Popover,
@@ -19,27 +18,27 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-interface SearchListProps<T> {
-  data: T[];
+interface SearchListProps {
+  children: ReactNode;
   searchText: string;
   searchPlaceholder: string;
   notFoundText: string;
-  additionalText: string;
+  width?: string;
 }
 export function SearchList<T extends SearchListType & { isMember?: boolean }>({
-  data,
+  children,
   searchText,
   searchPlaceholder,
   notFoundText,
-  additionalText = '',
-}: SearchListProps<T>) {
+  width = 'w-96',
+}: SearchListProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          className="w-96 justify-between text-muted-foreground"
+          className={`${width} justify-between text-muted-foreground`}
         >
           {searchText}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -50,20 +49,7 @@ export function SearchList<T extends SearchListType & { isMember?: boolean }>({
           <Command>
             <CommandInput placeholder={searchPlaceholder} />
             <CommandEmpty>{notFoundText}</CommandEmpty>
-            <CommandGroup>
-              {data.map((item: T) => (
-                <CommandItem
-                  className="flex justify-between hover:cursor-pointer"
-                  value={item.value}
-                  key={item.value}
-                >
-                  {item.label}
-                  {item.isMember && (
-                    <Badge variant="outline">{additionalText}</Badge>
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <CommandGroup>{children}</CommandGroup>
           </Command>
         </ScrollArea>
       </PopoverContent>
