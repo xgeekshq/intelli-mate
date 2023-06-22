@@ -3,6 +3,7 @@ import { Usecase } from '@/common/types/usecase';
 import { RoomResponseSchema } from '@/contract/rooms/room.response.dto';
 import { RoomResponseDto } from '@/rooms/dtos/room.response.dto';
 import { UpdateRoomSettingsRequestDto } from '@/rooms/dtos/update-room-settings.request.dto';
+import { DuplicateRoomNameException } from '@/rooms/exceptions/duplicate-room-name.exception';
 import { NoRoomSettingsDefinedException } from '@/rooms/exceptions/no-room-settings-defined.exception';
 import { NotRoomOwnerException } from '@/rooms/exceptions/not-room-owner.exception';
 import { RoomsRepository } from '@/rooms/rooms.repository';
@@ -33,6 +34,9 @@ export class UpdateRoomSettingsUsecase implements Usecase {
       );
       return RoomResponseSchema.parse(room);
     } catch (e) {
+      if (e.message.includes('duplicate')) {
+        throw new DuplicateRoomNameException();
+      }
       throw new InternalServerErrorException(e.message);
     }
   }

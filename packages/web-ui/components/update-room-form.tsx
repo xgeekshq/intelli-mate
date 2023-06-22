@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { UpdateRoomSettingsRequestSchema } from '@/contract/rooms/update-room-settings.request.dto';
 import { UpdateRoomSettingsRequestDto } from '@/contract/rooms/update-room-settings.request.dto.d';
@@ -45,7 +45,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
 
   async function onSubmit(values: UpdateRoomSettingsRequestDto) {
     try {
-      const res = await client({
+      const res = await apiClient({
         url: Endpoints.rooms.updateRoom(id),
         options: { method: 'PATCH', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',

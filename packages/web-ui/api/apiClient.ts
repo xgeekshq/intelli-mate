@@ -15,7 +15,7 @@ const myFetch = createFetch(
   process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || ''
 );
 
-async function client({
+async function apiClient({
   url,
   options,
   sessionId,
@@ -31,4 +31,4 @@ async function client({
     },
   });
 }
-export { client };
+export { apiClient };

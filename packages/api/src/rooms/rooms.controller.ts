@@ -162,6 +162,7 @@ export class RoomsController {
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: RoomResponseDto })
   @ApiBadRequestResponse({ schema: NoRoomSettingsDefinedExceptionSchema })
+  @ApiConflictResponse({ schema: DuplicateRoomNameExceptionSchema })
   @ApiForbiddenResponse({ schema: NotRoomOwnerExceptionSchema })
   @ApiOperation({ description: 'Update room settings' })
   updateRoomSettings(

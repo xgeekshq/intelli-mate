@@ -12,3 +12,8 @@ export interface UserListType extends SearchListType {
   imageUrl: string;
   userId: string;
 }
+
+export interface UserListType extends SearchListType {
+  imageUrl: string;
+  userId: string;
+}

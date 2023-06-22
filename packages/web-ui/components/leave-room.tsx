@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { client } from '@/api/client';
+import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { LeaveRoomRequestDto } from '@/contract/rooms/leave-room.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
@@ -19,7 +19,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
   const token = getCookie('__session');
   async function onLeaveRoom(values: LeaveRoomRequestDto) {
     try {
-      const res = await client({
+      const res = await apiClient({
         url: Endpoints.rooms.leaveRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ? sessionId : '',
@@ -34,7 +34,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
         return;
       }
       toast({
-        title: 'You successfully leave the room.',
+        title: 'You left the room.',
       });
       router.push('/rooms');
     } catch (e) {
@@ -53,7 +53,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
         <div className="flex flex-col gap-4">
           <p className="text-sm">Are you sure you want to leave this room?</p>
           <Button
-            onClick={() => onLeaveRoom({ roomId: roomId })}
+            onClick={() => onLeaveRoom({ roomId })}
             className="w-1/4 self-end"
             size="sm"
             variant="success"
