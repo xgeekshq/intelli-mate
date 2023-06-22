@@ -20,6 +20,7 @@ import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
+import { JoinRoomUsecase } from '@/rooms/usecases/join-room.usecase';
 import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
 import { UpdateRoomSettingsUsecase } from '@/rooms/usecases/update-room-settings.usecase';
 import {
@@ -61,7 +62,8 @@ export class RoomsController {
     private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase,
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
     private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase,
-    private readonly findRoomByNameUsecase: FindRoomByNameUsecase
+    private readonly findRoomByNameUsecase: FindRoomByNameUsecase,
+    private readonly joinRoomUsecase: JoinRoomUsecase
   ) {}
 
   @Get('public')
@@ -138,10 +140,7 @@ export class RoomsController {
     @Request() req: Request,
     @Body() joinRoomRequestDto: JoinRoomRequestDto
   ): Promise<RoomResponseDto> {
-    return this.inviteUserToRoomUsecase.execute(
-      req.auth.userId,
-      joinRoomRequestDto
-    );
+    return this.joinRoomUsecase.execute(req.auth.userId, joinRoomRequestDto);
   }
 
   @Post('leave')

@@ -9,6 +9,7 @@ const Endpoints = {
     getRoomByName: (name: string) => `/rooms/name/${name}`,
     leaveRoom: () => '/rooms/leave',
     inviteToRoom: () => '/rooms/invite',
+    joinRoom: () => '/rooms/join',
   },
   users: {
     getUser: (id: string) => `/auth/users/${id}`,
