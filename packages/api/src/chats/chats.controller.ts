@@ -3,7 +3,6 @@ import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
 import { ChatNotFoundExceptionSchema } from '@/chats/exceptions/chat-not-found.exception';
-import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
 import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
@@ -23,8 +22,7 @@ import {
 export class ChatsController {
   constructor(
     private readonly findChatByRoomIdUsecase: FindChatByRoomIdUsecase,
-    private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase,
-    private readonly createChatForRoomUsecase: CreateChatForRoomUsecase
+    private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase
   ) {}
 
   @Get(':roomId')
