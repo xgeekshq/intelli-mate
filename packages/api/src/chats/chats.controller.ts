@@ -2,10 +2,20 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
+import { CreateChatForRoomRequestDto } from '@/chats/dtos/create-chat-for-room.request.dto';
 import { ChatNotFoundExceptionSchema } from '@/chats/exceptions/chat-not-found.exception';
+import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
-import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -22,7 +32,8 @@ import {
 export class ChatsController {
   constructor(
     private readonly findChatByRoomIdUsecase: FindChatByRoomIdUsecase,
-    private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase
+    private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase,
+    private readonly createChatForRoomUsecase: CreateChatForRoomUsecase
   ) {}
 
   @Get(':roomId')
@@ -49,6 +60,23 @@ export class ChatsController {
     return this.findChatMessageHistoryByRoomIdUsecase.execute(
       req.auth.userId,
       roomId
+    );
+  }
+
+  @Post()
+  @ApiClerkAuthHeaders()
+  @ApiOkResponse({ type: ChatResponseDto })
+  @ApiOperation({
+    description:
+      'Create a new chat for a room or get the existing chat for that room',
+  })
+  createChatForRoom(
+    @Request() req: Request,
+    @Body() createChatForRoomRequestDto: CreateChatForRoomRequestDto
+  ): Promise<ChatResponseDto> {
+    return this.createChatForRoomUsecase.execute(
+      req.auth.userId,
+      createChatForRoomRequestDto
     );
   }
 }
