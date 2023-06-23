@@ -12,19 +12,19 @@ export class RoomsRepository {
     private roomModel: Model<Room>
   ) {}
 
-  async findAllPublicRooms(): Promise<Room[]> {
+  findAllPublicRooms(): Promise<Room[]> {
     return this.roomModel.find({ isPrivate: false });
   }
 
-  async findMyRooms(userId: string): Promise<Room[]> {
+  findMyRooms(userId: string): Promise<Room[]> {
     return this.roomModel.find({ members: { $in: [userId] } });
   }
 
-  async findRoom(roomId: string): Promise<Room> {
+  findRoom(roomId: string): Promise<Room> {
     return this.roomModel.findById(roomId);
   }
 
-  async findRoomByName(roomName: string): Promise<Room> {
+  findRoomByName(roomName: string): Promise<Room> {
     return this.roomModel.findOne({ name: roomName });
   }
 

@@ -1,35 +1,35 @@
 import * as mongoose from 'mongoose';
 
-const SenderMetaSchema = new mongoose.Schema({
-  llmModel: {
-    type: String,
-    required: true,
-  },
-  tokens: {
-    type: Number,
-    required: true,
-  },
-  replyTo: {
-    type: mongoose.Schema.Types.Mixed,
-    ref: 'MessageSchema',
-  },
-});
-
 export const MessageSchema = new mongoose.Schema(
   {
     sender: {
-      userId: {
-        type: String,
-        required: false,
-      },
-      isAi: {
-        type: Boolean,
-        default: false,
-        required: true,
-      },
-      aiMeta: {
-        type: SenderMetaSchema,
-        required: false,
+      type: {
+        userId: {
+          type: String,
+          required: false,
+        },
+        isAi: {
+          type: Boolean,
+          default: false,
+          required: true,
+        },
+        aiMeta: {
+          type: {
+            llmModel: {
+              type: String,
+              required: true,
+            },
+            tokens: {
+              type: Number,
+              required: true,
+            },
+            replyTo: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+          },
+          required: false,
+        },
       },
     },
     content: {

@@ -6,6 +6,6 @@ export interface Room extends Document {
   isPrivate: boolean;
   ownerId: string;
   members: string[];
-  createdAt: string;
-  updatedAt: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
 }
