@@ -25,10 +25,7 @@ export class CreateChatForRoomUsecase implements Usecase {
       const chat = await this.chatsRepository.createChatForRoom(
         createChatForRoomRequestDto
       );
-      return ChatResponseSchema.parse({
-        ...chat,
-        roomId: chat.roomId.toString(),
-      });
+      return ChatResponseSchema.parse(chat);
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }

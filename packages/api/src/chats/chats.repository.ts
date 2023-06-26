@@ -1,5 +1,7 @@
+import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
 import { CreateChatForRoomRequestDto } from '@/chats/dtos/create-chat-for-room.request.dto';
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
+import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat } from '@/common/types/chat';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
@@ -23,6 +25,24 @@ export class ChatsRepository {
       participantIds: [],
       messageHistory: [],
     });
+    await chat.save();
+    return chat;
+  }
+
+  async addMessageToChat(
+    chat: Chat,
+    addMessageToChatRequestDto: AddMessageToChatRequestDto,
+    userId?: string
+  ): Promise<Chat> {
+    chat.messageHistory.push(
+      createChatMessageFactory(addMessageToChatRequestDto, userId)
+    );
+    if (
+      !addMessageToChatRequestDto.sender.isAi &&
+      !chat.participantIds.find((id) => userId === id)
+    ) {
+      chat.participantIds.push(userId);
+    }
     await chat.save();
     return chat;
   }

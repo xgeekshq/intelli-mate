@@ -2,28 +2,31 @@ import { Document } from 'mongoose';
 
 export interface AiMeta {
   llmModel: string;
+}
+
+export interface Meta {
   tokens: number;
-  replyTo: string;
+  replyTo?: string;
+  ai?: AiMeta;
 }
 
 export interface Sender {
-  userId: string;
+  userId?: string;
   isAi: boolean;
-  aiMeta?: AiMeta;
 }
 
-export interface Message {
-  readonly id: string;
+export interface ChatMessage {
+  readonly id?: string;
   sender: Sender;
   content: string;
+  meta: Meta;
   readonly createdAt: string;
-  readonly updatedAt: string;
 }
 
 export interface Chat extends Document {
   readonly id: string;
   roomId: string;
-  messageHistory: Message[];
+  messageHistory: ChatMessage[];
   participantIds: string[];
   readonly createdAt: string;
   readonly updatedAt: string;

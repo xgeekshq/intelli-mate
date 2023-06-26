@@ -1,50 +1,61 @@
 import * as mongoose from 'mongoose';
 
-export const MessageSchema = new mongoose.Schema(
+const MetaSchema = new mongoose.Schema(
   {
-    sender: {
+    tokens: {
+      type: Number,
+      required: true,
+    },
+    replyTo: {
+      type: String,
+      required: false,
+    },
+    ai: {
       type: {
-        userId: {
+        llmModel: {
           type: String,
-          required: false,
-        },
-        isAi: {
-          type: Boolean,
-          default: false,
           required: true,
         },
-        aiMeta: {
-          type: {
-            llmModel: {
-              type: String,
-              required: true,
-            },
-            tokens: {
-              type: Number,
-              required: true,
-            },
-            replyTo: {
-              type: mongoose.Schema.Types.ObjectId,
-              required: true,
-            },
-          },
-          required: false,
-        },
       },
+      _id: false,
+      required: false,
     },
-    content: {
+  },
+  { _id: false, required: true }
+);
+
+const SenderSchema = new mongoose.Schema(
+  {
+    userId: {
       type: String,
+      required: false,
+    },
+    isAi: {
+      type: Boolean,
+      default: false,
       required: true,
     },
   },
-  { timestamps: true }
+  { _id: false, required: true }
 );
+
+export const MessageSchema = new mongoose.Schema({
+  sender: SenderSchema,
+  content: {
+    type: String,
+    required: true,
+  },
+  meta: MetaSchema,
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+});
 
 export const ChatSchema = new mongoose.Schema(
   {
     roomId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Room',
+      type: String,
       index: true,
       required: true,
     },
