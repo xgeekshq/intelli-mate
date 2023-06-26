@@ -1,9 +1,7 @@
 import { z } from "zod";
 
-export const ChatMessageResponseSchema = z.object({
-  id: z.string(),
+export const AddMessageToChatRequestSchema = z.object({
   sender: z.object({
-    userId: z.string().optional(),
     isAi: z.boolean(),
   }),
   content: z.string(),
@@ -16,5 +14,4 @@ export const ChatMessageResponseSchema = z.object({
       })
       .optional(),
   }),
-  createdAt: z.date(),
 });
