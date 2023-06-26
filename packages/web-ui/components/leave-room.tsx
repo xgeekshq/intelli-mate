@@ -37,6 +37,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
         title: 'You left the room.',
       });
       router.push('/rooms');
+      router.refresh();
     } catch (e) {
       console.log(e);
     }

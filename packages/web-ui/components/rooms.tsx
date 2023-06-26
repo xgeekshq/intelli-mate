@@ -27,8 +27,8 @@ export function Rooms({ rooms }: RoomsProps) {
       </div>
       <ScrollArea className="flex-1 p-2">
         <div className="space-y-1">
-          {rooms.map((room, i) => (
-            <Link key={`${room.name}`} href={`/rooms/${room.name}`}>
+          {rooms.map((room) => (
+            <Link key={`${room.id}`} href={`/rooms/${room.id}`}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -36,7 +36,7 @@ export function Rooms({ rooms }: RoomsProps) {
               >
                 <p
                   className={`max-w-[140px] overflow-hidden text-clip ${
-                    room.name === params.room ? 'font-bold' : 'font-normal'
+                    room.id === params.room ? 'font-bold' : 'font-normal'
                   }`}
                 >
                   {room.name}

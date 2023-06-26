@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
@@ -32,11 +33,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
-export function CreateRoomForm() {
+export function CreateRoomForm({
+  stateChanger,
+}: {
+  stateChanger?: (stateChange: boolean) => void;
+}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { userId, sessionId } = useAuth();
   const token = getCookie('__session');
+  const router = useRouter();
 
   const form = useForm<CreateRoomRequestDto>({
     resolver: zodResolver(CreateRoomRequestSchema),
@@ -67,6 +73,9 @@ export function CreateRoomForm() {
       toast({
         title: 'Room created successfully!',
       });
+
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
     } catch (e) {
       console.log(e);
     }

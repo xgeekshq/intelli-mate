@@ -8,7 +8,7 @@ import { RoomsRepository } from '@/rooms/rooms.repository';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class FindRoomByNameUsecase implements Usecase {
+export class FindRoomByIdUsecase implements Usecase {
   constructor(private readonly roomsRepository: RoomsRepository) {}
 
   async execute(userId: string, roomName: string): Promise<RoomResponseDto> {

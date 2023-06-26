@@ -6,7 +6,7 @@ const Endpoints = {
     getPublicRooms: () => '/rooms/public',
     createRoom: () => '/rooms',
     updateRoom: (id: string) => `/rooms/settings/${id}`,
-    getRoomByName: (name: string) => `/rooms/name/${name}`,
+    getRoomById: (id: string) => `/rooms/${id}`,
     leaveRoom: () => '/rooms/leave',
     inviteToRoom: () => '/rooms/invite',
     joinRoom: () => '/rooms/join',
@@ -20,6 +20,9 @@ const Endpoints = {
       }
       return url;
     },
+  },
+  chats: {
+    getChat: (roomId: string) => `/chats/${roomId}`,
   },
 };
 export default Endpoints;

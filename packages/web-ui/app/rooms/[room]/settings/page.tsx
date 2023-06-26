@@ -43,11 +43,11 @@ const MemberUserSearchItems = ({ data }: { data: UserListType[] }) => {
 const getRoom = async (
   sessionId: string,
   clerkJwtToken: string,
-  roomName: string
+  roomId: string
 ) => {
   try {
     const res = await apiClient({
-      url: Endpoints.rooms.getRoomByName(roomName),
+      url: Endpoints.rooms.getRoomById(roomId),
       options: { method: 'GET' },
       sessionId: sessionId,
       jwtToken: clerkJwtToken,
@@ -135,7 +135,6 @@ export default async function Settings({
     clerkJwtToken!.value,
     params.room
   );
-
   const members: UserResponseDto[] = await getRoomMembers(
     sessionId!,
     clerkJwtToken!.value,
@@ -146,6 +145,7 @@ export default async function Settings({
     sessionId!,
     clerkJwtToken!.value
   );
+  console.log(allUsers);
 
   const userSearchList = getUserList(
     allUsers.filter((user) => !members.some((member) => user.id === member.id))
