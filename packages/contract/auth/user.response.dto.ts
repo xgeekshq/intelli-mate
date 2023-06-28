@@ -9,7 +9,7 @@ export const UserResponseSchema = z.object({
   id: z.string(),
   primaryEmailAddressId: z.string(),
   profileImageUrl: z.string(),
-  username: z.string(),
+  username: z.string().nullable(),
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
   emailAddresses: z.array(EmailAddressResponseSchema),

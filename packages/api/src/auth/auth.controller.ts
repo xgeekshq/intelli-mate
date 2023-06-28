@@ -45,6 +45,6 @@ export class AuthController {
     userIds: string[]
   ): Promise<UserResponseDto[]> {
     const userList = await this.clerkAuthUserProvider.findUsers(userIds);
-    return userList.map((room) => UserResponseSchema.parse(room));
+    return userList.map((user) => UserResponseSchema.parse(user));
   }
 }

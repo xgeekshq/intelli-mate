@@ -1,6 +1,6 @@
 export interface SearchListType {
   label: string;
-  value: string;
+  value: string | null;
 }
 
 export interface PublicRoomsListType extends SearchListType {

@@ -18,7 +18,7 @@ import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-alread
 import { UserNotRoomMemberExceptionSchema } from '@/rooms/exceptions/user-not-room-member.exception';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
-import { FindRoomByNameUsecase } from '@/rooms/usecases/find-room-by-name.usecase';
+import { FindRoomUsecase } from '@/rooms/usecases/find-room.usecase';
 import { InviteUserToRoomUsecase } from '@/rooms/usecases/invite-user-to-room.usecase';
 import { JoinRoomUsecase } from '@/rooms/usecases/join-room.usecase';
 import { LeaveRoomUsecase } from '@/rooms/usecases/leave-room.usecase';
@@ -62,7 +62,7 @@ export class RoomsController {
     private readonly inviteUserToRoomUsecase: InviteUserToRoomUsecase,
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
     private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase,
-    private readonly findRoomByNameUsecase: FindRoomByNameUsecase,
+    private readonly findRoomUsecase: FindRoomUsecase,
     private readonly joinRoomUsecase: JoinRoomUsecase
   ) {}
 
@@ -82,17 +82,17 @@ export class RoomsController {
     return this.findMyRoomsUsecase.execute(req.auth.userId);
   }
 
-  @Get('name/:name')
+  @Get('/:id')
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: RoomResponseDto })
   @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
   @ApiBadRequestResponse({ schema: UserNotRoomMemberExceptionSchema })
-  @ApiOperation({ description: 'Get a single room by name' })
-  async findRoomByName(
+  @ApiOperation({ description: 'Get a single room by id' })
+  async findRoomById(
     @Request() req: Request,
-    @Param('name') roomName: string
+    @Param('id') id: string
   ): Promise<RoomResponseDto> {
-    return this.findRoomByNameUsecase.execute(req.auth.userId, roomName);
+    return this.findRoomUsecase.execute(req.auth.userId, id);
   }
 
   @Post()
