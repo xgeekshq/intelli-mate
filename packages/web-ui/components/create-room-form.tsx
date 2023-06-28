@@ -33,11 +33,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
-export function CreateRoomForm({
-  stateChanger,
-}: {
-  stateChanger?: (stateChange: boolean) => void;
-}) {
+export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { userId, sessionId } = useAuth();

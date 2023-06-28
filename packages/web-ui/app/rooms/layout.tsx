@@ -17,7 +17,7 @@ const getMyRooms = async () => {
     const { sessionId } = auth();
     const res = await apiClient({
       url: Endpoints.rooms.getMyRooms(),
-      options: { method: 'GET', cache: 'no-store' },
+      options: { method: 'GET' },
       sessionId: sessionId ? sessionId : '',
       jwtToken: clerkJwtToken ? clerkJwtToken.value : '',
     });

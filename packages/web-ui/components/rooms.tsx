@@ -4,28 +4,17 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { Lock } from 'lucide-react';
-import { useRecoilValue } from 'recoil';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
-import Error from '@/app/rooms/[room]/settings/error';
-import { socketState } from '@/app/state/socket';
 
 type RoomsProps = {
   rooms: RoomResponseDto[];
 };
 
 export function Rooms({ rooms }: RoomsProps) {
-  const socket = useRecoilValue(socketState);
   const params = useParams();
-  const joinRoom = (roomId: string) => {
-    socket.emit('joinRoom', { data: { roomId } }, async (response: string) => {
-      if (!response) {
-        return <Error error={'e'} reset={() => console.log('Error')}></Error>;
-      }
-    });
-  };
 
   return (
     <div className="flex h-full w-60 flex-col border-r">
@@ -46,7 +35,6 @@ export function Rooms({ rooms }: RoomsProps) {
                 variant="ghost"
                 size="sm"
                 className="w-full justify-between"
-                onClick={() => joinRoom(room.id)}
               >
                 <p
                   className={`max-w-[140px] overflow-hidden text-clip ${
