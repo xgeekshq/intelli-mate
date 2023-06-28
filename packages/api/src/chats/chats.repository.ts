@@ -2,7 +2,7 @@ import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.req
 import { CreateChatForRoomRequestDto } from '@/chats/dtos/create-chat-for-room.request.dto';
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
-import { Chat } from '@/common/types/chat';
+import { Chat, ChatMessage } from '@/common/types/chat';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
@@ -33,7 +33,7 @@ export class ChatsRepository {
     chat: Chat,
     addMessageToChatRequestDto: AddMessageToChatRequestDto,
     userId?: string
-  ): Promise<Chat> {
+  ): Promise<ChatMessage> {
     chat.messageHistory.push(
       createChatMessageFactory(addMessageToChatRequestDto, userId)
     );
@@ -44,6 +44,8 @@ export class ChatsRepository {
       chat.participantIds.push(userId);
     }
     await chat.save();
-    return chat;
+    return chat.messageHistory.find(
+      (message) => message.content === addMessageToChatRequestDto.content
+    );
   }
 }
