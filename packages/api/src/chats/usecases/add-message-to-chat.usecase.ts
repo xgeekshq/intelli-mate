@@ -1,11 +1,11 @@
 import { ChatsRepository } from '@/chats/chats.repository';
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
-import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
+import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
 import { ChatMessageMustHaveSenderException } from '@/chats/exceptions/chat-message-must-have-sender.exception';
 import { ChatNotFoundException } from '@/chats/exceptions/chat-not-found.exception';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
-import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
+import { ChatMessageResponseSchema } from '@/contract/chats/chat-message.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AddMessageToChatUsecase implements Usecase {
     roomId: string,
     addMessageToChatRequestDto: AddMessageToChatRequestDto,
     userId?: string
-  ): Promise<ChatResponseDto> {
+  ): Promise<ChatMessageResponseDto> {
     const existingChat = await this.chatsRepository.findChatByRoomId(roomId);
     if (!existingChat) {
       throw new ChatNotFoundException();
@@ -27,12 +27,12 @@ export class AddMessageToChatUsecase implements Usecase {
     }
 
     try {
-      const chat = await this.chatsRepository.addMessageToChat(
+      const chatMessage = await this.chatsRepository.addMessageToChat(
         existingChat,
         addMessageToChatRequestDto,
         userId
       );
-      return ChatResponseSchema.parse(chat);
+      return ChatMessageResponseSchema.parse(chatMessage);
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }
