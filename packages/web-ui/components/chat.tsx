@@ -18,6 +18,7 @@ import { ChatMessageType, ChatUserType } from '@/types/chat';
 import { useRefState } from '@/hooks/use-ref-state';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { PromptForm } from '@/components/prompt-form';
 import { socketState } from '@/app/state/socket';
 
 interface ChatProps {
@@ -201,6 +202,12 @@ export default function Chat({ roomId }: ChatProps) {
           </ul>
         </div>
       </ScrollArea>
+      <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
+        <PromptForm
+          onSubmit={(value: any) => console.log(value)}
+          isLoading={false}
+        />
+      </div>
     </div>
   );
 }
