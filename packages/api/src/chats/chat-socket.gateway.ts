@@ -11,6 +11,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { encode } from 'gpt-3-encoder';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -67,7 +68,7 @@ export class ChatSocketGateway {
         sender: { isAi: false },
         content: data.content,
         meta: {
-          tokens: 14,
+          tokens: encode(data.content).length,
         },
       }),
       data.userId
@@ -92,7 +93,7 @@ export class ChatSocketGateway {
         sender: { isAi: true },
         content: aiResponse,
         meta: {
-          tokens: 14,
+          tokens: encode(aiResponse).length,
           replyTo: addedMessage.id,
           ai: {
             llmModel: 'chat-gpt',
