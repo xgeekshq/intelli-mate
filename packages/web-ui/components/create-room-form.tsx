@@ -45,7 +45,7 @@ export function CreateRoomForm() {
     defaultValues: {
       name: '',
       isPrivate: false,
-      ownerId: !!userId ? userId : '',
+      ownerId: userId ?? '',
     },
   });
 
@@ -54,8 +54,8 @@ export function CreateRoomForm() {
       const res = await apiClient({
         url: Endpoints.rooms.createRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
