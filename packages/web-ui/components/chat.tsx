@@ -9,7 +9,7 @@ import {
   createChatMessagesWithResponseFactory,
   createChatParticipantsFactory,
   createSocketMessageRequestFactory,
-} from '@/factory/create-chat-factory';
+} from '@/factory/create-chat.factory';
 import { useAuth } from '@clerk/nextjs';
 import { getCookie } from 'cookies-next';
 import { useRecoilValue } from 'recoil';
@@ -104,7 +104,6 @@ export default function Chat({ roomId }: ChatProps) {
   }
 
   const addUserToMessage = async (userId: string): Promise<ChatUserType> => {
-    console.log(participants);
     const userInParticipants = participants.current.find(
       (participant) => participant.userId === userId
     );
@@ -189,7 +188,6 @@ export default function Chat({ roomId }: ChatProps) {
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-2">Chat</div>
         <Button onClick={sendMessage}>Start chat</Button>
-        <Button onClick={() => console.log(messages)}>Log messages</Button>
         <div className="my-16 flex">
           <ul>
             {messages.map((message, index) => {

@@ -1,7 +1,8 @@
+import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
 import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
+import { AddMessageToChatRequestSchema } from '@/contract/chats/add-message-to-chat.request.dto';
 import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request.dto';
-import { SocketMessageResponseDto } from '@/contract/chats/socket-message.response.dto';
 import { SocketRoomCreateRequestDto } from '@/contract/chats/socket-room-create.request.dto';
 import {
   ConnectedSocket,
@@ -11,20 +12,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-
-const createSocketMessageResponseFactory = (
-  id: string,
-  response: string,
-  isAi: boolean,
-  userId?: string
-): SocketMessageResponseDto => {
-  return {
-    id,
-    response,
-    isAi,
-    userId,
-  };
-};
 
 @WebSocketGateway({
   cors: {
@@ -62,7 +49,6 @@ export class ChatsGateway {
   async handleConnectedToRoom(
     @MessageBody('data') data: SocketMessageRequestDto
   ) {
-    console.log(data);
     this.server
       .to(data.roomId)
       .emit(
@@ -74,30 +60,20 @@ export class ChatsGateway {
           data.userId
         )
       );
-    const chatMessage = {
-      sender: { isAi: false },
-      content: data.content,
-      meta: {
-        tokens: 14,
-      },
-    };
+
     const addedMessage = await this.addMessageToChatUsecase.execute(
       data.roomId,
-      chatMessage,
+      AddMessageToChatRequestSchema.parse({
+        sender: { isAi: false },
+        content: data.content,
+        meta: {
+          tokens: 14,
+        },
+      }),
       data.userId
     );
 
-    const aiResponse = {
-      sender: { isAi: true },
-      content: 'Response to You',
-      meta: {
-        tokens: 14,
-        replyTo: addedMessage.id,
-        ai: {
-          llmModel: 'chat-gpt',
-        },
-      },
-    };
+    const aiResponse = 'Response to You';
 
     setTimeout(
       () =>
@@ -105,15 +81,24 @@ export class ChatsGateway {
           .to(data.roomId)
           .emit(
             'message',
-            createSocketMessageResponseFactory(
-              data.id,
-              aiResponse.content,
-              true
-            )
+            createSocketMessageResponseFactory(data.id, aiResponse, true)
           ),
       2000
     );
 
-    await this.addMessageToChatUsecase.execute(data.roomId, aiResponse);
+    await this.addMessageToChatUsecase.execute(
+      data.roomId,
+      AddMessageToChatRequestSchema.parse({
+        sender: { isAi: true },
+        content: aiResponse,
+        meta: {
+          tokens: 14,
+          replyTo: addedMessage.id,
+          ai: {
+            llmModel: 'chat-gpt',
+          },
+        },
+      })
+    );
   }
 }
