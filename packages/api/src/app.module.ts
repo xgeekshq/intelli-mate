@@ -1,4 +1,6 @@
+import { AiModule } from '@/ai/ai.module';
 import { AuthModule } from '@/auth/auth.module';
+import { CacheModule } from '@/cache/cache.module';
 import { ChatsModule } from '@/chats/chats.module';
 import { DatabaseModule } from '@/database/database.module';
 import { RoomsModule } from '@/rooms/rooms.module';
@@ -12,10 +14,12 @@ import { APP_PIPE } from '@nestjs/core';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    RoomsModule,
+    CacheModule,
     DatabaseModule,
     AuthModule,
+    RoomsModule,
     ChatsModule,
+    AiModule,
   ],
   providers: [
     {

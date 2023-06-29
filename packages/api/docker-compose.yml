@@ -10,5 +10,16 @@ services:
       - mongodb:/data/db
     env_file:
       - .env
+  redis:
+    image: redis
+    restart: always
+    command: /bin/sh -c "redis-server --save 60 1 --requirepass $$REDIS_HOST_PASSWORD"
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
 volumes:
   mongodb:
+  redis:
