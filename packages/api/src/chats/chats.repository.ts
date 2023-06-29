@@ -44,8 +44,10 @@ export class ChatsRepository {
       chat.participantIds.push(userId);
     }
     await chat.save();
-    return chat.messageHistory.find(
-      (message) => message.content === addMessageToChatRequestDto.content
-    );
+    return chat.messageHistory.sort(this.messageDateSortAscPredicate).at(0);
+  }
+
+  private messageDateSortAscPredicate(a: ChatMessage, b: ChatMessage) {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   }
 }
