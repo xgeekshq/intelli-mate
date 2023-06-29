@@ -5,7 +5,7 @@ import Endpoints from '@/api/endpoints';
 import { auth } from '@clerk/nextjs';
 
 import { Rooms } from '@/components/rooms';
-import { StateWrapper } from '@/components/state-wrapper';
+import { StateProvider } from '@/components/state-provider';
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -18,8 +18,8 @@ const getMyRooms = async () => {
     const res = await apiClient({
       url: Endpoints.rooms.getMyRooms(),
       options: { method: 'GET' },
-      sessionId: sessionId ? sessionId : '',
-      jwtToken: clerkJwtToken ? clerkJwtToken.value : '',
+      sessionId: sessionId ?? '',
+      jwtToken: clerkJwtToken?.value ?? '',
     });
     return res.json();
   } catch (e) {
@@ -31,10 +31,10 @@ export default async function RoomsLayout({ children }: RootLayoutProps) {
   const rooms = await getMyRooms();
   return (
     <div className="flex h-full">
-      <StateWrapper>
+      <StateProvider>
         <Rooms rooms={rooms} />
         <div className="h-full w-full">{children}</div>
-      </StateWrapper>
+      </StateProvider>
     </div>
   );
 }

@@ -59,7 +59,7 @@ export default function Chat({ roomId }: ChatProps) {
         url: Endpoints.chats.getChat(roomId),
         options: { method: 'GET' },
         sessionId: sessionId ?? '',
-        jwtToken: token ? token.toString() : '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -77,7 +77,7 @@ export default function Chat({ roomId }: ChatProps) {
         url: Endpoints.users.getUsers(participants),
         options: { method: 'GET' },
         sessionId: sessionId ?? '',
-        jwtToken: token ? token.toString() : '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -95,7 +95,7 @@ export default function Chat({ roomId }: ChatProps) {
         url: Endpoints.users.getUser(userId),
         options: { method: 'GET' },
         sessionId: sessionId ?? '',
-        jwtToken: token ? token.toString() : '',
+        jwtToken: token?.toString() ?? '',
       });
       return res.json();
     } catch (e) {

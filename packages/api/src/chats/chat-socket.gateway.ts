@@ -2,8 +2,8 @@ import { createSocketMessageResponseFactory } from '@/chats/factory/create-socke
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
 import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
 import { AddMessageToChatRequestSchema } from '@/contract/chats/add-message-to-chat.request.dto';
+import { SocketCreateRoomRequestDto } from '@/contract/chats/socket-create-room.request.dto';
 import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request.dto';
-import { SocketRoomCreateRequestDto } from '@/contract/chats/socket-room-create.request.dto';
 import {
   ConnectedSocket,
   MessageBody,
@@ -18,7 +18,7 @@ import { Server, Socket } from 'socket.io';
     origin: '*',
   },
 })
-export class ChatsGateway {
+export class ChatSocketGateway {
   @WebSocketServer()
   server: Server;
 
@@ -29,7 +29,7 @@ export class ChatsGateway {
 
   @SubscribeMessage('joinRoom')
   async handleJoinRoom(
-    @MessageBody('data') data: SocketRoomCreateRequestDto,
+    @MessageBody('data') data: SocketCreateRoomRequestDto,
     @ConnectedSocket() client: Socket
   ) {
     const chat = await this.createChatForRoomUsecase.execute(data.userId, data);
@@ -46,7 +46,7 @@ export class ChatsGateway {
   }
 
   @SubscribeMessage('message')
-  async handleConnectedToRoom(
+  async handleMessageToRoom(
     @MessageBody('data') data: SocketMessageRequestDto
   ) {
     this.server

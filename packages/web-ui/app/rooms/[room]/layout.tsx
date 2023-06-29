@@ -18,8 +18,8 @@ const getRoom = async (roomId: string) => {
     const res = await apiClient({
       url: Endpoints.rooms.getRoomById(roomId),
       options: { method: 'GET', cache: 'no-store' },
-      sessionId: sessionId ? sessionId : '',
-      jwtToken: clerkJwtToken ? clerkJwtToken.value : '',
+      sessionId: sessionId ?? '',
+      jwtToken: clerkJwtToken?.value ?? '',
     });
     return res.json();
   } catch (e) {

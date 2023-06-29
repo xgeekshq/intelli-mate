@@ -27,8 +27,8 @@ export default function RoomSearchItems({
       const res = await apiClient({
         url: Endpoints.rooms.joinRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -51,7 +51,7 @@ export default function RoomSearchItems({
       {data.map((item) => (
         <CommandItem
           className="flex w-full justify-between hover:cursor-pointer"
-          value={item.value}
+          value={item.value ?? ''}
           key={item.value}
         >
           {item.label}
