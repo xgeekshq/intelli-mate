@@ -17,6 +17,7 @@ export class CreateChatForRoomUsecase implements Usecase {
     const existingChat = await this.chatsRepository.findChatByRoomId(
       createChatForRoomRequestDto.roomId
     );
+
     if (existingChat) {
       return ChatResponseSchema.parse(existingChat);
     }

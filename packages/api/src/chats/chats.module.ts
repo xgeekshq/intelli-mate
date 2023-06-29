@@ -1,5 +1,6 @@
 import { AuthModule } from '@/auth/auth.module';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
+import { ChatSocketGateway } from '@/chats/chat-socket.gateway';
 import { ChatsController } from '@/chats/chats.controller';
 import { chatsMongooseProviders } from '@/chats/chats.mongoose.providers';
 import { ChatsRepository } from '@/chats/chats.repository';
@@ -24,6 +25,7 @@ import { Module } from '@nestjs/common';
     FindChatMessageHistoryByRoomIdUsecase,
     CreateChatForRoomUsecase,
     AddMessageToChatUsecase,
+    ChatSocketGateway,
   ],
 })
 export class ChatsModule {}

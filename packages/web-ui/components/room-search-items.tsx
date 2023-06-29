@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
@@ -19,14 +20,15 @@ export default function RoomSearchItems({
 }) {
   const { toast } = useToast();
   const { sessionId } = useAuth();
+  const router = useRouter();
   const token = getCookie('__session');
   async function onJoinRoom(values: JoinRoomRequestDto) {
     try {
       const res = await apiClient({
         url: Endpoints.rooms.joinRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -39,6 +41,7 @@ export default function RoomSearchItems({
       toast({
         title: 'Room joined successfully!',
       });
+      router.refresh();
     } catch (e) {
       console.log(e);
     }
@@ -48,7 +51,7 @@ export default function RoomSearchItems({
       {data.map((item) => (
         <CommandItem
           className="flex w-full justify-between hover:cursor-pointer"
-          value={item.value}
+          value={item.value ?? ''}
           key={item.value}
         >
           {item.label}

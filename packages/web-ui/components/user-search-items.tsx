@@ -28,8 +28,8 @@ export default function UserSearchItems({
       const res = await apiClient({
         url: Endpoints.rooms.inviteToRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -52,12 +52,15 @@ export default function UserSearchItems({
       {data.map((item) => (
         <CommandItem
           className="flex justify-between"
-          value={item.value}
+          value={item.value ?? ''}
           key={item.value}
         >
           <div className="flex items-center gap-2 py-1">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={item.imageUrl} alt={item.value} />
+              <AvatarImage
+                src={item.imageUrl}
+                alt={item.value ?? 'profileAvatar'}
+              />
             </Avatar>
             <div className="flex flex-col">
               <p className="text-sm">{item.value}</p>

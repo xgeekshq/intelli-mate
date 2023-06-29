@@ -27,11 +27,14 @@ const MemberUserSearchItems = ({ data }: { data: UserListType[] }) => {
       {data.map((item) => (
         <CommandItem
           className="flex justify-between hover:cursor-pointer"
-          value={item.value}
+          value={item.value ?? ''}
           key={item.value}
         >
           <Avatar className="h-4 w-4">
-            <AvatarImage src={item.imageUrl} alt={item.value} />
+            <AvatarImage
+              src={item.imageUrl}
+              alt={item.value ?? 'profileImage'}
+            />
           </Avatar>
           {item.label || item.value}
         </CommandItem>
@@ -43,11 +46,11 @@ const MemberUserSearchItems = ({ data }: { data: UserListType[] }) => {
 const getRoom = async (
   sessionId: string,
   clerkJwtToken: string,
-  roomName: string
+  roomId: string
 ) => {
   try {
     const res = await apiClient({
-      url: Endpoints.rooms.getRoomByName(roomName),
+      url: Endpoints.rooms.getRoomById(roomId),
       options: { method: 'GET' },
       sessionId: sessionId,
       jwtToken: clerkJwtToken,
@@ -181,7 +184,7 @@ export default async function Settings({
                 <Avatar className="h-16 w-16">
                   <AvatarImage
                     src={owner.profileImageUrl}
-                    alt={owner.username}
+                    alt={owner.username ?? 'profileImage'}
                   />
                 </Avatar>
                 <div className="flex flex-col">
@@ -211,7 +214,10 @@ export default async function Settings({
                 {membersSearchList.map((item) => (
                   <div className="flex items-center gap-4 py-1">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={item.imageUrl} alt={item.value} />
+                      <AvatarImage
+                        src={item.imageUrl}
+                        alt={item.value ?? 'profileImage'}
+                      />
                     </Avatar>
                     <div className="flex flex-col">
                       <p className="text-sm">{item.value}</p>

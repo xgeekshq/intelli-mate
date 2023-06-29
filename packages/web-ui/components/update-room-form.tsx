@@ -48,8 +48,8 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
       const res = await apiClient({
         url: Endpoints.rooms.updateRoom(id),
         options: { method: 'PATCH', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());

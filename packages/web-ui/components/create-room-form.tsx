@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
@@ -37,13 +38,14 @@ export function CreateRoomForm() {
   const { toast } = useToast();
   const { userId, sessionId } = useAuth();
   const token = getCookie('__session');
+  const router = useRouter();
 
   const form = useForm<CreateRoomRequestDto>({
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
       isPrivate: false,
-      ownerId: !!userId ? userId : '',
+      ownerId: userId ?? '',
     },
   });
 
@@ -52,8 +54,8 @@ export function CreateRoomForm() {
       const res = await apiClient({
         url: Endpoints.rooms.createRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -67,6 +69,9 @@ export function CreateRoomForm() {
       toast({
         title: 'Room created successfully!',
       });
+
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
     } catch (e) {
       console.log(e);
     }

@@ -24,7 +24,9 @@
     "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/platform-socket.io": "^9.4.3",
     "@nestjs/swagger": "^6.3.0",
+    "@nestjs/websockets": "^9.4.3",
     "langchain": "^0.0.98",
     "mongodb": "^5.6.0",
     "mongoose": "^7.2.2",
@@ -32,6 +34,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

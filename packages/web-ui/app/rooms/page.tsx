@@ -16,8 +16,8 @@ const getPublicRooms = async () => {
     const res = await apiClient({
       url: Endpoints.rooms.getPublicRooms(),
       options: { method: 'GET' },
-      sessionId: sessionId ? sessionId : '',
-      jwtToken: clerkJwtToken ? clerkJwtToken.value : '',
+      sessionId: sessionId ?? '',
+      jwtToken: clerkJwtToken?.value ?? '',
     });
     return res.json();
   } catch (e) {

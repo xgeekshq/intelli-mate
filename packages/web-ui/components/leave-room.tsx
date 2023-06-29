@@ -22,8 +22,8 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
       const res = await apiClient({
         url: Endpoints.rooms.leaveRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ? sessionId : '',
-        jwtToken: token ? token.toString() : '',
+        sessionId: sessionId ?? '',
+        jwtToken: token?.toString() ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
@@ -37,6 +37,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
         title: 'You left the room.',
       });
       router.push('/rooms');
+      router.refresh();
     } catch (e) {
       console.log(e);
     }
