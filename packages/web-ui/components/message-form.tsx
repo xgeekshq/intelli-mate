@@ -32,7 +32,6 @@ export function MessageForm({ onSubmit, scrollToBottom }: MessageFormProps) {
     }
     if (event.key === 'Enter' && formRef?.current) {
       event.preventDefault();
-      // formRef.current.submit();
       formRef.current.dispatchEvent(
         new Event('submit', { cancelable: true, bubbles: true })
       );
