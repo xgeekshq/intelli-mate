@@ -6,6 +6,6 @@ export const ChatResponseSchema = z.object({
   roomId: z.string(),
   messageHistory: z.array(ChatMessageResponseSchema),
   participantIds: z.array(z.string()),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });

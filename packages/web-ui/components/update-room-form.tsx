@@ -62,7 +62,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
       toast({
         title: 'Room updated successfully!',
       });
-      router.push(`/rooms/${values.name}/settings`);
+      router.refresh();
     } catch (e) {
       console.log(e);
     }
@@ -72,7 +72,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
     <div className="flex flex-col gap-2 rounded-lg border p-4">
       <p className="text-sm font-bold">Update Room</p>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
@@ -90,23 +90,23 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
             control={form.control}
             name="isPrivate"
             render={({ field }) => (
-              <FormItem className="flex items-center space-x-2 space-y-0">
+              <FormItem className="flex w-full items-center space-x-2 space-y-0">
                 <Lock className="h-4 w-4" />
-                <FormLabel>Is this room private?</FormLabel>
+                <FormLabel className="w-52">Is this room private?</FormLabel>
                 <FormControl>
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
+                <div className="flex w-full justify-end">
+                  <Button variant="success" type="submit">
+                    Save
+                  </Button>
+                </div>
               </FormItem>
             )}
           />
-          <div className="flex w-full justify-end">
-            <Button variant="success" type="submit">
-              Save
-            </Button>
-          </div>
         </form>
       </Form>
     </div>

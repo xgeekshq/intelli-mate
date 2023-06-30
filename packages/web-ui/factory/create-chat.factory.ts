@@ -15,6 +15,7 @@ export const createChatMessageFactory = (
     id: message.id,
     content: message.content,
     response: aiMessage?.content,
+    createdAt: message.createdAt,
     user,
   };
 };
@@ -27,6 +28,14 @@ export const createChatParticipantsFactory = (
       userId: participant.id,
       imageUrl: participant.profileImageUrl,
       userName: participant.username,
+      name:
+        participant.firstName && participant.lastName
+          ? `${participant.firstName} ${participant.lastName}`
+          : null,
+      email:
+        participant.emailAddresses.find(
+          (email) => participant.primaryEmailAddressId === email.id
+        )?.emailAddress ?? '',
     };
   });
 };
@@ -54,6 +63,7 @@ export const createChatMessagesWithResponseFactory = (
         id: message.id,
         content: message.content,
         response: response.response,
+        createdAt: message.createdAt,
         user: message.user,
       };
     }

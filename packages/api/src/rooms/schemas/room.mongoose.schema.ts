@@ -24,5 +24,15 @@ export const RoomSchema = new mongoose.Schema(
       minItems: 1,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: { createdAt: 'created', updatedAt: 'updated' },
+  }
 );
+
+RoomSchema.virtual('createdAt').get(function () {
+  return this['created'].toISOString();
+});
+
+RoomSchema.virtual('updatedAt').get(function () {
+  return this['updated'].toISOString();
+});

@@ -3,4 +3,5 @@ export interface SocketMessageResponseDto {
   response: string;
   isAi: boolean;
   userId?: string;
+  createdAt: string;
 }

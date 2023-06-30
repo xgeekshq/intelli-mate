@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { ChatResponseDto } from '@/contract/chats/chat.response.dto.d';
@@ -16,9 +16,9 @@ import { useRecoilValue } from 'recoil';
 
 import { ChatMessageType, ChatUserType } from '@/types/chat';
 import { useRefState } from '@/hooks/use-ref-state';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PromptForm } from '@/components/prompt-form';
+import { Message } from '@/components/message';
+import { MessageForm } from '@/components/message-form';
 import { socketState } from '@/app/state/socket';
 
 interface ChatProps {
@@ -51,9 +51,17 @@ export default function Chat({ roomId }: ChatProps) {
   const token = getCookie('__session');
   const [chat, setChat] = useState<ChatResponseDto>();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
-
+  const bottomEl = useRef<HTMLDivElement>(null);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
 
+  const scrollToBottom = () => {
+    if (bottomEl) {
+      bottomEl.current?.scroll({
+        top: bottomEl.current?.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  };
   async function getChat(roomId: string) {
     try {
       const res = await apiClient({
@@ -117,13 +125,21 @@ export default function Chat({ roomId }: ChatProps) {
 
     setParticipants([
       ...participants.current,
-      { userId, imageUrl: user.profileImageUrl, userName: user.username },
+      {
+        userId,
+        imageUrl: user.profileImageUrl,
+        userName: user.username,
+        name: user.name,
+        email: user.email,
+      },
     ]);
 
     return {
       userId,
       imageUrl: user.profileImageUrl,
       userName: user.username,
+      name: user.name,
+      email: user.email,
     };
   };
 
@@ -150,6 +166,7 @@ export default function Chat({ roomId }: ChatProps) {
             {
               id: message.id,
               content: message.response,
+              createdAt: message.createdAt,
               user,
             },
           ];
@@ -162,6 +179,10 @@ export default function Chat({ roomId }: ChatProps) {
   }, []);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
     async function setInitialData() {
       if (chat && chat.participantIds.length > 0) {
         const participantList = createChatParticipantsFactory(
@@ -172,40 +193,27 @@ export default function Chat({ roomId }: ChatProps) {
       }
     }
     void setInitialData();
+    scrollToBottom();
   }, [chat, parseMessageList]);
 
-  const sendMessage = () => {
+  const sendMessage = (value: string) => {
     socket.emit('message', {
-      data: createSocketMessageRequestFactory(
-        roomId,
-        'This is the content',
-        userId ?? ''
-      ),
+      data: createSocketMessageRequestFactory(roomId, value, userId ?? ''),
     });
   };
-
   return (
-    <div className="flex h-full flex-col">
-      <ScrollArea className="flex-1">
-        <div className="space-y-1 p-2">Chat</div>
-        <Button onClick={sendMessage}>Start chat</Button>
-        <div className="my-16 flex">
-          <ul>
-            {messages.map((message, index) => {
-              return (
-                <li className="my-2 rounded bg-slate-300 p-4" key={index}>
-                  {message.content}
-                  <p className="m-2 rounded bg-green-200">{message.response}</p>
-                </li>
-              );
-            })}
-          </ul>
+    <div className="flex h-full w-full flex-col">
+      <ScrollArea ref={bottomEl} className="h-full">
+        <div className="w-full px-4 pt-4">
+          {messages.map((message, index) => {
+            return <Message message={message}></Message>;
+          })}
         </div>
       </ScrollArea>
-      <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
-        <PromptForm
-          onSubmit={(value: any) => console.log(value)}
-          isLoading={false}
+      <div className="mx-4 mt-2 rounded-t-xl border bg-background px-4 py-2 shadow-lg">
+        <MessageForm
+          onSubmit={async (value) => sendMessage(value)}
+          scrollToBottom={scrollToBottom}
         />
       </div>
     </div>

@@ -69,7 +69,7 @@ export function CreateRoomForm() {
       toast({
         title: 'Room created successfully!',
       });
-
+      form.reset();
       // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
       router.refresh();
     } catch (e) {

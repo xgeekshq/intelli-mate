@@ -16,5 +16,5 @@ export const ChatMessageResponseSchema = z.object({
       })
       .optional(),
   }),
-  createdAt: z.date(),
+  createdAt: z.string().datetime(),
 });

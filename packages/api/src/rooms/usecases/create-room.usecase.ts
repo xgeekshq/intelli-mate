@@ -24,6 +24,7 @@ export class CreateRoomUsecase implements Usecase {
       const room = await this.roomsRepository.createRoom(createRoomRequestDto);
       return RoomResponseSchema.parse(room);
     } catch (e) {
+      console.log(e);
       if (e.message.includes('duplicate')) {
         throw new DuplicateRoomNameException();
       }
