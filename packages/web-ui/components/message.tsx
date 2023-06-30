@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { getUserIdentification } from '@/utils/get-user-identification';
 import { format } from 'date-fns';
 
@@ -34,10 +35,14 @@ export function Message({ message }: MessageProps) {
           <p>{message.response}</p>
         </div>
       ) : (
-        <iframe
-          src="https://embed.lottiefiles.com/animation/144586"
-          className="h-8 w-8"
-        ></iframe>
+        <div className="relative mx-4 h-8 w-8">
+          <Image
+            className="object-contain"
+            src="/loading.gif"
+            fill
+            alt="message loading"
+          />
+        </div>
       )}
     </div>
   );

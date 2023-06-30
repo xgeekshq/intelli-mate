@@ -13,7 +13,7 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <MainNav />
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-1">
+          <nav className="flex items-center gap-1">
             <Link
               href={siteConfig.links.github}
               target="_blank"
@@ -30,9 +30,11 @@ export function SiteHeader() {
               </div>
             </Link>
             <ThemeToggle />
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            <div className="pl-3">
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+            </div>
           </nav>
         </div>
       </div>
