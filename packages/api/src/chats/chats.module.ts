@@ -1,3 +1,4 @@
+import { AiModule } from '@/ai/ai.module';
 import { AuthModule } from '@/auth/auth.module';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ChatSocketGateway } from '@/chats/chat-socket.gateway';
@@ -12,7 +13,7 @@ import { DatabaseModule } from '@/database/database.module';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [DatabaseModule, AuthModule, AiModule],
   controllers: [ChatsController],
   providers: [
     // Guards

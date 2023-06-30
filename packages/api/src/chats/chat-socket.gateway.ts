@@ -1,3 +1,4 @@
+import { AiService } from '@/ai/services/ai.service';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
 import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
@@ -25,7 +26,8 @@ export class ChatSocketGateway {
 
   constructor(
     private readonly createChatForRoomUsecase: CreateChatForRoomUsecase,
-    private readonly addMessageToChatUsecase: AddMessageToChatUsecase
+    private readonly addMessageToChatUsecase: AddMessageToChatUsecase,
+    private readonly aiService: AiService
   ) {}
 
   @SubscribeMessage('joinRoom')
@@ -50,17 +52,16 @@ export class ChatSocketGateway {
   async handleMessageToRoom(
     @MessageBody('data') data: SocketMessageRequestDto
   ) {
-    this.server
-      .to(data.roomId)
-      .emit(
-        'message',
-        createSocketMessageResponseFactory(
-          data.id,
-          data.content,
-          false,
-          data.userId
-        )
-      );
+    this.server.to(data.roomId).emit(
+      'message',
+      createSocketMessageResponseFactory({
+        id: data.id,
+        response: data.content,
+        isAi: false,
+        createdAt: new Date().toISOString(),
+        userId: data.userId,
+      })
+    );
 
     const addedMessage = await this.addMessageToChatUsecase.execute(
       data.roomId,
@@ -74,17 +75,19 @@ export class ChatSocketGateway {
       data.userId
     );
 
-    const aiResponse = 'Response to You';
+    const { response: aiResponse } = await this.aiService.askAiInFreeText(
+      data.content,
+      data.roomId
+    );
 
-    setTimeout(
-      () =>
-        this.server
-          .to(data.roomId)
-          .emit(
-            'message',
-            createSocketMessageResponseFactory(data.id, aiResponse, true)
-          ),
-      2000
+    this.server.to(data.roomId).emit(
+      'message',
+      createSocketMessageResponseFactory({
+        id: data.id,
+        response: aiResponse,
+        isAi: true,
+        createdAt: new Date().toISOString(),
+      })
     );
 
     await this.addMessageToChatUsecase.execute(

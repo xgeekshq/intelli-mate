@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { InviteUserToRoomRequestDto } from '@/contract/rooms/invite-user-to-room.request.dto.d';
@@ -23,6 +24,7 @@ export default function UserSearchItems({
   const { toast } = useToast();
   const { sessionId } = useAuth();
   const token = getCookie('__session');
+  const router = useRouter();
   async function onInviteUser(values: InviteUserToRoomRequestDto) {
     try {
       const res = await apiClient({
@@ -39,6 +41,7 @@ export default function UserSearchItems({
         });
         return;
       }
+      router.refresh();
       toast({
         title: 'User successfully invited',
       });
@@ -57,16 +60,10 @@ export default function UserSearchItems({
         >
           <div className="flex items-center gap-2 py-1">
             <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={item.imageUrl}
-                alt={item.value ?? 'profileAvatar'}
-              />
+              <AvatarImage src={item.imageUrl} alt="Profile Avatar" />
             </Avatar>
             <div className="flex flex-col">
               <p className="text-sm">{item.value}</p>
-              <p className="text-xs text-gray-500">
-                {item.label && `(${item.label})`}
-              </p>
             </div>
           </div>
           <Button

@@ -36,9 +36,9 @@ export default async function RoomLayout({
 }) {
   const room = await getRoom(params.room);
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full flex-col">
       <RoomHeader id={room.id} name={room.name} />
-      <div className="h-full w-full">{children}</div>
+      <div className="h-[calc(100%-41px)] w-full">{children}</div>
     </div>
   );
 }

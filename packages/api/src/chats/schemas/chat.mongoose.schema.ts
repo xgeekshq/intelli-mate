@@ -47,7 +47,7 @@ export const MessageSchema = new mongoose.Schema({
   },
   meta: MetaSchema,
   createdAt: {
-    type: Date,
+    type: String,
     required: true,
   },
 });
@@ -66,5 +66,15 @@ export const ChatSchema = new mongoose.Schema(
       type: [String],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: { createdAt: 'created', updatedAt: 'updated' },
+  }
 );
+
+ChatSchema.virtual('createdAt').get(function () {
+  return this['created'].toISOString();
+});
+
+ChatSchema.virtual('updatedAt').get(function () {
+  return this['updated'].toISOString();
+});
