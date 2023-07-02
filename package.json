@@ -1,8 +1,7 @@
 {
   "name": "intelli-mate",
   "version": "1.0.0",
-  "description": "An open-source solution for your company to learn on steroids with the help of AI",
-  "private": true,
+  "description": "Boost your company productivity with a collaborative AI chat that understands who your company and your employees are",
   "scripts": {
     "prepare": "husky install"
   },
@@ -15,7 +14,7 @@
     "url": "https://github.com/xgeekshq/intelli-mate/issues"
   },
   "author": "xgeeks",
-  "license": "MIT",
+  "license": "LGPL-3.0-only",
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
