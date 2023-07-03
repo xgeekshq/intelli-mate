@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 import { Button } from '@/components/ui/button';
 
@@ -9,9 +9,8 @@ export default function IndexPage() {
       <p className="w-1/3 text-center text-2xl">
         Join the Intelli-Mate and unlocking the full potential of AI chat with
         seamless collaboration. By signing up, you can become part of a dynamic
-        {/* eslint-disable-next-line react/no-unescaped-entities */}
-        community and stay ahead in the rapidly evolving world of AI. Don't miss
-        out on the opportunity to revolutionize your AI experience.
+        community and stay ahead in the rapidly evolving world of AI. Do not
+        miss out on the opportunity to revolutionize your AI experience.
       </p>
       <iframe
         src="https://embed.lottiefiles.com/animation/96654"
