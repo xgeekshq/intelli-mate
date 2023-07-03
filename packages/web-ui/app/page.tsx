@@ -7,7 +7,7 @@ export default function IndexPage() {
   return (
     <div className="flex h-full flex-col items-center gap-10 py-24">
       <p className="w-1/3 text-center text-2xl">
-        Join the Intelli-Mate and unlocking the full potential of AI chat with
+        Join the Intelli-Mate in unlocking the full potential of AI chat with
         seamless collaboration. By signing up, you can become part of a dynamic
         community and stay ahead in the rapidly evolving world of AI. Do not
         miss out on the opportunity to revolutionize your AI experience.
