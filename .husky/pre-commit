@@ -1,4 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run lint:fix:all
+cd packages/web-ui && npm run lint && cd ../..
+
+cd packages/api && npm run lint && cd ../..
