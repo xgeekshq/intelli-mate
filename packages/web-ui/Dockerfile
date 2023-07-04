@@ -34,8 +34,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 # 3. Install only production dependencies
 RUN cd web-ui && npm run build
 
-# CMD [ "sleep", "infinity" ]
-
 FROM builder as prod-builder
 
 RUN --mount=type=cache,id=npm,sharing=locked,target=/usr/local/share/.cache/npm \
