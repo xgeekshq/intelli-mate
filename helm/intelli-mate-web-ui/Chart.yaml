@@ -1,0 +1,6 @@
+apiVersion: v2
+name: intelli-mate-web-ui
+description: intelli-mate-web-ui chart
+type: application
+version: 0.1.0
+appVersion: 0.1.0

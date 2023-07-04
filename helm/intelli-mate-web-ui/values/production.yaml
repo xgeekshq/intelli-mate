@@ -1,0 +1,14 @@
+ingress:
+  hosts:
+    - host: intelli-mate.xgeeks.tech
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - intelli-mate.xgeeks.tech
+      secretName: intelli-mate-tls
+environment:
+  API_URL: https://intelli-mate.xgeeks.tech/api/v1
+  NEXT_PUBLIC_API_URL: https://intelli-mate.xgeeks.tech/api/v1
+  NEXT_PUBLIC_SOCKET_URL: https://intelli-mate.xgeeks.tech
