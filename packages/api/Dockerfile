@@ -25,10 +25,13 @@ RUN cd api && npm run build
 FROM builder as prod-builder
 
 RUN --mount=type=cache,id=npm,sharing=locked,target=/usr/local/share/.cache/npm \
-  npm install --only=production
+  cd api && npm install --only=production
+
+RUN --mount=type=cache,id=npm,sharing=locked,target=/usr/local/share/.cache/npm \
+  cd contract && npm install --only=production
 
 
-FROM builder AS production
+FROM node:$TAG AS production
 
 # Set NODE_ENV environment variable
 ENV NODE_ENV production
@@ -40,13 +43,17 @@ RUN adduser --system --uid 1001 nestjs
 RUN chown -R nestjs:nodejs /app
 RUN chmod 755 /app
 
-# Copy the bundled code from the build stage to the production image
-COPY --chown=nestjs:nodejs --from=builder /app/contract ./contract
-COPY --chown=nestjs:nodejs --from=builder /app/api/node_modules ./node_modules
-COPY --chown=nestjs:nodejs --from=builder /app/api/dist ./
-COPY --chown=nestjs:nodejs --from=builder /app/api/package.json ./package.json
+COPY --chown=nestjs:nodejs --from=builder /app/api/dist/api ./api
+COPY --chown=nestjs:nodejs --from=builder /app/api/dist/contract ./contract
+COPY --chown=nestjs:nodejs --from=builder /app/api/dist/tsconfig.build.tsbuildinfo ./tsconfig.build.tsbuildinfo
+
+COPY --chown=nestjs:nodejs --from=builder /app/api/package.json ./api/package.json
+COPY --chown=nestjs:nodejs --from=builder /app/contract/package.json ./contract/package.json
+COPY --chown=nestjs:nodejs --from=prod-builder /app/api/node_modules ./api/node_modules
+COPY --chown=nestjs:nodejs --from=prod-builder /app/contract/node_modules ./contract/node_modules
 
 # Run as User
 USER nestjs
+
 # Start the server using the production build
 CMD ["node", "api/src/main" ]
