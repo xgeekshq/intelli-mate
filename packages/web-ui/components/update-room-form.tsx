@@ -96,6 +96,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
                 <FormControl>
                   <Checkbox
                     checked={field.value}
+                    // @ts-ignore
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>

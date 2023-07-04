@@ -1,0 +1,22 @@
+# Ignore everything
+*
+
+# Allow files and directories for prod
+!/api
+!/app
+!/components
+!/config
+!/factory
+!/hooks
+!/lib
+!/public
+!/styles
+!/types
+!/utils
+!.eslintrc.json
+!prettier.config.js
+!postcss.config.js
+!next.config.js
+!package*.json
+!tsconfig.json
+!tailwind.config.js

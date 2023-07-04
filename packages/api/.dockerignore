@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Allow files and directories for prod
+!/src
+!.eslintrc.js
+!prettier.config.js
+!nest-cli.json
+!package*.json
+!tsconfig.json
+!tsconfig.build.json
