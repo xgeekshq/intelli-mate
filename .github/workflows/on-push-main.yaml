@@ -1,0 +1,68 @@
+name: Build and Push
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
+
+env:
+  TAG: ${{ github.sha }}
+  REGISTRY: ${{ vars.REGISTRY_URL }}/xgeeks/intelli-mate
+
+jobs:
+  build-push:
+    name: Build and Push
+    runs-on: [ ubuntu-latest ]
+    strategy:
+      matrix:
+        app: ['web-ui', 'api']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to docker registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{env.REGISTRY}}/${{ matrix.app }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Setup Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{env.REGISTRY}}/${{ matrix.app }}
+          tags: |
+            type=raw,value=${{ env.TAG }}
+            type=raw,value=cache
+          flavor: |
+            latest=false
+
+      - name: Build and Push ${{ matrix.app }}
+        uses: docker/build-push-action@v4
+        with:
+          context: packages
+          file: packages/${{ matrix.app }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}
+            type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}:cache
+          cache-to: type=inline
+
+      - name: Debug
+        run: ls -la ./.github/workflows
+
+      - name: Deploy [${{matrix.app}}]
+        uses: ./.github/workflows/on-call-deploy.yaml
+        with:
+          ENVIRONMENT: production
+          APP: ${{ matrix.app }}

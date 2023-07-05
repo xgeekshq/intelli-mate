@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      APP:
+        required: true
+        type: string
+
+env:
+  TAG: ${{ github.sha }}
+
+jobs:
+  deploy-chart:
+    name: Deploy Helm Chart
+    runs-on: [ ubuntu-latest ]
+    environment: ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v3
+        id: install
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get kubeconfig
+        run: az aks get-credentials --resource-group ${{secrets.AZURE_RESOURCE_GROUP}} --name ${{secrets.AZURE_AKS_NAME}}
+
+      - name: Deploy Helm Chart
+        working-directory: ./helm
+        shell: bash
+        run: ./deploy.sh -t ${{ env.TAG }} -n ${{ secrets.NAMESPACE }} -e ${{ inputs.ENVIRONMENT }} -r intelli-mate-${{ inputs.APP }}
