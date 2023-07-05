@@ -7,7 +7,7 @@ export class AiService {
   llmModel: ChatOpenAI;
 
   constructor(private readonly chainService: ChainService) {
-    this.llmModel = new ChatOpenAI({ temperature: 0.2 });
+    this.llmModel = new ChatOpenAI({ temperature: 0,2 });
   }
 
   async askAiInFreeText(input: string, chatId: string) {
