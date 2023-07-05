@@ -9,13 +9,19 @@ RUN apk --update add \
 WORKDIR /app
 
 COPY ./api/package.json ./api/package.json
+COPY ./contract/package.json ./contract/package.json
 
 RUN cd api && npm install
+RUN cd contract && npm install
 
 # 2. Rebuild the source code only when needed
 FROM node:$TAG AS builder
+
 WORKDIR /app
+
 COPY --from=deps /app/api/node_modules ./api/node_modules
+COPY --from=deps /app/contract/node_modules ./contract/node_modules
+
 COPY ./contract ./contract
 COPY ./api ./api
 
