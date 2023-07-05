@@ -2,10 +2,6 @@ import { ChainService } from '@/ai/services/chain.service';
 import { Injectable } from '@nestjs/common';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 
-
-
-
-
 @Injectable()
 export class AiService {
   llmModel: ChatOpenAI;
