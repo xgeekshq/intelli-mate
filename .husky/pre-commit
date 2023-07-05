@@ -1,6 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd packages/web-ui && npm run lint && cd ../..
-
-cd packages/api && npm run lint && cd ../..
+nx run-many -t lint:fix

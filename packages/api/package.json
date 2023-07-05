@@ -8,7 +8,7 @@
     "start:db": "docker-compose up -d db",
     "start:redis": "docker-compose up -d redis",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "typecheck": "tsc --noEmit",
