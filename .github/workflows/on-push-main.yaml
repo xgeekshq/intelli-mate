@@ -58,11 +58,14 @@ jobs:
             type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}:cache
           cache-to: type=inline
 
-      - name: Debug
-        run: ls -la ./.github/workflows
-
-      - name: Deploy [${{matrix.app}}]
-        uses: ./.github/workflows/on-call-deploy.yaml
-        with:
-          ENVIRONMENT: production
-          APP: ${{ matrix.app }}
+  deploy-production:
+    name: Deploy
+    needs: build-push
+    uses: ./.github/workflows/on-call-deploy.yaml
+    strategy:
+      matrix:
+        app: ['web-ui', 'api']
+    with:
+      ENVIRONMENT: production
+      APP: ${{ matrix.app }}
+    secrets: inherit
