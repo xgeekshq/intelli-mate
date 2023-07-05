@@ -1,0 +1,12 @@
+{{- if .Values.configmap.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "intelli-mate-api.fullname" . }}
+  labels:
+    {{- include "intelli-mate-api.labels" . | nindent 4 }}
+data:
+  {{- range $k, $v := .Values.environment }}
+    {{ $k }}: {{ $v | quote }}
+  {{- end }}
+{{- end }}

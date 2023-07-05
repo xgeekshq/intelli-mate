@@ -1,0 +1,94 @@
+# Default values for intelli-mate/web-ui.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/xgeeks/intelli-mate/api
+  pullPolicy: IfNotPresent
+  tag: latest
+
+imagePullSecrets: []
+
+# Specify the Config name to pull the environment variables from.
+# If not specified, it defaults to "{{ include "intelli-mate-api.fullname" . }}".
+configmap:
+  enabled: true
+  create: true
+  name: ""
+
+# Specify the Secret name to pull the environment variables from.
+# If not specified, it defaults to "{{ include "intelli-mate-api.fullname" . }}".
+secret:
+  enabled: true
+  create: false
+  name: "intelli-mate-azure-secrets"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+securityContext:
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1001
+
+service:
+  type: ClusterIP
+  targetPort: 3000
+  port: 3000
+
+healthcheck:
+  readiness:
+    enabled: false
+    delay: 5
+    period: 5
+    failure: 3
+    path: /
+  liveness:
+    enabled: false
+    delay: 5
+    period: 60
+    failure: 3
+    path: /
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 256Mi
+  requests:
+    cpu: 0m
+    memory: 0Mi
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/acme-challenge-type: http01
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 16m
+  className: nginx
+  hosts: []
+  tls: []
+
+environment:
+  API_PORT: 8000
+
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
