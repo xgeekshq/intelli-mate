@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      APP:
+        required: true
+        type: string
+
+env:
+  TAG: ${{ github.sha }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-chart:
+    name: Deploy Helm Chart
+    runs-on: [ ubuntu-latest ]
+    environment: ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3.5
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup kubelogin
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.24'
+
+      - name: Set context for AKS cluster
+        uses: azure/aks-set-context@v3
+        with:
+          cluster-name: ${{secrets.AZURE_AKS_NAME}}
+          resource-group: ${{secrets.AZURE_RESOURCE_GROUP}}
+          admin: true
+          use-kubelogin: true
+
+      - name: Deploy Helm Chart
+        working-directory: ./helm
+        shell: bash
+        run: ./deploy.sh -t ${{ env.TAG }} -n ${{ secrets.NAMESPACE }} -e ${{ inputs.ENVIRONMENT }} -r intelli-mate-${{ inputs.APP }}
