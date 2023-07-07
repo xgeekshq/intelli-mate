@@ -1,10 +1,10 @@
 ingress:
   hosts:
-    - host: intelli-mate.xgeeks.tech
+    - host: api.intelli-mate.xgeeks.tech
       paths:
-        - path: /api
+        - path: /
           pathType: ImplementationSpecific
   tls:
     - hosts:
-        - intelli-mate.xgeeks.tech
-      secretName: intelli-mate-tls
+        - api.intelli-mate.xgeeks.tech
+      secretName: intelli-mate-api-tls

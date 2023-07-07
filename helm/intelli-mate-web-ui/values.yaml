@@ -39,8 +39,8 @@ securityContext:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
 
 service:
   type: ClusterIP
@@ -49,13 +49,13 @@ service:
 
 healthcheck:
   readiness:
-    enabled: true
+    enabled: false
     delay: 5
     period: 5
     failure: 3
     path: /
   liveness:
-    enabled: true
+    enabled: false
     delay: 5
     period: 60
     failure: 3
