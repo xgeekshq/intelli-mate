@@ -7,8 +7,8 @@ ingress:
   tls:
     - hosts:
         - intelli-mate.xgeeks.tech
-      secretName: intelli-mate-tls
+      secretName: intelli-mate-web-ui-tls
 environment:
-  API_URL: https://intelli-mate.xgeeks.tech/api/v1
-  NEXT_PUBLIC_API_URL: https://intelli-mate.xgeeks.tech/api/v1
-  NEXT_PUBLIC_SOCKET_URL: https://intelli-mate.xgeeks.tech
+  API_URL: https://api.intelli-mate.xgeeks.tech/api/v1
+  NEXT_PUBLIC_API_URL: https://api.intelli-mate.xgeeks.tech/api/v1
+  NEXT_PUBLIC_SOCKET_URL: https://api.intelli-mate.xgeeks.tech
