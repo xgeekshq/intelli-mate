@@ -14,7 +14,7 @@ concurrency:
 
 env:
   TAG: ${{ github.sha }}
-  REGISTRY: ${{ vars.REGISTRY_URL }}/xgeeks/intelli-mate
+  REGISTRY: ${{ vars.REGISTRY_URL }}/${{ github.repository_owner }}/${{ github.repository }}
 
 jobs:
   build-push:
@@ -54,8 +54,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
-            type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}
-            type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}:cache
+            type=registry,ref=${{env.REGISTRY}}/${{ matrix.app }}:${{ env.TAG }}
+            type=registry,ref=${{env.REGISTRY}}/${{ matrix.app }}:${{ env.TAG }}:cache
           cache-to: type=inline
           build-args: |
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
