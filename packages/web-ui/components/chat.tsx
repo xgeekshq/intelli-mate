@@ -206,7 +206,7 @@ export default function Chat({ roomId }: ChatProps) {
       <ScrollArea ref={bottomEl} className="h-full">
         <div className="w-full px-4 pt-4">
           {messages.map((message, index) => {
-            return <Message message={message}></Message>;
+            return <Message key={String(index)} message={message}></Message>;
           })}
         </div>
       </ScrollArea>

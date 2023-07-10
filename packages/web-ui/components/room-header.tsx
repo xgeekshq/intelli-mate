@@ -19,7 +19,7 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
       <p className="relative text-lg font-semibold tracking-tight">
-        {isSettingsPage ? `${name} - settings` : name}
+        {isSettingsPage ? `${name} | settings` : name}
       </p>
       {!isSettingsPage && (
         <Link href={`${id}/settings`}>

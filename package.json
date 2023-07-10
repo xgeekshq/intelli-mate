@@ -19,6 +19,11 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
-    "husky": "^8.0.0"
-  }
+    "husky": "^8.0.0",
+    "nx": "16.4.3",
+    "nx-cloud": "latest"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

@@ -194,7 +194,7 @@ export default async function Settings({
             <div className="flex flex-col text-sm text-gray-500">
               <p>{`Name: ${
                 owner.firstName && owner.lastName
-                  ? `${owner.firstName} ${owner.lastName}}`
+                  ? `${owner.firstName} ${owner.lastName}`
                   : ' - '
               }`}</p>
               <p>
