@@ -14,7 +14,7 @@ concurrency:
 
 env:
   TAG: ${{ github.sha }}
-  REGISTRY: ${{ vars.REGISTRY_URL }}/${{ github.repository_owner }}/${{ github.repository }}
+  REGISTRY: ${{ vars.REGISTRY_URL }}/${{ github.repository }}
 
 jobs:
   build-push:
