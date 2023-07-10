@@ -32,7 +32,9 @@ export function Message({ message }: MessageProps) {
           <Avatar className="h-8 w-8 rounded-none">
             <AvatarImage src={'/ai.png'} alt="AI Image" />
           </Avatar>
-          <p>{message.response}</p>
+          <p className="prose max-w-2xl dark:prose-invert">
+            {message.response}
+          </p>
         </div>
       ) : (
         <div className="relative mx-4 h-8 w-8">
