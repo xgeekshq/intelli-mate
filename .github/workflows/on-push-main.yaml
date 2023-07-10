@@ -20,6 +20,7 @@ jobs:
   build-push:
     name: Build and Push
     runs-on: [ ubuntu-latest ]
+    environment: production
     strategy:
       matrix:
         app: ['web-ui', 'api']
