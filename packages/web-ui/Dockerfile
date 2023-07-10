@@ -11,10 +11,12 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY ./web-ui/package.json ./web-ui/package.json
+COPY ./web-ui/package-lock.json ./web-ui/package-lock.json
 
 RUN cd web-ui && npm install
 
 COPY ./contract/package.json ./contract/package.json
+COPY ./contract/package-lock.json ./contract/package-lock.json
 
 RUN cd contract && npm install
 
@@ -30,6 +32,21 @@ COPY ./contract ./contract
 # Learn more here: https://nextjs.org/telemetry
 # Comment the following line in case you want to enable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+ARG CLERK_SECRET_KEY
+ENV CLERK_SECRET_KEY $CLERK_SECRET_KEY
+
+ARG API_URL
+ENV API_URL $API_URL
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
+
+ARG NEXT_PUBLIC_SOCKET_URL
+ENV NEXT_PUBLIC_SOCKET_URL $NEXT_PUBLIC_SOCKET_URL
 
 # 3. Install only production dependencies
 RUN cd web-ui && npm run build
@@ -47,6 +64,21 @@ FROM node:$TAG AS production
 WORKDIR /app
 
 ENV NODE_ENV production
+
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+ARG CLERK_SECRET_KEY
+ENV CLERK_SECRET_KEY $CLERK_SECRET_KEY
+
+ARG API_URL
+ENV API_URL $API_URL
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL $NEXT_PUBLIC_API_URL
+
+ARG NEXT_PUBLIC_SOCKET_URL
+ENV NEXT_PUBLIC_SOCKET_URL $NEXT_PUBLIC_SOCKET_URL
 
 # Comment the following line in case you want to enable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1

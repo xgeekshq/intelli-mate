@@ -57,6 +57,12 @@ jobs:
             type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}
             type=registry,ref=${{ ENV.REGISTRY }}:${{ env.TAG }}:cache
           cache-to: type=inline
+          build-args: |
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            API_URL=${{ vars.API_URL }}
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_SOCKET_URL=${{ vars.NEXT_PUBLIC_SOCKET_URL }}
 
   deploy-production:
     name: Deploy
