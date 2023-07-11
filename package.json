@@ -1,7 +1,7 @@
 {
   "name": "intelli-mate",
   "version": "1.0.0",
-  "description": "Boost your company productivity with a collaborative AI chat that understands who your company and your employees are",
+  "description": "Supercharge your workplace productivity with collaboration enabled AI. Data is fully secured.",
   "scripts": {
     "prepare": "husky install"
   },
@@ -14,7 +14,7 @@
     "url": "https://github.com/xgeekshq/intelli-mate/issues"
   },
   "author": "xgeeks",
-  "license": "LGPL-3.0-only",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
     "@commitlint/config-conventional": "^17.6.5",
