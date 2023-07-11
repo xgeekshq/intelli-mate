@@ -9,7 +9,7 @@ services:
     volumes:
       - mongodb:/data/db
     env_file:
-      - .env
+      - .env.local
   redis:
     image: redis
     restart: always
