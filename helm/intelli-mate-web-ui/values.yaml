@@ -5,11 +5,12 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/xgeeks/intelli-mate/web-ui
+  repository: ghcr.io/xgeekshq/intelli-mate/web-ui
   pullPolicy: IfNotPresent
   tag: latest
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: github-packages-xgeeks-intelli-mate
 
 # Specify the Config name to pull the environment variables from.
 # If not specified, it defaults to "{{ include "intelli-mate-web-ui.fullname" . }}".

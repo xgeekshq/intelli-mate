@@ -9,7 +9,10 @@ RUN apk --update add \
 WORKDIR /app
 
 COPY ./api/package.json ./api/package.json
+COPY ./api/package-lock.json ./api/package-lock.json
+
 COPY ./contract/package.json ./contract/package.json
+COPY ./contract/package-lock.json ./contract/package-lock.json
 
 RUN cd api && npm install
 RUN cd contract && npm install
