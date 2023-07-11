@@ -8,6 +8,7 @@ export const cacheProviders = [
     useFactory: async (configService: ConfigService) => {
       const client = createClient({
         url: `redis://${configService.get('REDIS_CONNECTION_URL')}`,
+        password: configService.get('REDIS_HOST_PASSWORD'),
       });
       await client.connect();
       return client;
