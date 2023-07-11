@@ -33,7 +33,7 @@ jobs:
         with:
           registry: ${{env.REGISTRY}}/${{ matrix.app }}
           username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Docker metadata
         id: meta
