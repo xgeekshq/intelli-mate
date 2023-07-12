@@ -3,7 +3,15 @@ import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { UserResponseSchema } from '@/contract/auth/user.response.dto';
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOkResponse,
   ApiOperation,
@@ -13,20 +21,31 @@ import {
 
 @Controller({ path: 'auth', version: '1' })
 @ApiTags('auth')
-@UseGuards(ClerkAuthGuard)
 export class AuthController {
   constructor(private readonly clerkAuthUserProvider: ClerkAuthUserProvider) {}
 
+  @Post('integrations/clerk/new-user')
+  @ApiOperation({ description: 'Clerk integration for new users' })
+  async clerkNewUserIntegration(
+    @Body() userCreatedEvent: { data: { id: string } }
+  ): Promise<void> {
+    void this.clerkAuthUserProvider.assignDefaultRoleToUser(
+      userCreatedEvent.data.id
+    );
+  }
+
   @Get('users/:id')
+  @UseGuards(ClerkAuthGuard)
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: UserResponseDto })
   @ApiOperation({ description: 'Get a single user' })
-  async findUser(@Param('id') userId: string) {
+  async findUser(@Param('id') userId: string): Promise<UserResponseDto> {
     const user = await this.clerkAuthUserProvider.findUser(userId);
     return UserResponseSchema.parse(user);
   }
 
   @Get('users')
+  @UseGuards(ClerkAuthGuard)
   @ApiClerkAuthHeaders()
   @ApiQuery({
     name: 'userIds',
