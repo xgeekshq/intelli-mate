@@ -1,4 +1,5 @@
 import { ChainService } from '@/ai/services/chain.service';
+import { AppConfigService } from '@/app-config/app-config.service';
 import { Injectable } from '@nestjs/common';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 
@@ -6,8 +7,13 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 export class AiService {
   llmModel: ChatOpenAI;
 
-  constructor(private readonly chainService: ChainService) {
-    this.llmModel = new ChatOpenAI({ temperature: 0.2 });
+  constructor(
+    private readonly chainService: ChainService,
+    private readonly appConfigService: AppConfigService
+  ) {
+    this.llmModel = new ChatOpenAI({
+      temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
+    });
   }
 
   async askAiInFreeText(input: string, chatId: string) {

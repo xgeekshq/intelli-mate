@@ -1,4 +1,5 @@
 import { AiModule } from '@/ai/ai.module';
+import { AppConfigModule } from '@/app-config/app-config.module';
 import { AuthModule } from '@/auth/auth.module';
 import { CacheModule } from '@/cache/cache.module';
 import { ChatsModule } from '@/chats/chats.module';
@@ -20,6 +21,7 @@ import { APP_PIPE } from '@nestjs/core';
     RoomsModule,
     ChatsModule,
     AiModule,
+    AppConfigModule,
   ],
   providers: [
     {
