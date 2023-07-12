@@ -24,4 +24,12 @@ export class AppConfigService {
 
     return Promise.resolve(appConfig.get<string[]>('authorization.roles'));
   }
+
+  getDefaultRole(): string {
+    if (!appConfig.has('authorization.defaultRole')) {
+      throw new AppConfigNotFoundException();
+    }
+
+    return appConfig.get<string>('authorization.defaultRole');
+  }
 }

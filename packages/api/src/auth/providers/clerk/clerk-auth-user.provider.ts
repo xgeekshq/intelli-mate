@@ -1,17 +1,33 @@
 import 'dotenv/config';
-import { Provider } from '@/auth/providers/provider';
+import { AppConfigService } from '@/app-config/app-config.service';
+import { AuthRepository } from '@/auth/auth.repository';
+import { AuthProvider } from '@/auth/providers/auth-provider';
 import { User } from '@/common/types/user';
 import { users } from '@clerk/clerk-sdk-node';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ClerkAuthUserProvider implements Provider {
+export class ClerkAuthUserProvider implements AuthProvider {
+  constructor(
+    private readonly appConfigService: AppConfigService,
+    private readonly authRepository: AuthRepository
+  ) {}
+
   async findUser(id: string): Promise<User | undefined> {
     const userList = await users.getUserList();
     return userList.find((u) => u.id === id);
   }
 
-  findUsers(ids: string[]): Promise<User[]> {
+  async findUsers(ids: string[]): Promise<User[]> {
     return users.getUserList({ userId: ids });
+  }
+
+  async assignRolesToUser(id: string, roles: string[]): Promise<void> {
+    await this.authRepository.assignRolesToUser(id, roles);
+  }
+
+  async assignDefaultRoleToUser(id: string): Promise<void> {
+    const defaultRole = this.appConfigService.getDefaultRole();
+    await this.authRepository.assignRolesToUser(id, [defaultRole]);
   }
 }

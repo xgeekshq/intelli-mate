@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { UserUnauthorizedException } from '@/auth/exceptions/user-unauthorized.exception';
-import { AuthGuard } from '@/auth/guards/guard';
+import { AuthGuard } from '@/auth/guards/auth-guard';
 import { sessions } from '@clerk/clerk-sdk-node';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
