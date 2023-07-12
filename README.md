@@ -1,7 +1,7 @@
 # Intelli-mate
 
-Intelli-mate is an application to boost your company productivity with a collaborative AI chat that understands who your company and your employees are.
+Supercharge your workplace productivity with collaboration enabled AI. Data is fully secured.
 
-## Roadmap
+Intelli-mate is an open-sourced tool that allows your enterprise workplace to enable collaborative AI enhanced conversations.
 
-The intended roadmap is described in detail on the [ROADMAP.md](./ROADMAP.md) file.
+
