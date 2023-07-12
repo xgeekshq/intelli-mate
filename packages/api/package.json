@@ -26,6 +26,7 @@
     "@nestjs/platform-socket.io": "^9.4.3",
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/websockets": "^9.4.3",
+    "@types/config": "^3.3.0",
     "config": "^3.3.9",
     "gpt-3-encoder": "^1.1.4",
     "langchain": "^0.0.98",

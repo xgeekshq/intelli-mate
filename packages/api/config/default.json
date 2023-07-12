@@ -1,0 +1,12 @@
+{
+  "ai": {
+    "defaultTemperature": 0.2,
+    "defaultChatContextTTL": 604800
+  },
+  "authorization": {
+    "roles": [
+      "Admin",
+      "Collaborator"
+    ]
+  }
+}

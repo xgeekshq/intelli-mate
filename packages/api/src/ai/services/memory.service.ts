@@ -1,3 +1,4 @@
+import { AppConfigService } from '@/app-config/app-config.service';
 import { CACHE_CLIENT } from '@/common/constants/cache';
 import { Inject, Injectable } from '@nestjs/common';
 import { BufferMemory } from 'langchain/memory';
@@ -9,7 +10,9 @@ export class MemoryService {
   memoryMap: Map<string, BufferMemory>;
 
   constructor(
-    @Inject(CACHE_CLIENT) private readonly cacheClient: RedisClientType
+    @Inject(CACHE_CLIENT)
+    private readonly cacheClient: RedisClientType,
+    private readonly appConfigService: AppConfigService
   ) {
     this.memoryMap = new Map<string, BufferMemory>();
   }
@@ -35,6 +38,8 @@ export class MemoryService {
         chatHistory: new RedisChatMessageHistory({
           sessionId: chatId,
           client: this.cacheClient,
+          sessionTTL:
+            this.appConfigService.getAiAppConfig().defaultChatContextTTL,
         }),
       })
     );
