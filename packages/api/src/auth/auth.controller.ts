@@ -29,8 +29,6 @@ export class AuthController {
   async clerkNewUserIntegration(
     @Body() userCreatedEvent: { data: { id: string } }
   ): Promise<void> {
-    console.log(userCreatedEvent);
-    console.log(userCreatedEvent.data.id);
     void this.clerkAuthUserProvider.assignDefaultRoleToUser(
       userCreatedEvent.data.id
     );
