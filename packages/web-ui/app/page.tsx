@@ -20,7 +20,7 @@ export default function IndexPage() {
         <SignedIn>
           <Link href={'/rooms'}>
             <Button value="ghost" size="lg">
-              Star chatting
+              Start chatting
             </Button>
           </Link>
         </SignedIn>

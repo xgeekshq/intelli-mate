@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import { ReactNode } from 'react';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { auth } from '@clerk/nextjs';
@@ -10,6 +11,7 @@ import { RoomHeader } from '@/components/room-header';
 interface RootLayoutProps {
   children: React.ReactNode;
 }
+
 const getRoom = async (roomId: string) => {
   try {
     const nextCookies = cookies();
@@ -21,6 +23,10 @@ const getRoom = async (roomId: string) => {
       sessionId: sessionId ?? '',
       jwtToken: clerkJwtToken?.value ?? '',
     });
+    if (!res.ok) {
+      return;
+    }
+
     return res.json();
   } catch (e) {
     console.log(e);
@@ -35,6 +41,11 @@ export default async function RoomLayout({
   params: { room: string };
 }) {
   const room = await getRoom(params.room);
+
+  if (!room) {
+    redirect('/');
+  }
+
   return (
     <div className="flex h-full w-full flex-col">
       <RoomHeader id={room.id} name={room.name} />

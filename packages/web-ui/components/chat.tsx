@@ -47,12 +47,14 @@ const parseMessageList = (
 
 export default function Chat({ roomId }: ChatProps) {
   const socket = useRecoilValue(socketState);
+
   const { sessionId, userId } = useAuth();
   const token = getCookie('__session');
+
   const [chat, setChat] = useState<ChatResponseDto>();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const bottomEl = useRef<HTMLDivElement>(null);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
+  const bottomEl = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     if (bottomEl) {
@@ -62,6 +64,7 @@ export default function Chat({ roomId }: ChatProps) {
       });
     }
   };
+
   async function getChat(roomId: string) {
     try {
       const res = await apiClient({
@@ -188,10 +191,12 @@ export default function Chat({ roomId }: ChatProps) {
         const participantList = createChatParticipantsFactory(
           await getChatParticipants(chat.participantIds)
         );
+
         setParticipants(participantList);
         setMessages(parseMessageList(chat, participantList));
       }
     }
+
     void setInitialData();
     scrollToBottom();
   }, [chat, parseMessageList]);
@@ -201,12 +206,13 @@ export default function Chat({ roomId }: ChatProps) {
       data: createSocketMessageRequestFactory(roomId, value, userId ?? ''),
     });
   };
+
   return (
     <div className="flex h-full w-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">
         <div className="w-full px-4 pt-4">
-          {messages.map((message, index) => {
-            return <Message key={String(index)} message={message}></Message>;
+          {messages.map((message) => {
+            return <Message key={message.id} message={message} />;
           })}
         </div>
       </ScrollArea>
