@@ -21,7 +21,7 @@ export const createChatMessageFactory = (
 };
 
 export const createChatParticipantsFactory = (
-  participants: UserResponseDto[]
+  participants: UserResponseDto[] = []
 ): ChatUserType[] => {
   return participants.map((participant): ChatUserType => {
     return {

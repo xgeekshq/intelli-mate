@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { apiClient } from '@/api/apiClient';
+import { ClerkFetcherParamsType, apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
+import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
 import { ChatResponseDto } from '@/contract/chats/chat.response.dto.d';
 import {
   createChatMessageFactory,
@@ -45,6 +46,22 @@ const parseMessageList = (
   return messageArr;
 };
 
+async function baseGetRequest<T>(
+  options: ClerkFetcherParamsType
+): Promise<T | undefined> {
+  try {
+    const res = await apiClient(options);
+    if (!res.ok) {
+      const { error } = JSON.parse(await res.text());
+      return error;
+    }
+
+    return res.json();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export default function Chat({ roomId }: ChatProps) {
   const socket = useRecoilValue(socketState);
 
@@ -56,6 +73,12 @@ export default function Chat({ roomId }: ChatProps) {
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
   const bottomEl = useRef<HTMLDivElement>(null);
 
+  const requestOptions = {
+    options: { method: 'GET' },
+    sessionId: sessionId ?? '',
+    jwtToken: token?.toString() ?? '',
+  };
+
   const scrollToBottom = () => {
     if (bottomEl) {
       bottomEl.current?.scroll({
@@ -65,57 +88,27 @@ export default function Chat({ roomId }: ChatProps) {
     }
   };
 
-  async function getChat(roomId: string) {
-    try {
-      const res = await apiClient({
-        url: Endpoints.chats.getChat(roomId),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        return error;
-      }
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const getChat = async (roomId: string) =>
+    baseGetRequest<ChatResponseDto>({
+      url: Endpoints.chats.getChat(roomId),
+      ...requestOptions,
+    });
 
-  async function getChatParticipants(participants: string[]) {
-    try {
-      const res = await apiClient({
-        url: Endpoints.users.getUsers(participants),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        return error;
-      }
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const getChatParticipants = async (participants: string[]) =>
+    baseGetRequest<UserResponseDto[]>({
+      url: Endpoints.users.getUsers(participants),
+      ...requestOptions,
+    });
 
-  async function getUser(userId: string) {
-    try {
-      const res = await apiClient({
-        url: Endpoints.users.getUser(userId),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
-      });
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const getUser = async (userId: string) =>
+    baseGetRequest<UserResponseDto>({
+      url: Endpoints.users.getUser(userId),
+      ...requestOptions,
+    });
 
-  const addUserToMessage = async (userId: string): Promise<ChatUserType> => {
+  const addUserToMessage = async (
+    userId: string
+  ): Promise<ChatUserType | undefined> => {
     const userInParticipants = participants.current.find(
       (participant) => participant.userId === userId
     );
@@ -126,24 +119,14 @@ export default function Chat({ roomId }: ChatProps) {
 
     const user = await getUser(userId);
 
-    setParticipants([
-      ...participants.current,
-      {
-        userId,
-        imageUrl: user.profileImageUrl,
-        userName: user.username,
-        name: user.name,
-        email: user.email,
-      },
-    ]);
+    if (!user) {
+      return;
+    }
 
-    return {
-      userId,
-      imageUrl: user.profileImageUrl,
-      userName: user.username,
-      name: user.name,
-      email: user.email,
-    };
+    const [parsedUser] = createChatParticipantsFactory([user]);
+
+    setParticipants([...participants.current, parsedUser]);
+    return parsedUser;
   };
 
   useEffect(() => {
@@ -162,7 +145,14 @@ export default function Chat({ roomId }: ChatProps) {
           createChatMessagesWithResponseFactory(messages, message)
         );
       } else {
+        const messageIds = messages.map(({ id }) => id);
+
+        if (messageIds.includes(message.id)) {
+          return;
+        }
+
         const user = await addUserToMessage(message.userId);
+
         setMessages((messages) => {
           return [
             ...messages,
