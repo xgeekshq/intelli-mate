@@ -211,7 +211,7 @@ export default function Chat({ roomId }: ChatProps) {
     <div className="flex h-full w-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">
         <div className="w-full px-4 pt-4">
-          {messages.map((message, index) => {
+          {messages.map((message) => {
             return <Message key={message.id} message={message} />;
           })}
         </div>
