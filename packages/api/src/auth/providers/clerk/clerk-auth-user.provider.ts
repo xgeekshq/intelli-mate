@@ -14,12 +14,25 @@ export class ClerkAuthUserProvider implements AuthProvider {
   ) {}
 
   async findUser(id: string): Promise<User | undefined> {
+    const userRoles = await this.authRepository.findUserRolesForSingleUser(id);
     const userList = await users.getUserList();
-    return userList.find((u) => u.id === id);
+    return {
+      ...userList.find((u) => u.id === id),
+      roles: userRoles.roles,
+    };
   }
 
-  async findUsers(ids: string[]): Promise<User[]> {
-    return users.getUserList({ userId: ids });
+  async findUsers(ids: string[] | undefined): Promise<User[]> {
+    const userRolesList = await this.authRepository.findUserRolesForMultiUsers(
+      ids
+    );
+    const userList = await users.getUserList({ userId: ids });
+    return userList.map((user) => ({
+      ...user,
+      roles:
+        userRolesList.find((userRoles) => userRoles.userId === user.id)
+          ?.roles ?? [],
+    }));
   }
 
   async assignRolesToUser(id: string, roles: string[]): Promise<void> {

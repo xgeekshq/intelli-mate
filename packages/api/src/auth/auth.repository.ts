@@ -10,6 +10,17 @@ export class AuthRepository {
     private userRolesModel: Model<UserRoles>
   ) {}
 
+  async findUserRolesForSingleUser(userId: string): Promise<UserRoles> {
+    return this.userRolesModel.findOne({ userId });
+  }
+
+  async findUserRolesForMultiUsers(
+    userIds: string[] | undefined
+  ): Promise<UserRoles[]> {
+    if (!userIds) return this.userRolesModel.find();
+    return this.userRolesModel.find({ userId: { $in: [userIds] } });
+  }
+
   async assignRolesToUser(userId: string, roles: string[]): Promise<UserRoles> {
     const userRoles: UserRoles = await this.userRolesModel.findOne({ userId });
     if (userRoles) {
@@ -22,6 +33,7 @@ export class AuthRepository {
       roles,
     });
     await newUserRoles.save();
+
     return newUserRoles;
   }
 }

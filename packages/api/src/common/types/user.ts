@@ -11,4 +11,5 @@ export type User = {
   readonly firstName: string | null;
   readonly lastName: string | null;
   readonly emailAddresses: EmailAddress[];
+  readonly roles: string[];
 };
