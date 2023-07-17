@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SuperAdminLoginRequestSchema = z.object({
+export const SuperAdminValidateCredentialsRequestSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });

@@ -1,4 +1,6 @@
+import { SuperAdminValidateCredentialsRequestSchema } from "./super-admin-validate-credentials.request.dto";
 import { z } from "zod";
-import { SuperAdminLoginRequestSchema } from './super-admin-login.request.dto';
 
-export type SuperAdminLoginRequestDto = z.infer<typeof SuperAdminLoginRequestSchema>;
+export type SuperAdminValidateCredentialsRequestDto = z.infer<
+  typeof SuperAdminValidateCredentialsRequestSchema
+>;

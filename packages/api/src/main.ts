@@ -3,6 +3,7 @@ import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 
@@ -13,8 +14,12 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:3000', // TODO: replace with env var with correct origin
+    credentials: true,
+  });
 
+  app.use(cookieParser());
   app.useGlobalPipes(new ZodValidationPipe());
 
   const configService = app.get(ConfigService);
