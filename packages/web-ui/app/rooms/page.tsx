@@ -38,6 +38,7 @@ const getSearchRoomsList = (
     };
   });
 };
+
 export default async function Rooms() {
   const publicRoomsSearchList = getSearchRoomsList(await getPublicRooms());
   return (

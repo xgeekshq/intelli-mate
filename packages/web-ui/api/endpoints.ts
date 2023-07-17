@@ -1,6 +1,10 @@
 import queryString from 'query-string';
 
 const Endpoints = {
+  admin: {
+    validateCredentials: () => '/auth/admin/validate-credentials',
+    getUsers: () => '/auth/admin/users',
+  },
   rooms: {
     getMyRooms: () => '/rooms/my',
     getPublicRooms: () => '/rooms/public',
