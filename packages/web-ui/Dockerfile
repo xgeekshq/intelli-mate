@@ -10,13 +10,13 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-COPY ./web-ui/package.json ./web-ui/package.json
-COPY ./web-ui/package-lock.json ./web-ui/package-lock.json
+COPY ./packages/web-ui/package.json ./web-ui/package.json
+COPY ./package-lock.json ./web-ui/package-lock.json
 
 RUN cd web-ui && npm install
 
-COPY ./contract/package.json ./contract/package.json
-COPY ./contract/package-lock.json ./contract/package-lock.json
+COPY ./packages/contract/package.json ./contract/package.json
+COPY ./package-lock.json ./contract/package-lock.json
 
 RUN cd contract && npm install
 
@@ -25,8 +25,8 @@ FROM node:$TAG AS builder
 WORKDIR /app
 COPY --from=deps /app/web-ui/node_modules ./web-ui/node_modules
 COPY --from=deps /app/contract/node_modules ./contract/node_modules
-COPY ./web-ui ./web-ui
-COPY ./contract ./contract
+COPY ./packages/web-ui ./web-ui
+COPY ./packages/contract ./contract
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
