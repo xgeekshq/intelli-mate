@@ -23,7 +23,7 @@
     "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/platform-socket.io": "^9.4.3",
+    "@nestjs/platform-socket.io": "^10.0.5",
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/websockets": "^9.4.3",
     "config": "^3.3.9",
