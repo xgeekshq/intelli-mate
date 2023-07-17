@@ -3,6 +3,7 @@
 
 # Allow files and directories for prod
 !/src
+!/config
 !.eslintrc.js
 !prettier.config.js
 !nest-cli.json
