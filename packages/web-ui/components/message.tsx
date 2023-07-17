@@ -17,7 +17,7 @@ export function Message({ message }: MessageProps) {
         {message.user && (
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={message.user?.imageUrl} alt="Profile Image" />
+              <AvatarImage src={message.user.imageUrl} alt="Profile Image" />
             </Avatar>
             <p>{getUserIdentification(message.user)}</p>
           </div>
