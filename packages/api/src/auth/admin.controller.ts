@@ -69,7 +69,6 @@ export class AuthAdminController {
           maxAge: 1000 * 3600,
           httpOnly: false,
           secure: true,
-          sameSite: 'strict',
         }
       );
     } catch (e) {
