@@ -50,7 +50,7 @@ export function UpdateRolesForm({
   const adminCredentialsCookie = getCookie('__admin');
   let adminCredentials: { email: string; password: string };
   if (adminCredentialsCookie) {
-    adminCredentials = JSON.parse(adminCredentialsCookie!.toString());
+    adminCredentials = JSON.parse(adminCredentialsCookie.toString());
   }
 
   const form = useForm<Pick<SuperAdminUpdateUserRoleRequestDto, 'roles'>>({
