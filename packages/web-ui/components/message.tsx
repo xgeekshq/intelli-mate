@@ -2,9 +2,13 @@ import React from 'react';
 import Image from 'next/image';
 import { getUserIdentification } from '@/utils/get-user-identification';
 import { format } from 'date-fns';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 
 import { ChatMessageType } from '@/types/chat';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { CodeBlock } from '@/components/ui/codeblock';
 
 export interface MessageProps {
   message: ChatMessageType;
@@ -32,9 +36,47 @@ export function Message({ message }: MessageProps) {
           <Avatar className="h-8 w-8 rounded-none">
             <AvatarImage src={'/ai.png'} alt="AI Image" />
           </Avatar>
-          <p className="prose max-w-2xl dark:prose-invert">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            className={
+              'prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0'
+            }
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                if (children.length) {
+                  if (children[0] == '▍') {
+                    return (
+                      <span className="mt-1 animate-pulse cursor-default">
+                        ▍
+                      </span>
+                    );
+                  }
+
+                  children[0] = (children[0] as string).replace('`▍`', '▍');
+                }
+
+                const match = /language-(\w+)/.exec(className || '');
+
+                if (inline) {
+                  return (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+
+                return (
+                  <CodeBlock
+                    language={(match && match[1]) || ''}
+                    value={String(children).replace(/\n$/, '')}
+                    {...props}
+                  />
+                );
+              },
+            }}
+          >
             {message.response}
-          </p>
+          </ReactMarkdown>
         </div>
       ) : (
         <div className="relative mx-4 h-8 w-8">
