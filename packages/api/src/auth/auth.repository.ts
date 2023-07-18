@@ -14,11 +14,9 @@ export class AuthRepository {
     return this.userRolesModel.findOne({ userId });
   }
 
-  async findUserRolesForMultiUsers(
-    userIds: string[] | undefined
-  ): Promise<UserRoles[]> {
+  async findUserRolesForMultiUsers(userIds?: string[]): Promise<UserRoles[]> {
     if (!userIds) return this.userRolesModel.find();
-    return this.userRolesModel.find({ userId: { $in: [userIds] } });
+    return this.userRolesModel.find({ userId: { $in: userIds } });
   }
 
   async assignRolesToUser(userId: string, roles: string[]): Promise<UserRoles> {
