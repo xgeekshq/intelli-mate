@@ -20,6 +20,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
@@ -36,7 +37,8 @@ export class AuthAdminController {
   constructor(
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider,
     private readonly adminValidateCredentialsUsecase: AdminValidateCredentialsUsecase,
-    private readonly adminUpdateUserRolesUsecase: AdminUpdateUserRolesUsecase
+    private readonly adminUpdateUserRolesUsecase: AdminUpdateUserRolesUsecase,
+    private readonly configService: ConfigService
   ) {}
 
   @Post('validate-credentials')
@@ -65,10 +67,14 @@ export class AuthAdminController {
           ),
         }),
         {
+          domain: this.configService
+            .get<string>('FRONTEND_ORIGIN_URL')
+            .split('//intelli-mate')[1],
           path: '/',
           maxAge: 1000 * 3600,
           httpOnly: false,
           secure: true,
+          sameSite: 'lax',
         }
       );
     } catch (e) {
