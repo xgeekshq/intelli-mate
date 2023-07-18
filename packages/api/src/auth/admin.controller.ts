@@ -69,7 +69,7 @@ export class AuthAdminController {
         {
           domain: this.configService
             .get<string>('FRONTEND_ORIGIN_URL')
-            .split('//intelli-mate')[1],
+            .split('//intelli-mate')[1], // works in local development env, since it will return `undefined` and the browser will set this to `localhost`
           path: '/',
           maxAge: 1000 * 3600,
           httpOnly: false,
