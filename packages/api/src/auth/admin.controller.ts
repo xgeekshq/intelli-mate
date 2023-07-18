@@ -1,5 +1,5 @@
-import { SuperAdminLoginRequestDto } from '@/auth/dtos/super-admin-login.request.dto';
 import { SuperAdminUpdateUserRoleRequestDto } from '@/auth/dtos/super-admin-update-role.request.dto';
+import { SuperAdminValidateCredentialsRequestDto } from '@/auth/dtos/super-admin-validate-credentials.request.dto';
 import { UserResponseDto } from '@/auth/dtos/user.response.dto';
 import { RolesNotConfiguredExceptionSchema } from '@/auth/exceptions/roles-not-configured.exception';
 import { UserNotSuperAdminExceptionSchema } from '@/auth/exceptions/user-not-super-admin.exception';
@@ -8,6 +8,7 @@ import { SuperAdminAuthGuard } from '@/auth/guards/super-admin/super-admin.auth.
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { AdminUpdateUserRolesUsecase } from '@/auth/usecases/admin-update-user-roles.usecase';
 import { AdminValidateCredentialsUsecase } from '@/auth/usecases/admin-validate-credentials.usecase';
+import { hashPassword } from '@/common/utils/hash-password';
 import { UserResponseSchema } from '@/contract/auth/user.response.dto';
 import {
   Body,
@@ -16,6 +17,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -26,6 +28,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @Controller({ path: 'auth/admin', version: '1' })
 @ApiTags('auth/admin')
@@ -44,11 +47,34 @@ export class AuthAdminController {
     description: 'Validate the super admin login',
   })
   async superAdminValidateCredentials(
-    @Body() superAdminLoginRequestDto: SuperAdminLoginRequestDto
+    @Res({ passthrough: true }) response: Response,
+    @Body()
+    superAdminValidateCredentialsRequestDto: SuperAdminValidateCredentialsRequestDto
   ): Promise<void> {
-    return this.adminValidateCredentialsUsecase.execute(
-      superAdminLoginRequestDto
-    );
+    try {
+      await this.adminValidateCredentialsUsecase.execute(
+        superAdminValidateCredentialsRequestDto
+      );
+
+      response.cookie(
+        '__admin',
+        JSON.stringify({
+          email: superAdminValidateCredentialsRequestDto.email,
+          password: hashPassword(
+            superAdminValidateCredentialsRequestDto.password
+          ),
+        }),
+        {
+          path: '/',
+          maxAge: 1000 * 3600,
+          httpOnly: false,
+          secure: true,
+          sameSite: 'strict',
+        }
+      );
+    } catch (e) {
+      throw e;
+    }
   }
 
   @Get('users')
