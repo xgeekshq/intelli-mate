@@ -65,7 +65,6 @@ export class AuthAdminController {
           ),
         }),
         {
-          domain: 'localhost',
           path: '/',
           maxAge: 1000 * 3600,
           httpOnly: false,

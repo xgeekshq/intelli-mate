@@ -85,6 +85,7 @@ ingress:
 environment:
   API_PORT: 8000
   FRONTEND_ORIGIN_URL: https://intelli-mate.xgeeks.tech
+  SUPER_ADMIN_EMAIL: m.loureiro@kigroup.de
 
 podAnnotations:
   reloader.stakater.com/auto: "true"

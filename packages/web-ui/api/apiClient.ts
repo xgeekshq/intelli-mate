@@ -1,4 +1,4 @@
-type ClerkFetcherParamsType = {
+export type ClerkFetcherParamsType = {
   url: string;
   options?: RequestInit;
   sessionId: string;
@@ -31,4 +31,5 @@ async function apiClient({
     },
   });
 }
+
 export { apiClient };

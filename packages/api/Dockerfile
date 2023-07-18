@@ -8,11 +8,11 @@ RUN apk --update add \
 # Create app directory
 WORKDIR /app
 
-COPY ./api/package.json ./api/package.json
-COPY ./api/package-lock.json ./api/package-lock.json
+COPY ./packages/api/package.json ./api/package.json
+COPY ./package-lock.json ./api/package-lock.json
 
-COPY ./contract/package.json ./contract/package.json
-COPY ./contract/package-lock.json ./contract/package-lock.json
+COPY ./packages/contract/package.json ./contract/package.json
+COPY ./package-lock.json ./contract/package-lock.json
 
 RUN cd api && npm install
 RUN cd contract && npm install
@@ -25,8 +25,8 @@ WORKDIR /app
 COPY --from=deps /app/api/node_modules ./api/node_modules
 COPY --from=deps /app/contract/node_modules ./contract/node_modules
 
-COPY ./contract ./contract
-COPY ./api ./api
+COPY ./packages/contract ./contract
+COPY ./packages/api ./api
 
 # 3. Install only production dependencies
 RUN cd api && npm run build
@@ -52,6 +52,7 @@ RUN adduser --system --uid 1001 nestjs
 RUN chown -R nestjs:nodejs /app
 RUN chmod 755 /app
 
+COPY --chown=nestjs:nodejs --from=builder /app/api/config ./config
 COPY --chown=nestjs:nodejs --from=builder /app/api/dist/api ./api
 COPY --chown=nestjs:nodejs --from=builder /app/api/dist/contract ./contract
 COPY --chown=nestjs:nodejs --from=builder /app/api/dist/tsconfig.build.tsbuildinfo ./tsconfig.build.tsbuildinfo
