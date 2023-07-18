@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import Endpoints from '@/api/endpoints';
 import { superAdminApiClient } from '@/api/superAdminApiClient';
 
-import AdminSidebarMenu from '@/components/admin/sidebar-menu';
 import { StateProvider } from '@/components/state-provider';
 
 interface RootLayoutProps {
@@ -55,10 +54,7 @@ export default async function SuperAdminLayout({ children }: RootLayoutProps) {
 
   return (
     <div className="flex h-full">
-      <StateProvider>
-        <AdminSidebarMenu />
-        <div className="h-full w-full">{children}</div>
-      </StateProvider>
+      <StateProvider>{children}</StateProvider>
     </div>
   );
 }

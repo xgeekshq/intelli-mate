@@ -4,6 +4,7 @@ const Endpoints = {
   admin: {
     validateCredentials: () => '/auth/admin/validate-credentials',
     getUsers: () => '/auth/admin/users',
+    updateUserRoles: () => '/auth/admin/update-user-roles',
   },
   rooms: {
     getMyRooms: () => '/rooms/my',

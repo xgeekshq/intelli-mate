@@ -9,20 +9,20 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
   });
   app.enableCors({
-    origin: 'http://localhost:3000', // TODO: replace with env var with correct origin
+    origin: configService.get('FRONTEND_ORIGIN_URL'),
     credentials: true,
   });
 
   app.use(cookieParser());
   app.useGlobalPipes(new ZodValidationPipe());
 
-  const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .setTitle('Intelli-mate API documentation')
     .setDescription('API to communicate with Intelli-mate')

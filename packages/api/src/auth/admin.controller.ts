@@ -68,7 +68,7 @@ export class AuthAdminController {
           domain: 'localhost',
           path: '/',
           maxAge: 1000 * 3600,
-          httpOnly: true,
+          httpOnly: false,
           secure: true,
           sameSite: 'strict',
         }

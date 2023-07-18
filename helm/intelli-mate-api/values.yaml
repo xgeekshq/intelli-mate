@@ -84,6 +84,7 @@ ingress:
 
 environment:
   API_PORT: 8000
+  FRONTEND_ORIGIN_URL: https://intelli-mate.xgeeks.tech
 
 podAnnotations:
   reloader.stakater.com/auto: "true"
