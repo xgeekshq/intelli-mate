@@ -74,6 +74,8 @@ _Step 2:_
 
 In the API copy `.env.example` and `.env.local.example` to `.env` and `.env.local` respectively and fill out the keys with the respective values.
 
+In the UI copy `.env.example` to `.env` and fill out the keys with the respective values.
+
 _Step 3:_
 
 Configure the necessary application configurations for your workplace:
