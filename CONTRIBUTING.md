@@ -41,6 +41,7 @@ Please consider these guidelines when filing a pull request (PR template is pres
   - What you changed / Why is it needed
   - Link to issue it solves
   - Special notes for reviewers
+- Set `intelli-mate` team as reviewer
 
 ## Coding Rules
 
