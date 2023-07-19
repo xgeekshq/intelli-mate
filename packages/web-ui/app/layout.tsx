@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import { Metadata } from 'next';
+import Head from 'next/head';
 import { siteConfig } from '@/site-config/site';
 import { ClerkProvider } from '@clerk/nextjs';
 
@@ -36,6 +37,9 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <title>intelli-mate</title>
+      </Head>
       <ClerkProvider>
         <body
           className={cn(

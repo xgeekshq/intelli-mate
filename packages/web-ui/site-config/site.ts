@@ -1,9 +1,9 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: 'IntelliMate',
+  name: 'intelli-mate',
   description:
-    'Perfect solution to collaborate during an intensive prompt drilling session',
+    'Supercharge your workplace productivity with collaboration enabled AI. Data is fully secured.',
   links: {
     github: 'https://github.com/xgeekshq/intelli-mate',
   },

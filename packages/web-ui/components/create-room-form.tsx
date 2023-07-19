@@ -100,7 +100,7 @@ export function CreateRoomForm() {
                   <FormItem>
                     <FormLabel>Room Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Intellimate" {...field} />
+                      <Input placeholder="intelli-mate" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
