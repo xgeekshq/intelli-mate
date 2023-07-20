@@ -16,8 +16,8 @@ export class AiService {
     });
   }
 
-  async askAiInFreeText(input: string, chatId: string) {
-    const chain = this.chainService.getChain(chatId, this.llmModel);
+  async askAiInFreeText(input: string, roomId: string) {
+    const chain = this.chainService.getChain(roomId, this.llmModel);
 
     try {
       return await chain.call({ input });

@@ -17,26 +17,26 @@ export class MemoryService {
     this.memoryMap = new Map<string, BufferMemory>();
   }
 
-  getMemory(chatId: string): BufferMemory {
-    if (!this.hasMemory(chatId)) {
-      this.createMemory(chatId);
+  getMemory(roomId: string): BufferMemory {
+    if (!this.hasMemory(roomId)) {
+      this.createMemory(roomId);
     }
 
-    return this.memoryMap.get(chatId);
+    return this.memoryMap.get(roomId);
   }
 
-  private hasMemory(chatId: string): boolean {
-    return this.memoryMap.has(chatId);
+  private hasMemory(roomId: string): boolean {
+    return this.memoryMap.has(roomId);
   }
 
-  private createMemory(chatId: string) {
+  private createMemory(roomId: string) {
     this.memoryMap.set(
-      chatId,
+      roomId,
       new BufferMemory({
         returnMessages: true,
         memoryKey: 'history',
         chatHistory: new RedisChatMessageHistory({
-          sessionId: chatId,
+          sessionId: roomId,
           client: this.cacheClient,
           sessionTTL:
             this.appConfigService.getAiAppConfig().defaultChatContextTTL,
