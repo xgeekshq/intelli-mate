@@ -47,7 +47,7 @@
     "recoil": "^0.7.7",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
-    "sharp": "^0.31.3",
+    "sharp": "^0.32.4",
     "socket.io-client": "^4.7.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
