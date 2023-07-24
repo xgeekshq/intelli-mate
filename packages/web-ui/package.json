@@ -51,7 +51,7 @@
     "socket.io-client": "^4.7.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
-    "utf-8-validate": "^5.0.10",
+    "utf-8-validate": "^6.0.3",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
