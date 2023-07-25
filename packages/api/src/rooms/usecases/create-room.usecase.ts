@@ -1,3 +1,7 @@
+import {
+  UserCreatedRoomEventKey,
+  userCreatedRoomEventFactory,
+} from '@/common/events/user-created-room.event';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
 import { RoomResponseSchema } from '@/contract/rooms/room.response.dto';
@@ -7,10 +11,14 @@ import { DuplicateRoomNameException } from '@/rooms/exceptions/duplicate-room-na
 import { OwnerMustBeLoggedException } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomsRepository } from '@/rooms/rooms.repository';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CreateRoomUsecase implements Usecase {
-  constructor(private readonly roomsRepository: RoomsRepository) {}
+  constructor(
+    private eventEmitter: EventEmitter2,
+    private readonly roomsRepository: RoomsRepository
+  ) {}
 
   async execute(
     userId: string,
@@ -22,6 +30,12 @@ export class CreateRoomUsecase implements Usecase {
 
     try {
       const room = await this.roomsRepository.createRoom(createRoomRequestDto);
+
+      this.eventEmitter.emit(
+        UserCreatedRoomEventKey,
+        userCreatedRoomEventFactory(room.id, userId)
+      );
+
       return RoomResponseSchema.parse(room);
     } catch (e) {
       if (e.message.includes('duplicate')) {

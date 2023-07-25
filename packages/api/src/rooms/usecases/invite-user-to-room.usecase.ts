@@ -1,4 +1,8 @@
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
+import {
+  UserJoinedRoomEventKey,
+  userJoinedRoomEventFactory,
+} from '@/common/events/user-joined-room.event';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { UserNotFoundException } from '@/common/exceptions/user-not-found.exception';
 import { Usecase } from '@/common/types/usecase';
@@ -9,10 +13,12 @@ import { RoomNotFoundException } from '@/rooms/exceptions/room-not-found.excepti
 import { UserAlreadyInRoomException } from '@/rooms/exceptions/user-already-in-room.exception';
 import { RoomsRepository } from '@/rooms/rooms.repository';
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class InviteUserToRoomUsecase implements Usecase {
   constructor(
+    private eventEmitter: EventEmitter2,
     private readonly roomsRepository: RoomsRepository,
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider
   ) {}
@@ -43,6 +49,12 @@ export class InviteUserToRoomUsecase implements Usecase {
         user.id,
         existingRoom
       );
+
+      this.eventEmitter.emit(
+        UserJoinedRoomEventKey,
+        userJoinedRoomEventFactory(room.id, user.id)
+      );
+
       return RoomResponseSchema.parse(room);
     } catch (e) {
       throw new InternalServerErrorException(e.message);

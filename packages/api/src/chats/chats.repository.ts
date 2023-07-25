@@ -13,19 +13,29 @@ export class ChatsRepository {
     private chatModel: Model<Chat>
   ) {}
 
-  findChatByRoomId(roomId: string): Promise<Chat> {
+  async findChatByRoomId(roomId: string): Promise<Chat> {
     return this.chatModel.findOne({ roomId });
   }
 
   async createChatForRoom(
+    userId: string,
     createChatForRoomRequestDto: CreateChatForRoomRequestDto
   ): Promise<Chat> {
     const chat = new this.chatModel({
       roomId: createChatForRoomRequestDto.roomId,
-      participantIds: [],
+      participantIds: [userId],
       messageHistory: [],
     });
+
     await chat.save();
+    return chat;
+  }
+
+  async addParticipantToChat(chat: Chat, userId: string): Promise<Chat> {
+    if (!chat.participantIds.find((id) => userId === id)) {
+      chat.participantIds.push(userId);
+      await chat.save();
+    }
     return chat;
   }
 
@@ -45,6 +55,27 @@ export class ChatsRepository {
     }
     await chat.save();
     return chat.messageHistory.sort(this.messageDateSortAscPredicate).at(0);
+  }
+
+  async addDocumentsToChat(
+    chat: Chat,
+    documents: Express.Multer.File[],
+    documentRoles: string[]
+  ): Promise<Chat> {
+    chat.documents.push(
+      ...documents.map((multerDoc) => ({
+        roles: documentRoles,
+        meta: {
+          mimetype: multerDoc.mimetype,
+          filename: multerDoc.originalname,
+          size: multerDoc.size,
+        },
+        src: multerDoc.buffer,
+      }))
+    );
+
+    await chat.save();
+    return chat;
   }
 
   private messageDateSortAscPredicate(a: ChatMessage, b: ChatMessage) {
