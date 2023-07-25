@@ -8,6 +8,8 @@ import { Usecase } from '@/common/types/usecase';
 import { ChatMessageResponseSchema } from '@/contract/chats/chat-message.response.dto';
 import { Injectable } from '@nestjs/common';
 
+const TOKENS_LIMIT = 3000;
+
 @Injectable()
 export class AddMessageToChatUsecase implements Usecase {
   constructor(private readonly chatsRepository: ChatsRepository) {}
@@ -16,7 +18,7 @@ export class AddMessageToChatUsecase implements Usecase {
     roomId: string,
     addMessageToChatRequestDto: AddMessageToChatRequestDto,
     userId?: string
-  ): Promise<ChatMessageResponseDto> {
+  ): Promise<{ message: ChatMessageResponseDto; shouldSummarize: boolean }> {
     const existingChat = await this.chatsRepository.findChatByRoomId(roomId);
     if (!existingChat) {
       throw new ChatNotFoundException();
@@ -26,13 +28,22 @@ export class AddMessageToChatUsecase implements Usecase {
       throw new ChatMessageMustHaveSenderException();
     }
 
+    const numberOfTokens = existingChat.messageHistory.reduce(
+      (acc, curr) => (acc += curr.meta.tokens),
+      0
+    );
+
     try {
       const chatMessage = await this.chatsRepository.addMessageToChat(
         existingChat,
         addMessageToChatRequestDto,
         userId
       );
-      return ChatMessageResponseSchema.parse(chatMessage);
+
+      return {
+        message: ChatMessageResponseSchema.parse(chatMessage),
+        shouldSummarize: numberOfTokens > TOKENS_LIMIT,
+      };
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }

@@ -63,21 +63,23 @@ export class ChatSocketGateway {
       })
     );
 
-    const addedMessage = await this.addMessageToChatUsecase.execute(
-      data.roomId,
-      AddMessageToChatRequestSchema.parse({
-        sender: { isAi: false },
-        content: data.content,
-        meta: {
-          tokens: encode(data.content).length,
-        },
-      }),
-      data.userId
-    );
+    const { message: addedMessage, shouldSummarize } =
+      await this.addMessageToChatUsecase.execute(
+        data.roomId,
+        AddMessageToChatRequestSchema.parse({
+          sender: { isAi: false },
+          content: data.content,
+          meta: {
+            tokens: encode(data.content).length,
+          },
+        }),
+        data.userId
+      );
 
     const { response: aiResponse } = await this.aiService.askAiInFreeText(
       data.content,
-      data.roomId
+      data.roomId,
+      shouldSummarize
     );
 
     this.server.to(data.roomId).emit(
