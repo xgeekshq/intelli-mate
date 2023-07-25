@@ -43,7 +43,7 @@ export class AiService {
     }
   }
 
-  async askAiToSummarize(chatId: string) {
+  private async askAiToSummarize(chatId: string) {
     const chain = this.chainService.getChain(chatId, this.llmModel);
 
     try {
