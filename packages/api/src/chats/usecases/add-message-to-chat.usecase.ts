@@ -45,7 +45,9 @@ export class AddMessageToChatUsecase implements Usecase {
       return {
         message: ChatMessageResponseSchema.parse(chatMessage),
         shouldSummarize:
-          numberOfTokens > this.appConfigService.getAiAppConfig().tokenLimit,
+          numberOfTokens >
+          this.appConfigService.getAiAppConfig()
+            .defaultTokenLimitForSummarization,
       };
     } catch (e) {
       throw new InternalServerErrorException(e.message);
