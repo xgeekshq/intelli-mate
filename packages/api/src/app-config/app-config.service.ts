@@ -5,6 +5,7 @@ import * as appConfig from 'config';
 export type AiAppConfig = {
   defaultTemperature: number;
   defaultChatContextTTL: number;
+  defaultTokenLimitForSummarization: number;
 };
 
 @Injectable()

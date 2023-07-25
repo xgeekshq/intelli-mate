@@ -21,9 +21,13 @@ export class ChainService {
     ]);
   }
 
-  getChain(chatId: string, llmModel: BaseChatModel): ConversationChain {
-    if (!this.hasChain(chatId)) {
-      this.createChain(chatId, llmModel);
+  getChain(
+    chatId: string,
+    llmModel: BaseChatModel,
+    summary?: string
+  ): ConversationChain {
+    if (!this.hasChain(chatId) || !!summary) {
+      this.createChain(chatId, llmModel, summary);
     }
 
     return this.chainMap.get(chatId);
@@ -33,13 +37,17 @@ export class ChainService {
     return this.chainMap.has(chatId);
   }
 
-  private createChain(chatId: string, llmModel: BaseChatModel) {
+  private createChain(
+    chatId: string,
+    llmModel: BaseChatModel,
+    summary?: string
+  ) {
     this.chainMap.set(
       chatId,
       new ConversationChain({
         llm: llmModel,
         prompt: this.defaultChatPrompt,
-        memory: this.memoryService.getMemory(chatId),
+        memory: this.memoryService.getMemory(chatId, summary),
       })
     );
   }
