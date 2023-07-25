@@ -1,3 +1,4 @@
+import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
@@ -8,11 +9,12 @@ import { Usecase } from '@/common/types/usecase';
 import { ChatMessageResponseSchema } from '@/contract/chats/chat-message.response.dto';
 import { Injectable } from '@nestjs/common';
 
-const TOKENS_LIMIT = 3000;
-
 @Injectable()
 export class AddMessageToChatUsecase implements Usecase {
-  constructor(private readonly chatsRepository: ChatsRepository) {}
+  constructor(
+    private readonly chatsRepository: ChatsRepository,
+    private readonly appConfigService: AppConfigService
+  ) {}
 
   async execute(
     roomId: string,
@@ -42,7 +44,8 @@ export class AddMessageToChatUsecase implements Usecase {
 
       return {
         message: ChatMessageResponseSchema.parse(chatMessage),
-        shouldSummarize: numberOfTokens > TOKENS_LIMIT,
+        shouldSummarize:
+          numberOfTokens > this.appConfigService.getAiAppConfig().tokenLimit,
       };
     } catch (e) {
       throw new InternalServerErrorException(e.message);

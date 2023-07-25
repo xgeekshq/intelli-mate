@@ -1,7 +1,8 @@
 {
   "ai": {
     "defaultTemperature": 0.2,
-    "defaultChatContextTTL": 604800
+    "defaultChatContextTTL": 604800,
+    "tokenLimit": 3000
   },
   "authorization": {
     "roles": [
