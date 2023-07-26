@@ -15,9 +15,9 @@ export class ClerkAuthUserProvider implements AuthProvider {
 
   async findUser(id: string): Promise<User | undefined> {
     const userRoles = await this.authRepository.findUserRolesForSingleUser(id);
-    const userList = await users.getUserList();
+    const user = await users.getUser(id);
     return {
-      ...userList.find((u) => u.id === id),
+      ...user,
       roles: userRoles.roles,
     };
   }
