@@ -1,3 +1,4 @@
+import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
@@ -10,13 +11,16 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AddMessageToChatUsecase implements Usecase {
-  constructor(private readonly chatsRepository: ChatsRepository) {}
+  constructor(
+    private readonly chatsRepository: ChatsRepository,
+    private readonly appConfigService: AppConfigService
+  ) {}
 
   async execute(
     roomId: string,
     addMessageToChatRequestDto: AddMessageToChatRequestDto,
     userId?: string
-  ): Promise<ChatMessageResponseDto> {
+  ): Promise<{ message: ChatMessageResponseDto; shouldSummarize: boolean }> {
     const existingChat = await this.chatsRepository.findChatByRoomId(roomId);
     if (!existingChat) {
       throw new ChatNotFoundException();
@@ -26,13 +30,25 @@ export class AddMessageToChatUsecase implements Usecase {
       throw new ChatMessageMustHaveSenderException();
     }
 
+    const numberOfTokens = existingChat.messageHistory.reduce(
+      (acc, curr) => (acc += curr.meta.tokens),
+      0
+    );
+
     try {
       const chatMessage = await this.chatsRepository.addMessageToChat(
         existingChat,
         addMessageToChatRequestDto,
         userId
       );
-      return ChatMessageResponseSchema.parse(chatMessage);
+
+      return {
+        message: ChatMessageResponseSchema.parse(chatMessage),
+        shouldSummarize:
+          numberOfTokens >
+          this.appConfigService.getAiAppConfig()
+            .defaultTokenLimitForSummarization,
+      };
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }

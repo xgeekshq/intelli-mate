@@ -16,11 +16,41 @@ export class AiService {
     });
   }
 
-  async askAiInFreeText(input: string, roomId: string) {
-    const chain = this.chainService.getChain(roomId, this.llmModel);
+  async askAiInFreeText(
+    input: string,
+    roomId: string,
+    shouldSummarize: boolean
+  ) {
+    let summary;
+
+    if (shouldSummarize) {
+      try {
+        summary = await this.askAiToSummarize(roomId);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    const chain = this.chainService.getChain(
+      roomId,
+      this.llmModel,
+      summary?.response
+    );
 
     try {
       return await chain.call({ input });
+    } catch (e) {
+      console.error(e.response.data);
+    }
+  }
+
+  private async askAiToSummarize(roomId: string) {
+    const chain = this.chainService.getChain(roomId, this.llmModel);
+
+    try {
+      return await chain.call({
+        input: 'Summarize this conversation ',
+      });
     } catch (e) {
       console.error(e.response.data);
     }

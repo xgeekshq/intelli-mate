@@ -2,9 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, Settings } from 'lucide-react';
 
 interface RoomHeaderProps {
   id: string;
@@ -18,14 +16,21 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
   const isSettingsPage = pathname.includes('settings');
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
-      <p className="relative text-lg font-semibold tracking-tight">
+      <p className="text-lg font-semibold tracking-tight">
         {isSettingsPage ? `${name} | settings` : name}
       </p>
+      {isSettingsPage && (
+        <Link
+          href={`/rooms/${id}`}
+          className="flex items-center gap-1 font-semibold tracking-tight"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          back to chat
+        </Link>
+      )}
       {!isSettingsPage && (
         <Link href={`${id}/settings`}>
-          <Button variant="ghost">
-            <Settings className="h-5 w-5" />
-          </Button>
+          <Settings className="h-5 w-5" />
         </Link>
       )}
     </div>
