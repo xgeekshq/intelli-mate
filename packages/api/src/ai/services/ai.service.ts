@@ -13,6 +13,7 @@ export class AiService {
   ) {
     this.llmModel = new ChatOpenAI({
       temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
+      modelName: 'gpt-3.5-turbo-16k',
     });
   }
 
@@ -49,7 +50,7 @@ export class AiService {
 
     try {
       return await chain.call({
-        input: 'Summarize this conversation ',
+        input: 'Summarize this conversation using about 700 tokens',
       });
     } catch (e) {
       console.error(e.response.data);
