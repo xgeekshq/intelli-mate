@@ -2,7 +2,7 @@
   "ai": {
     "defaultTemperature": 0.2,
     "defaultChatContextTTL": 604800,
-    "defaultTokenLimitForSummarization": 3000
+    "defaultTokenLimitForSummarization": 15000
   },
   "authorization": {
     "roles": [

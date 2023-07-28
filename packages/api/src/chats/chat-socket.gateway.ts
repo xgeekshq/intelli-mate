@@ -101,7 +101,7 @@ export class ChatSocketGateway {
           tokens: encode(aiResponse).length,
           replyTo: addedMessage.id,
           ai: {
-            llmModel: 'gpt-3.5-turbo',
+            llmModel: 'gpt-3.5-turbo-16k',
           },
         },
       })
