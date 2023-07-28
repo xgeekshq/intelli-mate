@@ -30,10 +30,11 @@ export class AiService {
         console.log(e);
       }
     }
+
     const chain = this.chainService.getChain(
       chatId,
       this.llmModel,
-      summary.response
+      summary?.response
     );
 
     try {
