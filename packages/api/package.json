@@ -21,7 +21,7 @@
     "@clerk/clerk-sdk-node": "^4.12.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",
-    "@nestjs/core": "^9.0.0",
+    "@nestjs/core": "^10.1.2",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^9.4.3",
     "@nestjs/schedule": "^3.0.1",
