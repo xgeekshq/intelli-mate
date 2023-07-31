@@ -29,7 +29,7 @@
     "@radix-ui/react-toast": "^1.1.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "bufferutil": "^4.0.7",
-    "class-variance-authority": "^0.4.0",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
     "cookies-next": "^2.1.2",
