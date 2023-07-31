@@ -7,7 +7,7 @@ import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class CreateChatForRoomUsecase implements Usecase {
+export class JoinChatUsecase implements Usecase {
   constructor(private readonly chatsRepository: ChatsRepository) {}
 
   async execute(
@@ -19,11 +19,13 @@ export class CreateChatForRoomUsecase implements Usecase {
     );
 
     if (existingChat) {
+      await this.chatsRepository.addParticipantToChat(existingChat, userId);
       return ChatResponseSchema.parse(existingChat);
     }
 
     try {
       const chat = await this.chatsRepository.createChatForRoom(
+        userId,
         createChatForRoomRequestDto
       );
       return ChatResponseSchema.parse(chat);

@@ -6,14 +6,28 @@ import { ChatsModule } from '@/chats/chats.module';
 import { DatabaseModule } from '@/database/database.module';
 import { RoomsModule } from '@/rooms/rooms.module';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
+import { BullModule, BullRootModuleOptions } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    EventEmitterModule.forRoot(),
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService): BullRootModuleOptions => {
+        return {
+          redis: {
+            host: `redis://${configService.get('REDIS_CONNECTION_URL')}`,
+            password: configService.get('REDIS_HOST_PASSWORD'),
+          },
+        };
+      },
+      inject: [ConfigService],
     }),
     CacheModule,
     DatabaseModule,

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-const MetaSchema = new mongoose.Schema(
+const MessageMetaSchema = new mongoose.Schema(
   {
     tokens: {
       type: Number,
@@ -39,16 +39,46 @@ const SenderSchema = new mongoose.Schema(
   { _id: false, required: true }
 );
 
-export const MessageSchema = new mongoose.Schema({
+const MessageSchema = new mongoose.Schema({
   sender: SenderSchema,
   content: {
     type: String,
     required: true,
   },
-  meta: MetaSchema,
+  meta: MessageMetaSchema,
   createdAt: {
     type: String,
     required: true,
+  },
+});
+
+const DocumentMetaSchema = new mongoose.Schema(
+  {
+    mimetype: {
+      type: String,
+      required: true,
+    },
+    filename: {
+      type: String,
+      required: true,
+    },
+    size: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false, required: true }
+);
+
+const DocumentSchema = new mongoose.Schema({
+  roles: {
+    type: [String],
+  },
+  meta: DocumentMetaSchema,
+  src: {
+    type: mongoose.SchemaTypes.Buffer,
+    required: true,
+    select: false,
   },
 });
 
@@ -61,6 +91,9 @@ export const ChatSchema = new mongoose.Schema(
     },
     messageHistory: {
       type: [MessageSchema],
+    },
+    documents: {
+      type: [DocumentSchema],
     },
     participantIds: {
       type: [String],

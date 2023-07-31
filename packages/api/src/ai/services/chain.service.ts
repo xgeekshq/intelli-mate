@@ -22,32 +22,32 @@ export class ChainService {
   }
 
   getChain(
-    chatId: string,
+    roomId: string,
     llmModel: BaseChatModel,
     summary?: string
   ): ConversationChain {
-    if (!this.hasChain(chatId) || !!summary) {
-      this.createChain(chatId, llmModel, summary);
+    if (!this.hasChain(roomId) || !!summary) {
+      this.createChain(roomId, llmModel, summary);
     }
 
-    return this.chainMap.get(chatId);
+    return this.chainMap.get(roomId);
   }
 
-  private hasChain(chatId: string): boolean {
-    return this.chainMap.has(chatId);
+  private hasChain(roomId: string): boolean {
+    return this.chainMap.has(roomId);
   }
 
   private createChain(
-    chatId: string,
+    roomId: string,
     llmModel: BaseChatModel,
     summary?: string
   ) {
     this.chainMap.set(
-      chatId,
+      roomId,
       new ConversationChain({
         llm: llmModel,
         prompt: this.defaultChatPrompt,
-        memory: this.memoryService.getMemory(chatId, summary),
+        memory: this.memoryService.getMemory(roomId, summary),
       })
     );
   }

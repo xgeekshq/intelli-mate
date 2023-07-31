@@ -1,7 +1,7 @@
 import { AiService } from '@/ai/services/ai.service';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
-import { CreateChatForRoomUsecase } from '@/chats/usecases/create-chat-for-room.usecase';
+import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
 import { AddMessageToChatRequestSchema } from '@/contract/chats/add-message-to-chat.request.dto';
 import { SocketCreateRoomRequestDto } from '@/contract/chats/socket-create-room.request.dto';
 import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request.dto';
@@ -25,7 +25,7 @@ export class ChatSocketGateway {
   server: Server;
 
   constructor(
-    private readonly createChatForRoomUsecase: CreateChatForRoomUsecase,
+    private readonly joinChatUsecase: JoinChatUsecase,
     private readonly addMessageToChatUsecase: AddMessageToChatUsecase,
     private readonly aiService: AiService
   ) {}
@@ -35,7 +35,7 @@ export class ChatSocketGateway {
     @MessageBody('data') data: SocketCreateRoomRequestDto,
     @ConnectedSocket() client: Socket
   ) {
-    const chat = await this.createChatForRoomUsecase.execute(data.userId, data);
+    const chat = await this.joinChatUsecase.execute(data.userId, data);
     client.join(chat.roomId);
     return chat.roomId;
   }

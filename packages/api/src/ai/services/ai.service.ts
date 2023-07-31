@@ -19,21 +19,21 @@ export class AiService {
 
   async askAiInFreeText(
     input: string,
-    chatId: string,
+    roomId: string,
     shouldSummarize: boolean
   ) {
     let summary;
 
     if (shouldSummarize) {
       try {
-        summary = await this.askAiToSummarize(chatId);
+        summary = await this.askAiToSummarize(roomId);
       } catch (e) {
         console.log(e);
       }
     }
 
     const chain = this.chainService.getChain(
-      chatId,
+      roomId,
       this.llmModel,
       summary?.response
     );
@@ -45,8 +45,8 @@ export class AiService {
     }
   }
 
-  private async askAiToSummarize(chatId: string) {
-    const chain = this.chainService.getChain(chatId, this.llmModel);
+  private async askAiToSummarize(roomId: string) {
+    const chain = this.chainService.getChain(roomId, this.llmModel);
 
     try {
       return await chain.call({

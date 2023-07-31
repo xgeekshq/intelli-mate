@@ -56,7 +56,7 @@ export default async function AdminUsers() {
             <TableCaption>
               All intelli-mate users are listed here along with their roles.
             </TableCaption>
-            <TableHeader className="bg-background sticky top-0">
+            <TableHeader className="sticky top-0 bg-background">
               <TableRow>
                 <TableHead className="w-20"></TableHead>
                 <TableHead>Name</TableHead>
