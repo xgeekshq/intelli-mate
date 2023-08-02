@@ -2,9 +2,7 @@ import { atom } from 'recoil';
 import io, { Socket } from 'socket.io-client';
 
 // @ts-ignore
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
-  withCredentials: true,
-});
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
 
 export const socketState = atom<Socket>({
   key: 'Socket',
