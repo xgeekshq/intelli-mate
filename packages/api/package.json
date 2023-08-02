@@ -29,6 +29,7 @@
     "@nestjs/schedule": "^3.0.1",
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/websockets": "^9.4.3",
+    "@socket.io/redis-adapter": "^8.2.1",
     "bull": "^4.10.4",
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",
