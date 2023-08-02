@@ -9,7 +9,7 @@ export interface UserJoinedRoomEvent extends IntelliMateEvent {
   };
 }
 
-export function userJoinedRoomEventFactory(
+export function createUserJoinedRoomEventFactory(
   roomId: string,
   userId: string
 ): UserJoinedRoomEvent {
