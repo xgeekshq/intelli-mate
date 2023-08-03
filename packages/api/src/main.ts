@@ -1,3 +1,4 @@
+import { CACHE_CLIENT } from '@/common/constants/cache';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
 import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -11,6 +12,7 @@ import { RedisIoAdapter } from './chats/adapters/redis-io.adapter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  const cacheClient = app.get(CACHE_CLIENT);
 
   app.setGlobalPrefix('api');
   app.enableVersioning({
@@ -32,7 +34,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  const redisIoAdapter = new RedisIoAdapter(app, configService);
+  const redisIoAdapter = new RedisIoAdapter(app, configService, cacheClient);
   await redisIoAdapter.connectToRedis();
   app.useWebSocketAdapter(redisIoAdapter);
 
