@@ -25,7 +25,10 @@ export class RedisIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions): any {
-    options.cors = { origin: this.configService.get('FRONTEND_ORIGIN_URL') };
+    options.cors = {
+      origin: this.configService.get('FRONTEND_ORIGIN_URL'),
+      credentials: true,
+    };
     const server = super.createIOServer(port, options);
     server.adapter(this.adapterConstructor);
     return server;

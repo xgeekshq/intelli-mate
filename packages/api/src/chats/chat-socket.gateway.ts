@@ -15,11 +15,7 @@ import {
 import { encode } from 'gpt-3-encoder';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({
-  cors: {
-    credentials: true,
-  },
-})
+@WebSocketGateway()
 export class ChatSocketGateway {
   @WebSocketServer()
   server: Server;
