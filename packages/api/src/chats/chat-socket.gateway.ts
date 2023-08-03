@@ -1,4 +1,5 @@
 import { AiService } from '@/ai/services/ai.service';
+import { ChatsRepository } from '@/chats/chats.repository';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
 import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
@@ -23,6 +24,7 @@ export class ChatSocketGateway {
   constructor(
     private readonly joinChatUsecase: JoinChatUsecase,
     private readonly addMessageToChatUsecase: AddMessageToChatUsecase,
+    private readonly chatsRepository: ChatsRepository,
     private readonly aiService: AiService
   ) {}
 
@@ -72,10 +74,18 @@ export class ChatSocketGateway {
         data.userId
       );
 
-    const { response: aiResponse } = await this.aiService.askAiInFreeText(
+    const chat = await this.chatsRepository.findChatByRoomId(data.roomId);
+    const allDocumentsReadyToQuery = chat.documents.every(
+      (document) => document.meta.queryable
+    );
+
+    // TODO: all documents from the chat are being passed in BUT permission check with members should be done.
+    //    Documents should only be passed in if they are queryable, meaning that they have been processed and stored in a vector db
+    const aiResponse = await this.aiService.askAiInFreeText(
       data.content,
       data.roomId,
-      shouldSummarize
+      shouldSummarize,
+      allDocumentsReadyToQuery ? chat.documents : []
     );
 
     this.server.to(data.roomId).emit(

@@ -66,6 +66,18 @@ const DocumentMetaSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    queryable: {
+      type: Boolean,
+      required: true,
+    },
+    vectorDBDocumentName: {
+      type: String,
+      default: null,
+    },
+    vectorDBDocumentDescription: {
+      type: String,
+      default: null,
+    },
   },
   { _id: false, required: true }
 );

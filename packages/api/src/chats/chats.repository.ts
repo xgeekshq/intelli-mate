@@ -82,6 +82,9 @@ export class ChatsRepository {
           mimetype: multerDoc.mimetype,
           filename: multerDoc.originalname,
           size: multerDoc.size,
+          queryable: false,
+          vectorDBDocumentName: null,
+          vectorDBDocumentDescription: null,
         },
         src: multerDoc.buffer,
       }))
@@ -89,6 +92,25 @@ export class ChatsRepository {
 
     await chat.save();
     return chat;
+  }
+
+  async addVectorDBMetadataToDocument(
+    roomId: string,
+    document: ChatDocument,
+    vectorDBDocumentMetadata: { name: string; description: string }
+  ): Promise<void> {
+    await this.chatModel.findOneAndUpdate(
+      { roomId, 'documents.meta.filename': document.meta.filename },
+      {
+        $set: {
+          'documents.$.meta.queryable': true,
+          'documents.$.meta.vectorDBDocumentName':
+            vectorDBDocumentMetadata.name,
+          'documents.$.meta.vectorDBDocumentDescription':
+            vectorDBDocumentMetadata.description,
+        },
+      }
+    );
   }
 
   private messageDateSortAscPredicate(a: ChatMessage, b: ChatMessage) {

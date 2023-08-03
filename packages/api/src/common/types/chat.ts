@@ -27,6 +27,9 @@ export interface ChatDocumentMeta {
   mimetype: string;
   filename: string;
   size: number;
+  queryable: boolean;
+  vectorDBDocumentName: string | null;
+  vectorDBDocumentDescription: string | null;
 }
 
 export interface ChatDocument {
