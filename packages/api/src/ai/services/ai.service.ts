@@ -43,7 +43,6 @@ export class AiService {
     }
 
     if (documents.length > 0) {
-      console.log('Conversation Agent');
       aiExecutor = await this.agentConversationService.getAgent(
         roomId,
         this.llmModel,
@@ -51,7 +50,6 @@ export class AiService {
         summary
       );
     } else {
-      console.log('Simple Conversation Chain');
       aiExecutor = this.simpleConversationChainService.getChain(
         roomId,
         this.llmModel,
