@@ -4,12 +4,14 @@ import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
 import { ChatNotFoundExceptionSchema } from '@/chats/exceptions/chat-not-found.exception';
 import { DocumentPermissionsMismatchExceptionSchema } from '@/chats/exceptions/document-permissions-mismatch.exception';
+import { MaxDocumentSizeLimitExceptionSchema } from '@/chats/exceptions/max-document-size-limit.exception';
+import { NoMoreDocumentsCanBeUploadedToChatExceptionSchema } from '@/chats/exceptions/no-more-documents-can-be-uploaded-to-chat.exception';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
 import { UploadDocumentsToChatUsecase } from '@/chats/usecases/upload-documents-to-chat.usecase';
 import {
-  acceptedFileMimetypesRegExp,
-  acceptedFileSizeLimit,
+  ACCEPTED_FILE_MIMETYPES_REGEXP,
+  ACCEPTED_FILE_SIZE_LIMIT,
 } from '@/common/constants/files';
 import {
   Body,
@@ -31,7 +33,9 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
   ApiConsumes,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -108,7 +112,11 @@ export class ChatsController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiNoContentResponse({ description: 'No content' })
-  @ApiBadRequestResponse({ schema: DocumentPermissionsMismatchExceptionSchema })
+  @ApiBadRequestResponse({ schema: MaxDocumentSizeLimitExceptionSchema })
+  @ApiConflictResponse({ schema: DocumentPermissionsMismatchExceptionSchema })
+  @ApiForbiddenResponse({
+    schema: NoMoreDocumentsCanBeUploadedToChatExceptionSchema,
+  })
   @ApiNotFoundResponse({ schema: ChatNotFoundExceptionSchema })
   @ApiOperation({ description: 'Upload documents into a chat' })
   uploadDocumentsToChat(
@@ -116,11 +124,11 @@ export class ChatsController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: acceptedFileSizeLimit,
+            maxSize: ACCEPTED_FILE_SIZE_LIMIT,
             message: 'Files are limited to 16MB of size',
           }),
           new FileTypeValidator({
-            fileType: acceptedFileMimetypesRegExp,
+            fileType: ACCEPTED_FILE_MIMETYPES_REGEXP,
           }),
         ],
       })

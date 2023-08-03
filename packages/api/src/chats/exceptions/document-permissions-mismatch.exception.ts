@@ -5,7 +5,7 @@ export const DocumentPermissionsMismatchExceptionSchema = {
   properties: {
     statusCode: {
       type: 'number',
-      example: 400,
+      example: 409,
     },
     message: {
       type: 'array',
@@ -26,11 +26,11 @@ export class DocumentPermissionsMismatchException extends HttpException {
   constructor() {
     super(
       {
-        statusCode: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.CONFLICT,
         message: ['document: permissions'],
         error: "Document roles don't match the chat participant roles",
       },
-      HttpStatus.BAD_REQUEST
+      HttpStatus.CONFLICT
     );
   }
 }

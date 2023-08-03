@@ -20,6 +20,13 @@ services:
       - "6379:6379"
     env_file:
       - .env
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - chromadb:/index_data
+    ports:
+      - "8009:8000"
 volumes:
   mongodb:
   redis:
+  chromadb:

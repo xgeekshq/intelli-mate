@@ -1,6 +1,6 @@
 import {
   UserJoinedRoomEventKey,
-  userJoinedRoomEventFactory,
+  createUserJoinedRoomEventFactory,
 } from '@/common/events/user-joined-room.event';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
@@ -43,7 +43,7 @@ export class JoinRoomUsecase implements Usecase {
 
       this.eventEmitter.emit(
         UserJoinedRoomEventKey,
-        userJoinedRoomEventFactory(room.id, userId)
+        createUserJoinedRoomEventFactory(room.id, userId)
       );
 
       return RoomResponseSchema.parse(room);

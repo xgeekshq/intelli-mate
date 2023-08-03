@@ -1,7 +1,7 @@
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import {
   UserJoinedRoomEventKey,
-  userJoinedRoomEventFactory,
+  createUserJoinedRoomEventFactory,
 } from '@/common/events/user-joined-room.event';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { UserNotFoundException } from '@/common/exceptions/user-not-found.exception';
@@ -52,7 +52,7 @@ export class InviteUserToRoomUsecase implements Usecase {
 
       this.eventEmitter.emit(
         UserJoinedRoomEventKey,
-        userJoinedRoomEventFactory(room.id, user.id)
+        createUserJoinedRoomEventFactory(room.id, user.id)
       );
 
       return RoomResponseSchema.parse(room);

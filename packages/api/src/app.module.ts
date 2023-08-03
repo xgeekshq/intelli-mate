@@ -19,14 +19,12 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
     EventEmitterModule.forRoot(),
     BullModule.forRootAsync({
-      useFactory: (configService: ConfigService): BullRootModuleOptions => {
-        return {
-          redis: {
-            host: `redis://${configService.get('REDIS_CONNECTION_URL')}`,
-            password: configService.get('REDIS_HOST_PASSWORD'),
-          },
-        };
-      },
+      useFactory: (configService: ConfigService): BullRootModuleOptions => ({
+        redis: {
+          host: `${configService.get('REDIS_CONNECTION_URL')}`,
+          password: configService.get('REDIS_HOST_PASSWORD'),
+        },
+      }),
       inject: [ConfigService],
     }),
     CacheModule,
