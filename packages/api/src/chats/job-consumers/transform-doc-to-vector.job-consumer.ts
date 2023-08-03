@@ -1,3 +1,4 @@
+import { AiService } from '@/ai/services/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import {
   CSV_MIMETYPE,
@@ -18,14 +19,15 @@ import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
-import { OpenAIEmbeddings } from 'langchain/embeddings';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Chroma } from 'langchain/vectorstores';
+import { Chroma } from 'langchain/vectorstores/chroma';
 
 @Processor(CHAT_DOCUMENT_UPLOAD_QUEUE)
 export class TransformDocToVectorJobConsumer {
   constructor(
     private readonly chatsRepository: ChatsRepository,
+    private readonly aiService: AiService,
     private readonly configService: ConfigService
   ) {}
 
@@ -36,7 +38,11 @@ export class TransformDocToVectorJobConsumer {
       job.data.payload.roomId,
       chatDocument
     );
-    void this.createDocumentVectorIndexes(chatDocument, lcDocuments);
+    void this.createDocumentVectorIndexes(
+      job.data.payload.roomId,
+      chatDocument,
+      lcDocuments
+    );
   }
 
   @OnQueueError()
@@ -64,13 +70,13 @@ export class TransformDocToVectorJobConsumer {
   ): Promise<Document[]> {
     let loader: BaseDocumentLoader;
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200,
+      chunkSize: 500, // default is 1000
+      chunkOverlap: 100, // default is 200
     });
     const documentBlob = new Blob([document.src]);
 
     if (document.meta.mimetype === PDF_MIMETYPE) {
-      loader = new PDFLoader(documentBlob, { splitPages: true });
+      loader = new PDFLoader(documentBlob);
     }
     if (document.meta.mimetype === CSV_MIMETYPE) {
       loader = new CSVLoader(documentBlob);
@@ -99,6 +105,7 @@ export class TransformDocToVectorJobConsumer {
   }
 
   private async createDocumentVectorIndexes(
+    roomId: string,
     document: ChatDocument,
     lcDocuments: Document[]
   ) {
@@ -108,5 +115,14 @@ export class TransformDocToVectorJobConsumer {
     });
 
     await vectorStore.addDocuments(lcDocuments);
+
+    const vectorDBDocumentMetadata =
+      await this.aiService.askAiToDescribeDocument(vectorStore.asRetriever());
+
+    await this.chatsRepository.addVectorDBMetadataToDocument(
+      roomId,
+      document,
+      vectorDBDocumentMetadata
+    );
   }
 }
