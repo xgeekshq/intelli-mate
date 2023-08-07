@@ -1,3 +1,4 @@
+import { AppConfigService } from '@/app-config/app-config.service';
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatNotFoundException } from '@/chats/exceptions/chat-not-found.exception';
@@ -19,7 +20,8 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     private readonly chatsRepository: ChatsRepository,
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider,
     @InjectQueue(CHAT_DOCUMENT_UPLOAD_QUEUE)
-    private readonly chatDocUploadQueue: Queue
+    private readonly chatDocUploadQueue: Queue,
+    private readonly appConfigService: AppConfigService
   ) {}
 
   async execute(
@@ -59,9 +61,12 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     chat: Chat,
     files: Express.Multer.File[]
   ) {
+    const maxNumberOfDocumentsPerChat =
+      this.appConfigService.getChatConfig().maxNumberOfDocumentsPerChat;
+
     if (
-      chat.documents.length >= 2 ||
-      files.length + chat.documents.length >= 2
+      chat.documents.length >= maxNumberOfDocumentsPerChat ||
+      files.length + chat.documents.length > maxNumberOfDocumentsPerChat
     ) {
       throw new NoMoreDocumentsCanBeUploadedToChatException();
     }

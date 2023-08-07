@@ -1,4 +1,5 @@
 import { AiService } from '@/ai/services/ai.service';
+import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
@@ -25,7 +26,8 @@ export class ChatSocketGateway {
     private readonly joinChatUsecase: JoinChatUsecase,
     private readonly addMessageToChatUsecase: AddMessageToChatUsecase,
     private readonly chatsRepository: ChatsRepository,
-    private readonly aiService: AiService
+    private readonly aiService: AiService,
+    private readonly appConfigService: AppConfigService
   ) {}
 
   @SubscribeMessage('joinRoom')
@@ -106,7 +108,7 @@ export class ChatSocketGateway {
           tokens: encode(aiResponse).length,
           replyTo: addedMessage.id,
           ai: {
-            llmModel: 'gpt-3.5-turbo-16k',
+            llmModel: this.appConfigService.getAiAppConfig().defaultAiModel,
           },
         },
       })
