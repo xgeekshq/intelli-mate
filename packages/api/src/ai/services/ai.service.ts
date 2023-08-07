@@ -8,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { AgentExecutor } from 'langchain/agents';
 import { ConversationChain, RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { BaseChatMessage, ChainValues } from 'langchain/schema';
 import { VectorStoreRetriever } from 'langchain/vectorstores/base';
 
 type AIExecutor = AgentExecutor | ConversationChain;
@@ -89,7 +90,7 @@ export class AiService {
     };
   }
 
-  async getChatHistoryMessages(roomId: string) {
+  async getChatHistoryMessages(roomId: string): Promise<BaseChatMessage[]> {
     const redisChatMemory = await (
       await this.memoryService.getMemory(roomId)
     ).chatHistory.getMessages();
@@ -101,7 +102,7 @@ export class AiService {
     throw new RedisChatMemoryNotFoundException();
   }
 
-  private async askAiToSummarize(roomId: string) {
+  private async askAiToSummarize(roomId: string): Promise<ChainValues> {
     const chain = await this.simpleConversationChainService.getChain(
       roomId,
       this.llmModel
