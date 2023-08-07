@@ -1,11 +1,14 @@
 import { AgentConversationService } from '@/ai/services/agent-conversation.service';
+import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { AppConfigService } from '@/app-config/app-config.service';
+import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
 import { ChatDocument } from '@/common/types/chat';
 import { Injectable } from '@nestjs/common';
 import { AgentExecutor } from 'langchain/agents';
 import { ConversationChain, RetrievalQAChain } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { BaseChatMessage, ChainValues } from 'langchain/schema';
 import { VectorStoreRetriever } from 'langchain/vectorstores/base';
 
 type AIExecutor = AgentExecutor | ConversationChain;
@@ -17,7 +20,8 @@ export class AiService {
   constructor(
     private readonly simpleConversationChainService: SimpleConversationChainService,
     private readonly agentConversationService: AgentConversationService,
-    private readonly appConfigService: AppConfigService
+    private readonly appConfigService: AppConfigService,
+    private readonly memoryService: MemoryService
   ) {
     this.llmModel = new ChatOpenAI({
       temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
@@ -50,7 +54,7 @@ export class AiService {
         summary
       );
     } else {
-      aiExecutor = this.simpleConversationChainService.getChain(
+      aiExecutor = await this.simpleConversationChainService.getChain(
         roomId,
         this.llmModel,
         summary?.response
@@ -87,8 +91,20 @@ export class AiService {
     };
   }
 
-  private async askAiToSummarize(roomId: string) {
-    const chain = this.simpleConversationChainService.getChain(
+  async getChatHistoryMessages(roomId: string): Promise<BaseChatMessage[]> {
+    const redisChatMemory = await (
+      await this.memoryService.getMemory(roomId)
+    ).chatHistory.getMessages();
+
+    if (redisChatMemory) {
+      return redisChatMemory;
+    }
+
+    throw new RedisChatMemoryNotFoundException();
+  }
+
+  private async askAiToSummarize(roomId: string): Promise<ChainValues> {
+    const chain = await this.simpleConversationChainService.getChain(
       roomId,
       this.llmModel
     );

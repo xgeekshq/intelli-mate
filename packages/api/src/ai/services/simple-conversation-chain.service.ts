@@ -21,13 +21,13 @@ export class SimpleConversationChainService {
     ]);
   }
 
-  getChain(
+  async getChain(
     roomId: string,
     llmModel: BaseChatModel,
     summary?: string
-  ): ConversationChain {
+  ): Promise<ConversationChain> {
     if (!this.hasChain(roomId) || !!summary) {
-      this.createChain(roomId, llmModel, summary);
+      await this.createChain(roomId, llmModel, summary);
     }
 
     return this.chainMap.get(roomId);
@@ -37,7 +37,7 @@ export class SimpleConversationChainService {
     return this.chainMap.has(roomId);
   }
 
-  private createChain(
+  private async createChain(
     roomId: string,
     llmModel: BaseChatModel,
     summary?: string
@@ -47,7 +47,7 @@ export class SimpleConversationChainService {
       new ConversationChain({
         llm: llmModel,
         prompt: this.defaultChatPrompt,
-        memory: this.memoryService.getMemory(roomId, summary),
+        memory: await this.memoryService.getMemory(roomId, summary),
       })
     );
   }

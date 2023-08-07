@@ -1,3 +1,4 @@
+import { AiService } from '@/ai/services/ai.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
@@ -8,12 +9,14 @@ import { InternalServerErrorException } from '@/common/exceptions/internal-serve
 import { Usecase } from '@/common/types/usecase';
 import { ChatMessageResponseSchema } from '@/contract/chats/chat-message.response.dto';
 import { Injectable } from '@nestjs/common';
+import { encode } from 'gpt-3-encoder';
 
 @Injectable()
 export class AddMessageToChatUsecase implements Usecase {
   constructor(
     private readonly chatsRepository: ChatsRepository,
-    private readonly appConfigService: AppConfigService
+    private readonly appConfigService: AppConfigService,
+    private readonly aiService: AiService
   ) {}
 
   async execute(
@@ -30,10 +33,16 @@ export class AddMessageToChatUsecase implements Usecase {
       throw new ChatMessageMustHaveSenderException();
     }
 
-    const numberOfTokens = existingChat.messageHistory.reduce(
-      (acc, curr) => (acc += curr.meta.tokens),
-      0
+    const chatMessageHistory = await this.aiService.getChatHistoryMessages(
+      roomId
     );
+
+    const numberOfTokensRedis = chatMessageHistory.reduce((acc, curr) => {
+      if (!curr.text) {
+        return 0;
+      }
+      return (acc += encode(curr.text).length);
+    }, 0);
 
     try {
       const chatMessage = await this.chatsRepository.addMessageToChat(
@@ -45,7 +54,7 @@ export class AddMessageToChatUsecase implements Usecase {
       return {
         message: ChatMessageResponseSchema.parse(chatMessage),
         shouldSummarize:
-          numberOfTokens >
+          numberOfTokensRedis >
           this.appConfigService.getAiAppConfig()
             .defaultTokenLimitForSummarization,
       };
