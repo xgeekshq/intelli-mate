@@ -2,12 +2,14 @@ import { AppConfigNotFoundException } from '@/app-config/exceptions/app-config-n
 import { Injectable } from '@nestjs/common';
 import * as appConfig from 'config';
 
-export type AiAppConfig = {
-  defaultTemperature: number;
-  defaultChatContextTTL: number;
-  defaultTokenLimitForSummarization: number;
-  defaultAiModel: string;
-};
+import {
+  ai as aiAppConfig,
+  chat as chatAppConfig,
+} from '../../config/default.json';
+
+type ChatAppConfig = typeof chatAppConfig;
+
+type AiAppConfig = typeof aiAppConfig;
 
 @Injectable()
 export class AppConfigService {
@@ -17,6 +19,14 @@ export class AppConfigService {
     }
 
     return appConfig.get<AiAppConfig>('ai');
+  }
+
+  getChatConfig(): ChatAppConfig {
+    if (!appConfig.has('chat')) {
+      throw new AppConfigNotFoundException();
+    }
+
+    return appConfig.get<ChatAppConfig>('chat');
   }
 
   async getAppRoles(): Promise<string[]> {

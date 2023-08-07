@@ -5,6 +5,9 @@
     "defaultTokenLimitForSummarization": 15000,
     "defaultAiModel": "gpt-3.5-turbo-16k"
   },
+  "chat": {
+    "maxNumberOfDocumentsPerChat": 2
+  },
   "authorization": {
     "roles": [
       "Admin",
