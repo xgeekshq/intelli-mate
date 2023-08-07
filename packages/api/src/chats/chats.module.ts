@@ -1,7 +1,9 @@
 import { AiModule } from '@/ai/ai.module';
+import { MemoryService } from '@/ai/services/memory.service';
 import { AppConfigModule } from '@/app-config/app-config.module';
 import { AuthModule } from '@/auth/auth.module';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
+import { CacheModule } from '@/cache/cache.module';
 import { ChatSocketGateway } from '@/chats/chat-socket.gateway';
 import { ChatsController } from '@/chats/chats.controller';
 import { chatsMongooseProviders } from '@/chats/chats.mongoose.providers';
@@ -26,6 +28,7 @@ import { Module } from '@nestjs/common';
     AiModule,
     AppConfigModule,
     BullModule.registerQueue({ name: CHAT_DOCUMENT_UPLOAD_QUEUE }),
+    CacheModule,
   ],
   controllers: [ChatsController],
   providers: [
@@ -34,6 +37,7 @@ import { Module } from '@nestjs/common';
     // DB Providers
     ...chatsMongooseProviders,
     // Services
+    MemoryService,
     ChatsRepository,
     ChatSocketGateway,
     // Usecases

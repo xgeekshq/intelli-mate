@@ -73,7 +73,6 @@ export class ChatSocketGateway {
         }),
         data.userId
       );
-
     const chat = await this.chatsRepository.findChatByRoomId(data.roomId);
     const allDocumentsReadyToQuery = chat.documents.every(
       (document) => document.meta.queryable

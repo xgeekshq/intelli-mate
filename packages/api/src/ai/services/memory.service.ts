@@ -1,8 +1,7 @@
 import { AppConfigService } from '@/app-config/app-config.service';
 import { CACHE_CLIENT } from '@/common/constants/cache';
 import { Inject, Injectable } from '@nestjs/common';
-import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { AIChatMessage } from 'langchain/schema';
+import { BufferMemory } from 'langchain/memory';
 import { RedisChatMessageHistory } from 'langchain/stores/message/redis';
 import { RedisClientType } from 'redis';
 
@@ -20,9 +19,9 @@ export class MemoryService {
 
   getMemory(roomId: string, summary?: string): BufferMemory {
     if (!!summary) {
-      this.createMemoryWithSummary(roomId, summary);
+      void this.memoryMap.get(roomId).clear();
+      void this.createMemoryWithSummary(roomId, summary);
     }
-
     if (!this.hasMemory(roomId)) {
       this.createMemory(roomId);
     }
@@ -50,13 +49,19 @@ export class MemoryService {
     );
   }
 
-  private createMemoryWithSummary(roomId: string, summary: string) {
+  private async createMemoryWithSummary(roomId: string, summary: string) {
+    const redisChatSummary = new RedisChatMessageHistory({
+      sessionId: roomId,
+      client: this.cacheClient,
+      sessionTTL: this.appConfigService.getAiAppConfig().defaultChatContextTTL,
+    });
+    await redisChatSummary.addAIChatMessage(summary);
     this.memoryMap.set(
       roomId,
       new BufferMemory({
         returnMessages: true,
         memoryKey: 'history',
-        chatHistory: new ChatMessageHistory([new AIChatMessage(summary)]),
+        chatHistory: redisChatSummary,
       })
     );
   }
