@@ -17,10 +17,10 @@ export class MemoryService {
     this.memoryMap = new Map<string, BufferMemory>();
   }
 
-  getMemory(roomId: string, summary?: string): BufferMemory {
+  async getMemory(roomId: string, summary?: string): Promise<BufferMemory> {
     if (!!summary) {
-      void this.memoryMap.get(roomId).clear();
-      void this.createMemoryWithSummary(roomId, summary);
+      await this.memoryMap.get(roomId).clear();
+      await this.createMemoryWithSummary(roomId, summary);
     }
     if (!this.hasMemory(roomId)) {
       this.createMemory(roomId);
