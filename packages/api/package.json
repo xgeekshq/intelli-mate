@@ -35,7 +35,7 @@
     "chromadb": "^1.5.5",
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",
-    "d3-dsv": "^2.0.0",
+    "d3-dsv": "^3.0.1",
     "gpt-3-encoder": "^1.1.4",
     "langchain": "^0.0.120",
     "mammoth": "^1.6.0",
