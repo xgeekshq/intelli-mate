@@ -33,9 +33,11 @@ export class AddMessageToChatUsecase implements Usecase {
       throw new ChatMessageMustHaveSenderException();
     }
 
-    const redisChatMemory = await this.aiService.getRedisChatMemory(roomId);
+    const chatMessageHistory = await this.aiService.getChatHistoryMessages(
+      roomId
+    );
 
-    const numberOfTokensRedis = redisChatMemory.reduce((acc, curr) => {
+    const numberOfTokensRedis = chatMessageHistory.reduce((acc, curr) => {
       if (!curr.text) {
         return 0;
       }

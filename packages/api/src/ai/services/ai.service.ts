@@ -89,7 +89,7 @@ export class AiService {
     };
   }
 
-  async getRedisChatMemory(roomId: string) {
+  async getChatHistoryMessages(roomId: string) {
     const redisChatMemory = await (
       await this.memoryService.getMemory(roomId)
     ).chatHistory.getMessages();
