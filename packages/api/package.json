@@ -18,7 +18,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" --cache"
   },
   "dependencies": {
-    "@anatine/zod-nestjs": "^1.10.0",
+    "@anatine/zod-nestjs": "^2.0.3",
     "@clerk/clerk-sdk-node": "^4.12.1",
     "@nestjs/bull": "^0.6.3",
     "@nestjs/common": "^9.0.0",
