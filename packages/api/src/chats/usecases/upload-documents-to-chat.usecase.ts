@@ -61,7 +61,7 @@ export class UploadDocumentsToChatUsecase implements Usecase {
   ) {
     if (
       chat.documents.length >= 2 ||
-      files.length + chat.documents.length >= 2
+      files.length + chat.documents.length > 2
     ) {
       throw new NoMoreDocumentsCanBeUploadedToChatException();
     }

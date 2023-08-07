@@ -21,7 +21,7 @@ export class AiService {
   ) {
     this.llmModel = new ChatOpenAI({
       temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
-      modelName: 'gpt-3.5-turbo-16k',
+      modelName: this.appConfigService.getAiAppConfig().defaultAiModel,
     });
   }
 
@@ -74,7 +74,8 @@ export class AiService {
     const chain = RetrievalQAChain.fromLLM(this.llmModel, vectorStoreRetriever);
 
     const title = await chain.call({
-      query: 'Give me a single word that can reflect this document content',
+      query:
+        'Give me three words, joined together with "-", that can reflect this document content',
     });
     const description = await chain.call({
       query: 'Summarize this document content in a single sentence. Be concise',

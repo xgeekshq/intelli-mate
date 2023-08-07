@@ -70,8 +70,8 @@ export class TransformDocToVectorJobConsumer {
   ): Promise<Document[]> {
     let loader: BaseDocumentLoader;
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500, // default is 1000
-      chunkOverlap: 100, // default is 200
+      chunkSize: 1000, // default is 1000
+      chunkOverlap: 200, // default is 200
     });
     const documentBlob = new Blob([document.src]);
 

@@ -2,7 +2,7 @@ import { AppConfigService } from '@/app-config/app-config.service';
 import { CACHE_CLIENT } from '@/common/constants/cache';
 import { Inject, Injectable } from '@nestjs/common';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { AIChatMessage } from 'langchain/schema';
+import { AIMessage } from 'langchain/schema';
 import { RedisChatMessageHistory } from 'langchain/stores/message/redis';
 import { RedisClientType } from 'redis';
 
@@ -56,7 +56,7 @@ export class MemoryService {
       new BufferMemory({
         returnMessages: true,
         memoryKey: 'history',
-        chatHistory: new ChatMessageHistory([new AIChatMessage(summary)]),
+        chatHistory: new ChatMessageHistory([new AIMessage(summary)]),
       })
     );
   }
