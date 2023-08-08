@@ -53,12 +53,7 @@ export class AgentConversationService {
       [new Calculator(), ...agentDocumentTools],
       llmModel,
       {
-        agentArgs: {
-          systemMessage:
-            'You are a friendly and helpful AI assistant. Answer in markdown format when possible.',
-        },
         agentType: 'chat-conversational-react-description',
-        verbose: true,
         memory: new BufferMemory({
           returnMessages: true,
           memoryKey: 'chat_history',

@@ -117,7 +117,7 @@ export class TransformDocToVectorJobConsumer {
     await vectorStore.addDocuments(lcDocuments);
 
     const vectorDBDocumentMetadata =
-      await this.aiService.askAiToDescribeDocument(vectorStore.asRetriever());
+      await this.aiService.askAiToDescribeDocument(lcDocuments);
 
     await this.chatsRepository.addVectorDBMetadataToDocument(
       roomId,

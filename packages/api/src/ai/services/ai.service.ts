@@ -3,10 +3,15 @@ import { SimpleConversationChainService } from '@/ai/services/simple-conversatio
 import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatDocument } from '@/common/types/chat';
 import { Injectable } from '@nestjs/common';
+import { PromptTemplate } from 'langchain';
 import { AgentExecutor } from 'langchain/agents';
-import { ConversationChain, RetrievalQAChain } from 'langchain/chains';
+import {
+  ConversationChain,
+  LLMChain,
+  loadSummarizationChain,
+} from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { VectorStoreRetriever } from 'langchain/vectorstores/base';
+import { Document } from 'langchain/document';
 
 type AIExecutor = AgentExecutor | ConversationChain;
 
@@ -65,25 +70,34 @@ export class AiService {
     }
   }
 
-  async askAiToDescribeDocument(
-    vectorStoreRetriever: VectorStoreRetriever
-  ): Promise<{
+  async askAiToDescribeDocument(documents: Document[]): Promise<{
     name: string;
     description: string;
   }> {
-    const chain = RetrievalQAChain.fromLLM(this.llmModel, vectorStoreRetriever);
+    const prompt = PromptTemplate.fromTemplate(
+      `Given the following context, identify the main actor or topic. Your answer should be 1 word.
+Context:
+{context}
 
-    const title = await chain.call({
-      query:
-        'Give me three words, joined together with "-", that can reflect this document content',
+Helpful answer:`
+    );
+
+    const titleChain = new LLMChain({ llm: this.llmModel, prompt });
+    const summarizationChain = loadSummarizationChain(this.llmModel, {
+      type: 'map_reduce',
     });
-    const description = await chain.call({
-      query: 'Summarize this document content in a single sentence. Be concise',
+
+    const summary = await summarizationChain.call({
+      input_documents: documents,
+    });
+
+    const title = await titleChain.call({
+      context: summary.text,
     });
 
     return {
       name: title.text.toLowerCase(),
-      description: description.text,
+      description: summary.text,
     };
   }
 
