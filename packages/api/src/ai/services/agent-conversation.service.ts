@@ -57,8 +57,9 @@ export class AgentConversationService {
         memory: new BufferMemory({
           returnMessages: true,
           memoryKey: 'chat_history',
-          chatHistory: this.memoryService.getMemory(roomId, summary)
-            .chatHistory,
+          chatHistory: (
+            await this.memoryService.getMemory(roomId, summary)
+          ).chatHistory,
         }),
       }
     );
