@@ -74,7 +74,7 @@ export class AiService {
     }
   }
 
-  async askAiToDescribeDocument(documents: Document[]): Promise<{
+  async askAiToDescribeDocument(lcDocuments: Document[]): Promise<{
     name: string;
     description: string;
   }> {
@@ -92,7 +92,7 @@ Helpful answer:`
     });
 
     const summary = await summarizationChain.call({
-      input_documents: documents,
+      input_documents: lcDocuments,
     });
 
     const title = await titleChain.call({

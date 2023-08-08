@@ -10,6 +10,7 @@ import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { createChatDocUploadJobFactory } from '@/common/jobs/chat-doc-upload.job';
 import { Chat } from '@/common/types/chat';
 import { Usecase } from '@/common/types/usecase';
+import { doUserRolesMatch } from '@/common/utils/match-roles';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -98,9 +99,7 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     const allParticipants = await this.clerkAuthUserProvider.findUsers(
       chat.participantIds
     );
-    const rolesMatch = allParticipants.every((participant) =>
-      participant.roles.sort().join(',').includes(fileRoles.sort().join(','))
-    );
+    const rolesMatch = doUserRolesMatch(allParticipants, fileRoles);
 
     if (!rolesMatch) {
       throw new DocumentPermissionsMismatchException();
