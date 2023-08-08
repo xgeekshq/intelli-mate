@@ -23,7 +23,7 @@ services:
   chromadb:
     image: ghcr.io/chroma-core/chroma:latest
     volumes:
-      - chromadb:/index_data
+      - chromadb:/chroma/chroma
     ports:
       - "8009:8000"
 volumes:
