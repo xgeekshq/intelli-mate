@@ -1,5 +1,6 @@
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
 import { CreateChatForRoomRequestDto } from '@/chats/dtos/create-chat-for-room.request.dto';
+import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-from-chat.request.dto';
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat, ChatDocument, ChatMessage } from '@/common/types/chat';
@@ -68,6 +69,19 @@ export class ChatsRepository {
     }
     await chat.save();
     return chat.messageHistory.sort(this.messageDateSortAscPredicate).at(0);
+  }
+
+  async removeDocumentFromChat(
+    chat: Chat,
+    removeDocumentFromChatRequestDto: RemoveDocumentFromChatRequestDto
+  ): Promise<Chat> {
+    chat.documents = chat.documents.filter(
+      (document) =>
+        document.meta.filename !== removeDocumentFromChatRequestDto.filename
+    );
+
+    await chat.save();
+    return chat;
   }
 
   async addDocumentsToChat(

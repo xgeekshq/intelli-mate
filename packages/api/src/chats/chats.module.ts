@@ -15,6 +15,7 @@ import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.us
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
 import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
+import { RemoveDocumentFromChatUsecase } from '@/chats/usecases/remove-document-from-chat.usecase';
 import { UploadDocumentsToChatUsecase } from '@/chats/usecases/upload-documents-to-chat.usecase';
 import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { DatabaseModule } from '@/database/database.module';
@@ -45,6 +46,7 @@ import { Module } from '@nestjs/common';
     FindChatByRoomIdUsecase,
     FindChatMessageHistoryByRoomIdUsecase,
     AddMessageToChatUsecase,
+    RemoveDocumentFromChatUsecase,
     UploadDocumentsToChatUsecase,
     // Event handlers
     OnJoinRoomEventHandler,
