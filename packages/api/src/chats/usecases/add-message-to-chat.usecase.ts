@@ -9,7 +9,6 @@ import { InternalServerErrorException } from '@/common/exceptions/internal-serve
 import { Usecase } from '@/common/types/usecase';
 import { ChatMessageResponseSchema } from '@/contract/chats/chat-message.response.dto';
 import { Injectable } from '@nestjs/common';
-import { encode } from 'gpt-3-encoder';
 
 @Injectable()
 export class AddMessageToChatUsecase implements Usecase {
@@ -23,7 +22,7 @@ export class AddMessageToChatUsecase implements Usecase {
     roomId: string,
     addMessageToChatRequestDto: AddMessageToChatRequestDto,
     userId?: string
-  ): Promise<{ message: ChatMessageResponseDto; shouldSummarize: boolean }> {
+  ): Promise<ChatMessageResponseDto> {
     const existingChat = await this.chatsRepository.findChatByRoomId(roomId);
     if (!existingChat) {
       throw new ChatNotFoundException();
@@ -33,17 +32,6 @@ export class AddMessageToChatUsecase implements Usecase {
       throw new ChatMessageMustHaveSenderException();
     }
 
-    const chatMessageHistory = await this.aiService.getChatHistoryMessages(
-      roomId
-    );
-
-    const numberOfTokensRedis = chatMessageHistory.reduce((acc, curr) => {
-      if (!curr.text) {
-        return 0;
-      }
-      return (acc += encode(curr.text).length);
-    }, 0);
-
     try {
       const chatMessage = await this.chatsRepository.addMessageToChat(
         existingChat,
@@ -51,13 +39,7 @@ export class AddMessageToChatUsecase implements Usecase {
         userId
       );
 
-      return {
-        message: ChatMessageResponseSchema.parse(chatMessage),
-        shouldSummarize:
-          numberOfTokensRedis >
-          this.appConfigService.getAiAppConfig()
-            .defaultTokenLimitForSummarization,
-      };
+      return ChatMessageResponseSchema.parse(chatMessage);
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }
