@@ -28,6 +28,7 @@ const Endpoints = {
   },
   chats: {
     getChat: (roomId: string) => `/chats/${roomId}`,
+    uploadDocuments: (roomId: string) => `/chats/${roomId}/upload-documents`,
   },
 };
 export default Endpoints;

@@ -24,6 +24,8 @@ import { socketState } from '@/app/state/socket';
 
 interface ChatProps {
   roomId: string;
+  isOwner: boolean;
+  ownerRoles: string[];
 }
 
 const parseMessageList = (
@@ -62,7 +64,7 @@ async function baseGetRequest<T>(
   }
 }
 
-export default function Chat({ roomId }: ChatProps) {
+export default function Chat({ roomId, isOwner, ownerRoles }: ChatProps) {
   const socket = useRecoilValue(socketState);
 
   const { sessionId, userId } = useAuth();
@@ -210,6 +212,8 @@ export default function Chat({ roomId }: ChatProps) {
         <MessageForm
           onSubmit={async (value) => sendMessage(value)}
           scrollToBottom={scrollToBottom}
+          isOwner={isOwner}
+          ownerRoles={ownerRoles}
         />
       </div>
     </div>
