@@ -1,7 +1,7 @@
 {
   "ai": {
     "defaultTemperature": 0.2,
-    "defaultChatContextTTL": 604800,
+    "defaultChatContextTTL": 0,
     "defaultTokenLimitForSummarization": 14500,
     "defaultAiModel": "gpt-3.5-turbo-16k"
   },

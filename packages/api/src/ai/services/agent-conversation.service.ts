@@ -45,6 +45,7 @@ export class AgentConversationService {
     summary?: string
   ) {
     const agentDocumentTools = await this.toolService.getDocumentQATools(
+      roomId,
       llmModel,
       documents
     );

@@ -1,3 +1,4 @@
+import { AiService } from '@/ai/facades/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-from-chat.request.dto';
@@ -9,7 +10,10 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class RemoveDocumentFromChatUsecase implements Usecase {
-  constructor(private readonly chatsRepository: ChatsRepository) {}
+  constructor(
+    private readonly chatsRepository: ChatsRepository,
+    private readonly aiService: AiService
+  ) {}
 
   async execute(
     userId: string,
@@ -31,6 +35,11 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
       const chat = await this.chatsRepository.removeDocumentFromChat(
         existingChat,
         removeDocumentFromChatRequestDto
+      );
+
+      await this.aiService.removeVectorDBCollection(
+        roomId,
+        removeDocumentFromChatRequestDto.filename
       );
 
       return ChatResponseSchema.parse(chat);

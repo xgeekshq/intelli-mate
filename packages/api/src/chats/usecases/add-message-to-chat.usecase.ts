@@ -1,4 +1,4 @@
-import { AiService } from '@/ai/services/ai.service';
+import { AiService } from '@/ai/facades/ai.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';

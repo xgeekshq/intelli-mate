@@ -1,11 +1,10 @@
-import { AiService } from '@/ai/services/ai.service';
+import { AiService } from '@/ai/facades/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import {
   CSV_MIMETYPE,
   DOCX_MIMETYPE,
   PDF_MIMETYPE,
   TEXT_MIMETYPE,
-  sanitizeFilename,
 } from '@/common/constants/files';
 import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { ChatDocUploadJob } from '@/common/jobs/chat-doc-upload.job';
@@ -19,9 +18,7 @@ import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Chroma } from 'langchain/vectorstores/chroma';
 
 @Processor(CHAT_DOCUMENT_UPLOAD_QUEUE)
 export class TransformDocToVectorJobConsumer {
@@ -109,12 +106,11 @@ export class TransformDocToVectorJobConsumer {
     document: ChatDocument,
     lcDocuments: Document[]
   ) {
-    const vectorStore = new Chroma(new OpenAIEmbeddings(), {
-      url: this.configService.get('CHROMADB_CONNECTION_URL'),
-      collectionName: sanitizeFilename(document.meta.filename),
-    });
-
-    await vectorStore.addDocuments(lcDocuments);
+    await this.aiService.addDocumentsToVectorDBCollection(
+      roomId,
+      document.meta.filename,
+      lcDocuments
+    );
 
     const vectorDBDocumentMetadata =
       await this.aiService.askAiToDescribeDocument(lcDocuments);
