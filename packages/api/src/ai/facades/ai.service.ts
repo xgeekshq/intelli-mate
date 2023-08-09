@@ -1,11 +1,12 @@
 import { AgentConversationService } from '@/ai/services/agent-conversation.service';
 import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
+import { VectorDbService } from '@/ai/services/vector-db.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
 import { ChatDocument } from '@/common/types/chat';
 import { Injectable } from '@nestjs/common';
-import { PromptTemplate } from 'langchain';
+import { ConfigService } from '@nestjs/config';
 import { AgentExecutor } from 'langchain/agents';
 import {
   ConversationChain,
@@ -14,6 +15,7 @@ import {
 } from 'langchain/chains';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { Document } from 'langchain/document';
+import { PromptTemplate } from 'langchain/prompts';
 import { BaseMessage, ChainValues } from 'langchain/schema';
 
 type AIExecutor = AgentExecutor | ConversationChain;
@@ -26,7 +28,9 @@ export class AiService {
     private readonly simpleConversationChainService: SimpleConversationChainService,
     private readonly agentConversationService: AgentConversationService,
     private readonly appConfigService: AppConfigService,
-    private readonly memoryService: MemoryService
+    private readonly memoryService: MemoryService,
+    private readonly configService: ConfigService,
+    private readonly vectorDbService: VectorDbService
   ) {
     this.llmModel = new ChatOpenAI({
       temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
@@ -115,6 +119,34 @@ Helpful answer:`
     }
 
     throw new RedisChatMemoryNotFoundException();
+  }
+
+  async removeVectorDBCollection(
+    roomId: string,
+    filename: string
+  ): Promise<void> {
+    const vectorStore =
+      await this.vectorDbService.getVectorDbClientForExistingCollection(
+        roomId,
+        filename
+      );
+
+    const documentList = await vectorStore.collection.get();
+
+    await vectorStore.delete({ ids: documentList.ids });
+  }
+
+  async addDocumentsToVectorDBCollection(
+    roomId: string,
+    filename: string,
+    lcDocuments: Document[]
+  ): Promise<void> {
+    const vectorStore = this.vectorDbService.getVectorDbClientForNewCollection(
+      roomId,
+      filename
+    );
+
+    await vectorStore.addDocuments(lcDocuments);
   }
 
   private async askAiToSummarize(roomId: string): Promise<ChainValues> {
