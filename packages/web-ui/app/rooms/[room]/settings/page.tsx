@@ -124,6 +124,7 @@ const getUserList = (users: UserResponseDto[]): UserListType[] => {
       value: userIdentification,
       imageUrl: user.profileImageUrl,
       userId: user.id,
+      roles: user.roles,
     };
   });
 };
@@ -216,7 +217,11 @@ export default async function Settings({
             searchText="Search for a user"
             width="w-full"
           >
-            <UserSearchItems data={userSearchList} roomId={room.id} />
+            <UserSearchItems
+              data={userSearchList}
+              roomId={room.id}
+              roomOwnerRoles={owner.roles}
+            />
           </SearchList>
         </div>
         <div className="flex flex-col gap-2 rounded-lg border p-4">
