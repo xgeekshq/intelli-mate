@@ -22,7 +22,7 @@
     "@clerk/clerk-sdk-node": "^4.12.1",
     "@nestjs/bull": "^0.6.3",
     "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^2.3.2",
+    "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/event-emitter": "^2.0.0",
     "@nestjs/platform-express": "^9.0.0",
