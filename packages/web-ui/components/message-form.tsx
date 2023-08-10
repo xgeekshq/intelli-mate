@@ -3,13 +3,20 @@ import { Send } from 'lucide-react';
 import Textarea from 'react-textarea-autosize';
 
 import { Button } from '@/components/ui/button';
+import { DocumentUploadForm } from '@/components/document-upload-form';
 
 export interface MessageFormProps {
   onSubmit: (value: string) => Promise<void>;
   scrollToBottom: () => void;
+  isOwner: boolean;
+  ownerRoles: string[];
 }
-
-export function MessageForm({ onSubmit, scrollToBottom }: MessageFormProps) {
+export function MessageForm({
+  onSubmit,
+  scrollToBottom,
+  isOwner,
+  ownerRoles,
+}: MessageFormProps) {
   const [input, setInput] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,6 +44,7 @@ export function MessageForm({ onSubmit, scrollToBottom }: MessageFormProps) {
       );
     }
   };
+
   return (
     <form
       ref={formRef}
@@ -50,6 +58,7 @@ export function MessageForm({ onSubmit, scrollToBottom }: MessageFormProps) {
       }}
       className="flex items-end gap-2"
     >
+      {isOwner && <DocumentUploadForm ownerRoles={ownerRoles} />}
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden rounded border bg-background">
         <Textarea
           ref={textAreaRef}

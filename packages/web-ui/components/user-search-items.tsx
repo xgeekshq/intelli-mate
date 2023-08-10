@@ -8,6 +8,17 @@ import { useAuth } from '@clerk/nextjs';
 import { getCookie } from 'cookies-next';
 
 import { UserListType } from '@/types/searchList';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { CommandItem } from '@/components/ui/command';
@@ -16,10 +27,12 @@ import { useToast } from '@/components/ui/use-toast';
 interface UserSearchItemsProps {
   data: UserListType[];
   roomId: string;
+  roomOwnerRoles: string[];
 }
 export default function UserSearchItems({
   data,
   roomId,
+  roomOwnerRoles,
 }: UserSearchItemsProps) {
   const { toast } = useToast();
   const { sessionId } = useAuth();
@@ -50,6 +63,13 @@ export default function UserSearchItems({
     }
   }
 
+  const verifyUserRoles = (user: UserListType) => {
+    return (
+      roomOwnerRoles.length === user.roles.length &&
+      roomOwnerRoles.every((role) => user.roles.includes(role))
+    );
+  };
+
   return (
     <>
       {data.map((item) => (
@@ -66,15 +86,50 @@ export default function UserSearchItems({
               <p className="text-sm">{item.value}</p>
             </div>
           </div>
-          <Button
-            size="xs"
-            variant="success"
-            onClick={() =>
-              onInviteUser({ userId: item.userId, roomId: roomId })
-            }
-          >
-            Invite to room
-          </Button>
+          {verifyUserRoles(item) ? (
+            <Button
+              size="xs"
+              variant="success"
+              onClick={() => {
+                void onInviteUser({ userId: item.userId, roomId: roomId });
+              }}
+            >
+              Invite to room
+            </Button>
+          ) : (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="xs" variant="success">
+                  Invite to room
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure you want to add {item.value} to this chat?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    The user&apos;s current permissions are insufficient to
+                    access the content in this room. To address this, we
+                    recommend creating a new room and including the user in it.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      void onInviteUser({
+                        userId: item.userId,
+                        roomId: roomId,
+                      });
+                    }}
+                  >
+                    Add any way
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </CommandItem>
       ))}
     </>
