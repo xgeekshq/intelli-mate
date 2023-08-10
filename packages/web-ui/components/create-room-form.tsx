@@ -86,7 +86,6 @@ export function CreateRoomForm() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          create
           <DialogTitle>Create a new Room</DialogTitle>
           <DialogDescription>
             Create a new room and start chatting with the AI bot!
