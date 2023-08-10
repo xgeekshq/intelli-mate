@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
-import { UploadFilesRequestSchema } from '@/contract/chats/upload-files.request.dto';
-import { UploadFilesRequestDto } from '@/contract/chats/upload-files.request.dto.d';
+import { UploadDocumentsRequestSchema } from '@/contract/chats/upload-documents.request.dto';
+import { UploadDocumentsRequestDto } from '@/contract/chats/upload-documents.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getCookie } from 'cookies-next';
@@ -48,15 +48,15 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
   const token = getCookie('__session');
   const router = useRouter();
 
-  const form = useForm<UploadFilesRequestDto>({
-    resolver: zodResolver(UploadFilesRequestSchema),
+  const form = useForm<UploadDocumentsRequestDto>({
+    resolver: zodResolver(UploadDocumentsRequestSchema),
     defaultValues: {
       fileRoles: [],
       files: undefined,
     },
   });
 
-  async function onSubmit(values: UploadFilesRequestDto) {
+  async function onSubmit(values: UploadDocumentsRequestDto) {
     const formData = new FormData();
     formData.append('fileRoles', values.fileRoles.toString());
     Array.from(values.files).map((file) => formData.append('files', file));

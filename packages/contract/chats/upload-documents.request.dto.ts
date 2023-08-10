@@ -13,7 +13,7 @@ const ACCEPTED_FILE_MIMETYPES = [
   TEXT_MIMETYPE,
   DOCX_MIMETYPE,
 ];
-export const UploadFilesRequestSchema = z.object({
+export const UploadDocumentsRequestSchema = z.object({
   fileRoles: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one role.",
   }),
