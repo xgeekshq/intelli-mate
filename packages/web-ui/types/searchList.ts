@@ -11,9 +11,5 @@ export interface PublicRoomsListType extends SearchListType {
 export interface UserListType extends SearchListType {
   imageUrl: string;
   userId: string;
-}
-
-export interface UserListType extends SearchListType {
-  imageUrl: string;
-  userId: string;
+  roles: string[];
 }
