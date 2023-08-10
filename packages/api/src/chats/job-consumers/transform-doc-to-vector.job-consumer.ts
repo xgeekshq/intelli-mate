@@ -10,7 +10,7 @@ import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { ChatDocUploadJob } from '@/common/jobs/chat-doc-upload.job';
 import { ChatDocument } from '@/common/types/chat';
 import { OnQueueError, OnQueueFailed, Process, Processor } from '@nestjs/bull';
-import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { Document } from 'langchain/document';
 import { BaseDocumentLoader } from 'langchain/document_loaders';
@@ -22,34 +22,52 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 @Processor(CHAT_DOCUMENT_UPLOAD_QUEUE)
 export class TransformDocToVectorJobConsumer {
+  private readonly logger = new Logger(TransformDocToVectorJobConsumer.name);
+
   constructor(
     private readonly chatsRepository: ChatsRepository,
-    private readonly aiService: AiService,
-    private readonly configService: ConfigService
+    private readonly aiService: AiService
   ) {}
 
   @Process()
   async execute(job: Job<ChatDocUploadJob>) {
+    this.logger.log(
+      `Starting job consumer for ${CHAT_DOCUMENT_UPLOAD_QUEUE} queue for job ${job.id} with payload: `,
+      {
+        payload: job.data.payload,
+      }
+    );
+
     const chatDocument = await this.fetchChatDocument(job.data);
     const lcDocuments = await this.loadLangchainDocuments(
       job.data.payload.roomId,
       chatDocument
     );
-    void this.createDocumentVectorIndexes(
+    await this.createDocumentVectorIndexes(
       job.data.payload.roomId,
       chatDocument,
       lcDocuments
+    );
+
+    this.logger.log(
+      `Finished job consumer for ${CHAT_DOCUMENT_UPLOAD_QUEUE} queue for job ${job.id}`
     );
   }
 
   @OnQueueError()
   async handleError(error: Error) {
-    console.error(error);
+    this.logger.error(
+      `Error executing job consumer for ${CHAT_DOCUMENT_UPLOAD_QUEUE} queue. Error message: `,
+      { error }
+    );
   }
 
   @OnQueueFailed()
   async handleFailure(error: Error) {
-    console.error(error);
+    this.logger.error(
+      `Failed to execute job consumer for ${CHAT_DOCUMENT_UPLOAD_QUEUE} queue. Error message: `,
+      { error }
+    );
   }
 
   private async fetchChatDocument(
@@ -98,6 +116,10 @@ export class TransformDocToVectorJobConsumer {
       };
     });
 
+    this.logger.debug(`Loaded file and split into langchain documents: `, {
+      lcDocuments,
+    });
+
     return lcDocuments;
   }
 
@@ -112,13 +134,30 @@ export class TransformDocToVectorJobConsumer {
       lcDocuments
     );
 
+    this.logger.debug(`Documents added to vector store: `, {
+      roomId,
+      filename: document.meta.filename,
+      lcDocuments,
+    });
+
     const vectorDBDocumentMetadata =
       await this.aiService.askAiToDescribeDocument(lcDocuments);
+
+    this.logger.debug(`File summary fetched: `, {
+      title: vectorDBDocumentMetadata.name,
+      description: vectorDBDocumentMetadata.description,
+    });
 
     await this.chatsRepository.addVectorDBMetadataToDocument(
       roomId,
       document,
       vectorDBDocumentMetadata
     );
+
+    this.logger.debug(`Added document metadata to database`, {
+      roomId,
+      document,
+      vectorDBDocumentMetadata,
+    });
   }
 }
