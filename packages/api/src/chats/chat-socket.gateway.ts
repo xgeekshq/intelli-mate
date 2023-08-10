@@ -2,7 +2,6 @@ import { AiService } from '@/ai/facades/ai.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
-import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
 import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
 import { CHAT_MESSAGE_HISTORY_QUEUE } from '@/common/constants/queues';
 import { createChatAddMessagePairToHistoryJobFactory } from '@/common/jobs/chat-add-message-pair-to-history.job';
@@ -29,7 +28,6 @@ export class ChatSocketGateway {
 
   constructor(
     private readonly joinChatUsecase: JoinChatUsecase,
-    private readonly addMessageToChatUsecase: AddMessageToChatUsecase,
     private readonly chatsRepository: ChatsRepository,
     private readonly aiService: AiService,
     private readonly appConfigService: AppConfigService,
