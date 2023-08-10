@@ -16,17 +16,16 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
   const isSettingsPage = pathname.includes('settings');
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
-      <p className="text-lg font-semibold tracking-tight">
-        {isSettingsPage ? `${name} | settings` : name}
-      </p>
-      {isSettingsPage && (
+      {isSettingsPage ? (
         <Link
           href={`/rooms/${id}`}
           className="flex items-center gap-1 font-semibold tracking-tight"
         >
           <ArrowLeft className="h-5 w-5" />
-          back to chat
+          {name} | settings
         </Link>
+      ) : (
+        <p className="text-lg font-semibold tracking-tight">{name}</p>
       )}
       {!isSettingsPage && (
         <Link href={`${id}/settings`}>

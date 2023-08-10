@@ -192,7 +192,7 @@ export default async function Settings({
             <Avatar className="h-16 w-16">
               <AvatarImage src={owner.profileImageUrl} alt="Profile Image" />
             </Avatar>
-            <div className="flex flex-col text-sm text-gray-500">
+            <div className="text-sm flex flex-col text-gray-500">
               <p>{`Name: ${
                 owner.firstName && owner.lastName
                   ? `${owner.firstName} ${owner.lastName}`
