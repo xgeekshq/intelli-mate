@@ -116,9 +116,7 @@ export class TransformDocToVectorJobConsumer {
       };
     });
 
-    this.logger.debug(`Loaded file and split into langchain documents: `, {
-      lcDocuments,
-    });
+    this.logger.debug(`Loaded file and split into langchain documents: `);
 
     return lcDocuments;
   }
@@ -137,7 +135,6 @@ export class TransformDocToVectorJobConsumer {
     this.logger.debug(`Documents added to vector store: `, {
       roomId,
       filename: document.meta.filename,
-      lcDocuments,
     });
 
     const vectorDBDocumentMetadata =
@@ -156,7 +153,10 @@ export class TransformDocToVectorJobConsumer {
 
     this.logger.debug(`Added document metadata to database`, {
       roomId,
-      document,
+      document: {
+        roles: document.roles,
+        meta: document.meta,
+      },
       vectorDBDocumentMetadata,
     });
   }

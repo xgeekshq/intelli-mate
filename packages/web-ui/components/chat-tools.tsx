@@ -81,7 +81,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
               <AccordionTrigger className="p-0">Documents</AccordionTrigger>
               <AccordionContent className="pb-0 pt-2">
                 {documents?.map((document) => (
-                  <HoverCard>
+                  <HoverCard key={document.meta.filename}>
                     <HoverCardTrigger className="flex items-center justify-between rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
                       <div>
                         <p className="text-sm text-gray-500">
