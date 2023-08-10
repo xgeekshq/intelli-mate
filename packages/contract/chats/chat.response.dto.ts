@@ -1,15 +1,15 @@
 import { ChatMessageResponseSchema } from "./chat-message.response.dto";
 import { z } from "zod";
 
-const ChatDocumentSchema = z.object({
+export const ChatDocumentSchema = z.object({
   roles: z.array(z.string()),
   meta: z.object({
     mimetype: z.string(),
     filename: z.string(),
     size: z.number(),
     queryable: z.boolean(),
-    vectorDBDocumentName: z.string(),
-    vectorDBDocumentDescription: z.string(),
+    vectorDBDocumentName: z.string().nullable(),
+    vectorDBDocumentDescription: z.string().nullable(),
   }),
 });
 

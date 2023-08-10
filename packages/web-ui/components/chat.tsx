@@ -23,6 +23,7 @@ import { MessageForm } from '@/components/message-form';
 import { socketState } from '@/app/state/socket';
 
 interface ChatProps {
+  chat: ChatResponseDto;
   roomId: string;
   isOwner: boolean;
   ownerRoles: string[];
@@ -64,13 +65,12 @@ async function baseGetRequest<T>(
   }
 }
 
-export default function Chat({ roomId, isOwner, ownerRoles }: ChatProps) {
+export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const socket = useRecoilValue(socketState);
 
   const { sessionId, userId } = useAuth();
   const token = getCookie('__session');
 
-  const [chat, setChat] = useState<ChatResponseDto>();
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
   const bottomEl = useRef<HTMLDivElement>(null);
@@ -89,13 +89,6 @@ export default function Chat({ roomId, isOwner, ownerRoles }: ChatProps) {
       });
     }
   };
-
-  const getChat = async (roomId: string) =>
-    baseGetRequest<ChatResponseDto>({
-      url: Endpoints.chats.getChat(roomId),
-      ...requestOptions,
-    });
-
   const getChatParticipants = async (participants: string[]) =>
     baseGetRequest<UserResponseDto[]>({
       url: Endpoints.users.getUsers(participants),
@@ -132,15 +125,7 @@ export default function Chat({ roomId, isOwner, ownerRoles }: ChatProps) {
   };
 
   useEffect(() => {
-    socket.emit(
-      'joinRoom',
-      { data: { roomId, userId } },
-      async (response: string) => {
-        if (response) {
-          setChat(await getChat(response));
-        }
-      }
-    );
+    socket.emit('joinRoom', { data: { roomId, userId } });
     socket.on('message', async (message) => {
       if (message.isAi) {
         setMessages((messages) =>

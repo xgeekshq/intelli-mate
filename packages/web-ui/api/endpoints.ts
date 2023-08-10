@@ -29,6 +29,7 @@ const Endpoints = {
   chats: {
     getChat: (roomId: string) => `/chats/${roomId}`,
     uploadDocuments: (roomId: string) => `/chats/${roomId}/upload-documents`,
+    deleteDocument: (roomId: string) => `/chats/${roomId}/remove-document`,
   },
 };
 export default Endpoints;
