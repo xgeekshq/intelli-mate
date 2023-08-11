@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const ACCEPTED_FILE_SIZE_LIMIT = 16_000_000;
+const ACCEPTED_FILE_SIZE_LIMIT = 10_000_000;
 const PDF_MIMETYPE = "application/pdf";
 const CSV_MIMETYPE = "text/csv";
 const TEXT_MIMETYPE = "text/plain";
@@ -26,7 +26,7 @@ export const UploadDocumentsRequestSchema = z.object({
       (files) =>
         Array.from(files).reduce((size, file) => size + file.size, 0) <
         ACCEPTED_FILE_SIZE_LIMIT,
-      "Total file size should be less than 16MB"
+      "Total file size should be less than 10MB"
     )
     .refine(
       (files) =>
