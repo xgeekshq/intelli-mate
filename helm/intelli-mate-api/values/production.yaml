@@ -11,5 +11,5 @@ ingress:
 
 extraVolumeMounts:
   - name: documents
-    mountPath: /app/documents
+    mountPath: /app/api/documents
     size: 5Gi
