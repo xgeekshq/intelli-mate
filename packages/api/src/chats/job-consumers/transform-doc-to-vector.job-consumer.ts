@@ -40,7 +40,6 @@ export class TransformDocToVectorJobConsumer {
     );
 
     const chatDocument = await this.fetchChatDocument(job.data);
-    console.log('aqui estou eu', chatDocument);
     const lcDocuments = await this.loadLangchainDocuments(
       job.data.payload.roomId,
       chatDocument
@@ -95,7 +94,6 @@ export class TransformDocToVectorJobConsumer {
       chatDocumentContent = readFileSync(
         `${document.src}/${document.meta.filename}`
       );
-      console.log(chatDocumentContent);
     } catch (err) {
       console.error(err);
     }

@@ -176,7 +176,6 @@ export class ChatsController {
     @Param('roomId') roomId: string,
     @Body('fileRoles') fileRoles: string
   ): Promise<void> {
-    console.log('popotas');
     return this.uploadDocumentsToChatUsecase.execute(
       roomId,
       files,
