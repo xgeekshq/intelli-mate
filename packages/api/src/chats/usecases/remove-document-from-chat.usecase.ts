@@ -1,3 +1,4 @@
+import { readdir, rmdir, unlink } from 'fs';
 import { AiService } from '@/ai/facades/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
@@ -7,12 +8,14 @@ import { InternalServerErrorException } from '@/common/exceptions/internal-serve
 import { Usecase } from '@/common/types/usecase';
 import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RemoveDocumentFromChatUsecase implements Usecase {
   constructor(
     private readonly chatsRepository: ChatsRepository,
-    private readonly aiService: AiService
+    private readonly aiService: AiService,
+    private readonly configService: ConfigService
   ) {}
 
   async execute(
@@ -35,6 +38,38 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
       const chat = await this.chatsRepository.removeDocumentFromChat(
         existingChat,
         removeDocumentFromChatRequestDto
+      );
+
+      unlink(
+        `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}/${
+          removeDocumentFromChatRequestDto.filename
+        }`,
+        (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        }
+      );
+
+      readdir(
+        `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
+        (err, files) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          if (files.length === 0) {
+            rmdir(
+              `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
+              (err) => {
+                if (err) {
+                  return console.log(err);
+                }
+              }
+            );
+          }
+        }
       );
 
       await this.aiService.removeVectorDBCollection(

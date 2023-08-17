@@ -5,13 +5,15 @@ import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat, ChatDocument, ChatMessage } from '@/common/types/chat';
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class ChatsRepository {
   constructor(
     @Inject(DB_CHAT_MODEL_KEY)
-    private chatModel: Model<Chat>
+    private chatModel: Model<Chat>,
+    private readonly configService: ConfigService
   ) {}
 
   async findChatByRoomId(roomId: string): Promise<Chat> {
@@ -100,7 +102,9 @@ export class ChatsRepository {
           vectorDBDocumentName: null,
           vectorDBDocumentDescription: null,
         },
-        src: `documents/${chat.roomId}`,
+        src: `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${
+          chat.roomId
+        }`,
       }))
     );
 

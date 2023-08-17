@@ -34,6 +34,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
@@ -60,7 +61,8 @@ export class ChatsController {
     private readonly findChatByRoomIdUsecase: FindChatByRoomIdUsecase,
     private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase,
     private readonly removeDocumentFromChatUsecase: RemoveDocumentFromChatUsecase,
-    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase
+    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase,
+    private readonly configService: ConfigService
   ) {}
 
   @Get(':roomId')
@@ -113,7 +115,10 @@ export class ChatsController {
       storage: diskStorage({
         destination: (req, file, cb) => {
           existsSync('directory') || mkdirSync('directory');
-          const uploadPath = `documents/${req.params.roomId}`;
+          // @ts-ignore
+          const uploadPath = `${this.configService.get(
+            'CHAT_DOCUMENTS_FOLDER'
+          )}/${req.params.roomId}`;
           if (!existsSync(uploadPath)) {
             mkdirSync(uploadPath, { recursive: true });
           }
