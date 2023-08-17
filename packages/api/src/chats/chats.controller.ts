@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync } from 'fs';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
@@ -46,7 +47,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { memoryStorage } from 'multer';
+import { diskStorage } from 'multer';
 
 @Controller({
   path: 'chats',
@@ -109,7 +110,19 @@ export class ChatsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseInterceptors(
     FilesInterceptor('files', 2, {
-      storage: memoryStorage(),
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          existsSync('directory') || mkdirSync('directory');
+          const uploadPath = `documents/${req.params.roomId}`;
+          if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
+        },
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
     })
   )
   @ApiClerkAuthHeaders()
@@ -158,6 +171,7 @@ export class ChatsController {
     @Param('roomId') roomId: string,
     @Body('fileRoles') fileRoles: string
   ): Promise<void> {
+    console.log('popotas');
     return this.uploadDocumentsToChatUsecase.execute(
       roomId,
       files,

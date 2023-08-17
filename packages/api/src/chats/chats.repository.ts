@@ -100,7 +100,7 @@ export class ChatsRepository {
           vectorDBDocumentName: null,
           vectorDBDocumentDescription: null,
         },
-        src: multerDoc.buffer,
+        src: `documents/${chat.roomId}`,
       }))
     );
 

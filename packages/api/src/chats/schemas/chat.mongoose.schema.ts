@@ -88,7 +88,7 @@ const DocumentSchema = new mongoose.Schema({
   },
   meta: DocumentMetaSchema,
   src: {
-    type: mongoose.SchemaTypes.Buffer,
+    type: [String],
     required: true,
     select: false,
   },
