@@ -1,0 +1,28 @@
+# {{- if .Values.extraVolumeMounts }}
+# {{- range .Values.extraVolumeMounts }}
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: {{ .name }}-pv-claim
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: {{ .size }}
+#   storageClassName: default
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pvc-{{ .name }}
+# spec:
+#   storageClassName: default
+#   capacity:
+#     storage: {{ .size }}
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: {{ .mountPath }}
+# {{- end }}
+# {{- end }}

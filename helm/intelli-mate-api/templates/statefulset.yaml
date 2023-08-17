@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "intelli-mate-api.fullname" . }}
   labels:
@@ -44,6 +44,13 @@ spec:
             - secretRef:
                 name: {{ .Values.secret.name | default (include "intelli-mate-api.fullname" .) | quote }}
             {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          volumeMounts:
+          {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.healthcheck.readiness.enabled }}
           readinessProbe:
             httpGet:
@@ -76,3 +83,16 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- if .Values.extraVolumeMounts }}
+  volumeClaimTemplates:
+  {{- range .Values.extraVolumeMounts }}
+  - metadata:
+      name: {{ .name }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .size }}
+      storageClassName: default
+  {{- end }}
+  {{- end }}

@@ -8,3 +8,8 @@ ingress:
     - hosts:
         - api.intelli-mate.xgeeks.tech
       secretName: intelli-mate-api-tls
+
+extraVolumeMounts:
+  - name: documents
+    mountPath: /app/documents
+    size: 5Gi
