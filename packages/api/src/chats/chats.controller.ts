@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync } from 'fs';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
+import { DocumentsInterceptor } from '@/chats/documents.interceptor';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-from-chat.request.dto';
@@ -34,8 +34,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -48,7 +46,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
 
 @Controller({
   path: 'chats',
@@ -61,8 +58,7 @@ export class ChatsController {
     private readonly findChatByRoomIdUsecase: FindChatByRoomIdUsecase,
     private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase,
     private readonly removeDocumentFromChatUsecase: RemoveDocumentFromChatUsecase,
-    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase,
-    private readonly configService: ConfigService
+    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase
   ) {}
 
   @Get(':roomId')
@@ -110,25 +106,7 @@ export class ChatsController {
 
   @Post(':roomId/upload-documents')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseInterceptors(
-    FilesInterceptor('files', 2, {
-      storage: diskStorage({
-        destination: (req, file, cb) => {
-          // @ts-ignore
-          const uploadPath = `${this.configService.get(
-            'CHAT_DOCUMENTS_FOLDER'
-          )}/${req.params.roomId}`;
-          if (!existsSync(uploadPath)) {
-            mkdirSync(uploadPath, { recursive: true });
-          }
-          cb(null, uploadPath);
-        },
-        filename: (req, file, cb) => {
-          cb(null, file.originalname);
-        },
-      }),
-    })
-  )
+  @UseInterceptors(DocumentsInterceptor)
   @ApiClerkAuthHeaders()
   @ApiBody({
     required: true,
