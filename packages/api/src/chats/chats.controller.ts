@@ -62,8 +62,7 @@ export class ChatsController {
     private readonly findChatByRoomIdUsecase: FindChatByRoomIdUsecase,
     private readonly findChatMessageHistoryByRoomIdUsecase: FindChatMessageHistoryByRoomIdUsecase,
     private readonly removeDocumentFromChatUsecase: RemoveDocumentFromChatUsecase,
-    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase,
-    private readonly configService: ConfigService
+    private readonly uploadDocumentsToChatUsecase: UploadDocumentsToChatUsecase
   ) {}
 
   @Get(':roomId')
