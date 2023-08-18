@@ -4,14 +4,17 @@ import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-f
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat, ChatDocument, ChatMessage } from '@/common/types/chat';
+import { chatDocumentsFolder } from '@/utils/global';
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class ChatsRepository {
   constructor(
     @Inject(DB_CHAT_MODEL_KEY)
-    private chatModel: Model<Chat>
+    private chatModel: Model<Chat>,
+    private readonly configService: ConfigService
   ) {}
 
   async findChatByRoomId(roomId: string): Promise<Chat> {
@@ -100,7 +103,7 @@ export class ChatsRepository {
           vectorDBDocumentName: null,
           vectorDBDocumentDescription: null,
         },
-        src: multerDoc.buffer,
+        src: `${chatDocumentsFolder}/${chat.roomId}`,
       }))
     );
 

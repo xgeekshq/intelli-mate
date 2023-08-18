@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import { AiService } from '@/ai/facades/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import {
@@ -88,7 +89,18 @@ export class TransformDocToVectorJobConsumer {
       chunkSize: 1000, // default is 1000
       chunkOverlap: 200, // default is 200
     });
-    const documentBlob = new Blob([document.src]);
+    let chatDocumentContent: Buffer;
+    try {
+      chatDocumentContent = readFileSync(
+        `${document.src}/${document.meta.filename}`
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error reading file ${document.meta.filename}. Error message: `,
+        { error }
+      );
+    }
+    const documentBlob = new Blob([chatDocumentContent]);
 
     if (document.meta.mimetype === PDF_MIMETYPE) {
       loader = new PDFLoader(documentBlob);
@@ -104,7 +116,6 @@ export class TransformDocToVectorJobConsumer {
     }
 
     const lcDocuments = await loader.loadAndSplit(textSplitter);
-
     lcDocuments.forEach((doc) => {
       const existingMeta = doc.metadata || {};
 

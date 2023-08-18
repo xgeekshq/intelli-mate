@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync } from 'fs';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
 import { ApiClerkAuthHeaders } from '@/auth/guards/clerk/open-api-clerk-headers.decorator';
 import { ChatMessageResponseDto } from '@/chats/dtos/chat-message.response.dto';
@@ -16,6 +17,7 @@ import {
   ACCEPTED_FILE_MIMETYPES_REGEXP,
   ACCEPTED_FILE_SIZE_LIMIT,
 } from '@/common/constants/files';
+import { chatDocumentsFolder } from '@/utils/global';
 import {
   Body,
   Controller,
@@ -33,6 +35,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
@@ -46,7 +49,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { memoryStorage } from 'multer';
+import { diskStorage } from 'multer';
 
 @Controller({
   path: 'chats',
@@ -109,7 +112,18 @@ export class ChatsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseInterceptors(
     FilesInterceptor('files', 2, {
-      storage: memoryStorage(),
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const uploadPath = `${chatDocumentsFolder}/${req.params.roomId}`;
+          if (!existsSync(uploadPath)) {
+            mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
+        },
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
     })
   )
   @ApiClerkAuthHeaders()

@@ -20,7 +20,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@/contract/*": ["../contract/*"]
+      "@/contract/*": ["../contract/*"],
+      "@/utils/*": ["./utils/*"]
     }
   }
 }

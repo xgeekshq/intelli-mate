@@ -35,7 +35,7 @@ export interface ChatDocumentMeta {
 export interface ChatDocument {
   roles: string[];
   meta: ChatDocumentMeta;
-  src?: Buffer;
+  src?: string;
 }
 
 export interface Chat extends Document {
