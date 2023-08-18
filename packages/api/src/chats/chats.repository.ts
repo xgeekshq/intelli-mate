@@ -4,6 +4,7 @@ import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-f
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat, ChatDocument, ChatMessage } from '@/common/types/chat';
+import { chatDocumentsFolder } from '@/utils/global';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
@@ -102,9 +103,7 @@ export class ChatsRepository {
           vectorDBDocumentName: null,
           vectorDBDocumentDescription: null,
         },
-        src: `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${
-          chat.roomId
-        }`,
+        src: `${chatDocumentsFolder}/${chat.roomId}`,
       }))
     );
 

@@ -7,6 +7,7 @@ import { DocumentNotFoundException } from '@/chats/exceptions/document-not-found
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
 import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
+import { chatDocumentsFolder } from '@/utils/global';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -43,9 +44,7 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
       );
 
       unlink(
-        `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}/${
-          removeDocumentFromChatRequestDto.filename
-        }`,
+        `${chatDocumentsFolder}/${roomId}/${removeDocumentFromChatRequestDto.filename}`,
         (error) => {
           if (error) {
             this.logger.error(
@@ -57,26 +56,18 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
         }
       );
 
-      readdir(
-        `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
-        (error, files) => {
-          if (files.length === 0) {
-            rmdir(
-              `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
-              (error) => {
-                if (error) {
-                  this.logger.error(
-                    `Error removing directory ${this.configService.get(
-                      'CHAT_DOCUMENTS_FOLDER'
-                    )}/${roomId}. Error message: `,
-                    { error }
-                  );
-                }
-              }
-            );
-          }
+      readdir(`${chatDocumentsFolder}/${roomId}`, (error, files) => {
+        if (files.length === 0) {
+          rmdir(`${chatDocumentsFolder}/${roomId}`, (error) => {
+            if (error) {
+              this.logger.error(
+                `Error removing directory ${chatDocumentsFolder}/${roomId}. Error message: `,
+                { error }
+              );
+            }
+          });
         }
-      );
+      });
 
       await this.aiService.removeVectorDBCollection(
         roomId,

@@ -17,6 +17,7 @@ import {
   ACCEPTED_FILE_MIMETYPES_REGEXP,
   ACCEPTED_FILE_SIZE_LIMIT,
 } from '@/common/constants/files';
+import { chatDocumentsFolder } from '@/utils/global';
 import {
   Body,
   Controller,
@@ -114,10 +115,7 @@ export class ChatsController {
     FilesInterceptor('files', 2, {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          // @ts-ignore
-          const uploadPath = `${this.configService.get(
-            'CHAT_DOCUMENTS_FOLDER'
-          )}/${req.params.roomId}`;
+          const uploadPath = `${chatDocumentsFolder}/${req.params.roomId}`;
           if (!existsSync(uploadPath)) {
             mkdirSync(uploadPath, { recursive: true });
           }
