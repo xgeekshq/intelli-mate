@@ -114,7 +114,6 @@ export class ChatsController {
     FilesInterceptor('files', 2, {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          existsSync('directory') || mkdirSync('directory');
           // @ts-ignore
           const uploadPath = `${this.configService.get(
             'CHAT_DOCUMENTS_FOLDER'

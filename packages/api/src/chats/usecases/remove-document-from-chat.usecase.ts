@@ -7,11 +7,13 @@ import { DocumentNotFoundException } from '@/chats/exceptions/document-not-found
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
 import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RemoveDocumentFromChatUsecase implements Usecase {
+  private readonly logger = new Logger(RemoveDocumentFromChatUsecase.name);
+
   constructor(
     private readonly chatsRepository: ChatsRepository,
     private readonly aiService: AiService,
@@ -44,9 +46,12 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
         `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}/${
           removeDocumentFromChatRequestDto.filename
         }`,
-        (err) => {
-          if (err) {
-            console.error(err);
+        (error) => {
+          if (error) {
+            this.logger.error(
+              `Error removing file ${removeDocumentFromChatRequestDto.filename}. Error message: `,
+              { error }
+            );
             return;
           }
         }
@@ -54,17 +59,18 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
 
       readdir(
         `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
-        (err, files) => {
-          if (err) {
-            console.error(err);
-            return;
-          }
+        (error, files) => {
           if (files.length === 0) {
             rmdir(
               `${this.configService.get('CHAT_DOCUMENTS_FOLDER')}/${roomId}`,
-              (err) => {
-                if (err) {
-                  return console.log(err);
+              (error) => {
+                if (error) {
+                  this.logger.error(
+                    `Error removing directory ${this.configService.get(
+                      'CHAT_DOCUMENTS_FOLDER'
+                    )}/${roomId}. Error message: `,
+                    { error }
+                  );
                 }
               }
             );

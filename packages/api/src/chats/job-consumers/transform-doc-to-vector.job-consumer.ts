@@ -94,8 +94,11 @@ export class TransformDocToVectorJobConsumer {
       chatDocumentContent = readFileSync(
         `${document.src}/${document.meta.filename}`
       );
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      this.logger.error(
+        `Error reading file ${document.meta.filename}. Error message: `,
+        { error }
+      );
     }
     const documentBlob = new Blob([chatDocumentContent]);
 
