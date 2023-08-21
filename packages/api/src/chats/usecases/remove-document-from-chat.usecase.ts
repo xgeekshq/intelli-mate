@@ -44,7 +44,9 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
       );
 
       unlink(
-        `${chatDocumentsFolder}/${roomId}/${removeDocumentFromChatRequestDto.filename}`,
+        `${chatDocumentsFolder()}/${roomId}/${
+          removeDocumentFromChatRequestDto.filename
+        }`,
         (error) => {
           if (error) {
             this.logger.error(
@@ -56,12 +58,12 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
         }
       );
 
-      readdir(`${chatDocumentsFolder}/${roomId}`, (error, files) => {
+      readdir(`${chatDocumentsFolder()}/${roomId}`, (error, files) => {
         if (files.length === 0) {
-          rmdir(`${chatDocumentsFolder}/${roomId}`, (error) => {
+          rmdir(`${chatDocumentsFolder()}/${roomId}`, (error) => {
             if (error) {
               this.logger.error(
-                `Error removing directory ${chatDocumentsFolder}/${roomId}. Error message: `,
+                `Error removing directory ${chatDocumentsFolder()}/${roomId}. Error message: `,
                 { error }
               );
             }

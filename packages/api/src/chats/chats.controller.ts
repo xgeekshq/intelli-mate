@@ -113,7 +113,7 @@ export class ChatsController {
     FilesInterceptor('files', 2, {
       storage: diskStorage({
         destination: (req, file, cb) => {
-          const uploadPath = `${chatDocumentsFolder}/${req.params.roomId}`;
+          const uploadPath = `${chatDocumentsFolder()}/${req.params.roomId}`;
           if (!existsSync(uploadPath)) {
             mkdirSync(uploadPath, { recursive: true });
           }

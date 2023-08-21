@@ -39,4 +39,4 @@ export function sanitizeFilename(filename: string): string {
   return sanitizedFilename;
 }
 
-export const chatDocumentsFolder = process.env.CHAT_DOCUMENTS_FOLDER;
+export const chatDocumentsFolder = () => process.env.CHAT_DOCUMENTS_FOLDER;

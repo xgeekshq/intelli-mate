@@ -21,7 +21,6 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/contract/*": ["../contract/*"],
-      "@/utils/*": ["./utils/*"]
     }
   }
 }

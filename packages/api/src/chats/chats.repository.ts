@@ -101,7 +101,7 @@ export class ChatsRepository {
           vectorDBDocumentName: null,
           vectorDBDocumentDescription: null,
         },
-        src: `${chatDocumentsFolder}/${chat.roomId}`,
+        src: `${chatDocumentsFolder()}/${chat.roomId}`,
       }))
     );
 
