@@ -19,12 +19,24 @@ export const acceptedFileMimetypes = [
 ];
 
 export function sanitizeFilename(filename: string): string {
-  return filename
+  const roomIdLength = 24;
+  const maxCollectionNameLength = 62;
+
+  let sanitizedFilename = filename
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]/g, '-')
     .replace(/_+/g, '-')
     .replace(/-+/g, '-')
     .toLowerCase();
+
+  if (filename.length + roomIdLength >= 62) {
+    sanitizedFilename = sanitizedFilename.substring(
+      0,
+      maxCollectionNameLength - roomIdLength
+    );
+  }
+
+  return sanitizedFilename;
 }
 
 export const chatDocumentsFolder = process.env.CHAT_DOCUMENTS_FOLDER;
