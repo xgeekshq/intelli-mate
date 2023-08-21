@@ -17,7 +17,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -102,11 +101,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Upload documents to chat</DialogTitle>
-          <DialogDescription>
-            Upload documents to that chat and navigate throw them with the help
-            of AI!
-          </DialogDescription>
+          <DialogTitle className="mb-4">Upload documents to chat</DialogTitle>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField

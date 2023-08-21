@@ -11,7 +11,7 @@ export function AdminSidebarMenu() {
     <div className="flex h-full w-60 flex-col border-r">
       <div className="flex min-h-[41px] items-center justify-between border-b">
         <Link
-          className="relative px-4 text-lg font-semibold tracking-tight"
+          className="text-lg relative px-4 font-semibold tracking-tight"
           href={'/admin'}
         >
           admin operations

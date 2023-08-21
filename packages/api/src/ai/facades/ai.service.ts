@@ -74,7 +74,7 @@ Helpful answer:`
 
     try {
       const aiResponse = await aiExecutor.call({ input });
-      return aiResponse.response ?? aiResponse.output;
+      return aiResponse.output;
     } catch (e) {
       this.logger.error(
         `Failed to ask AI in room ${roomId} for a response for question: `,
@@ -82,6 +82,12 @@ Helpful answer:`
           question: input,
         }
       );
+    }
+  }
+
+  invalidateAgentCache(roomId: string): void {
+    if (this.agentConversationService.agentMap.has(roomId)) {
+      this.agentConversationService.agentMap.delete(roomId);
     }
   }
 

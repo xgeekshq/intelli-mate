@@ -1,10 +1,10 @@
 import { AddMessageToChatRequestDto } from '@/chats/dtos/add-message-to-chat.request.dto';
 import { CreateChatForRoomRequestDto } from '@/chats/dtos/create-chat-for-room.request.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-from-chat.request.dto';
+import { chatDocumentsFolder } from '@/common/constants/files';
 import { DB_CHAT_MODEL_KEY } from '@/common/constants/models/chat';
 import { createChatMessageFactory } from '@/common/factories/create-chat-message.factory';
 import { Chat, ChatDocument, ChatMessage } from '@/common/types/chat';
-import { chatDocumentsFolder } from '@/utils/global';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
@@ -25,9 +25,7 @@ export class ChatsRepository {
     roomId: string,
     filename: string
   ): Promise<ChatDocument> {
-    const chat = await this.chatModel
-      .findOne({ roomId })
-      .select('+documents.src');
+    const chat = await this.chatModel.findOne({ roomId });
 
     return chat.documents.find(
       (document) => document.meta.filename === filename

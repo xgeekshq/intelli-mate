@@ -1,3 +1,4 @@
+import { AiService } from '@/ai/facades/ai.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { ChatsRepository } from '@/chats/chats.repository';
@@ -22,7 +23,8 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider,
     @InjectQueue(CHAT_DOCUMENT_UPLOAD_QUEUE)
     private readonly chatDocUploadQueue: Queue,
-    private readonly appConfigService: AppConfigService
+    private readonly appConfigService: AppConfigService,
+    private readonly aiService: AiService
   ) {}
 
   async execute(
@@ -56,6 +58,8 @@ export class UploadDocumentsToChatUsecase implements Usecase {
         createChatDocUploadJobFactory(roomId, file.originalname)
       );
     }
+
+    this.aiService.invalidateAgentCache(roomId);
   }
 
   private checkMaxDocumentsPerRoomInvariant(

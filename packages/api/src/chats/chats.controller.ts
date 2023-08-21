@@ -16,8 +16,8 @@ import { UploadDocumentsToChatUsecase } from '@/chats/usecases/upload-documents-
 import {
   ACCEPTED_FILE_MIMETYPES_REGEXP,
   ACCEPTED_FILE_SIZE_LIMIT,
+  chatDocumentsFolder,
 } from '@/common/constants/files';
-import { chatDocumentsFolder } from '@/utils/global';
 import {
   Body,
   Controller,
@@ -35,7 +35,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
