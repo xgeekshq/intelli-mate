@@ -47,6 +47,7 @@ export class SimpleConversationChainService {
       new ConversationChain({
         llm: llmModel,
         prompt: this.defaultChatPrompt,
+        outputKey: 'output',
         memory: await this.memoryService.getMemory(roomId, summary),
       })
     );

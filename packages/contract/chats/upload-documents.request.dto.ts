@@ -26,7 +26,7 @@ export const UploadDocumentsRequestSchema = z.object({
       (files) =>
         Array.from(files).reduce((size, file) => size + file.size, 0) <
         ACCEPTED_FILE_SIZE_LIMIT,
-      "Total file size should be less than 10MB"
+      "Total file size should be less than 16MB"
     )
     .refine(
       (files) =>

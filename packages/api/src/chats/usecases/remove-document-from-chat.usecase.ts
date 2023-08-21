@@ -4,10 +4,10 @@ import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatResponseDto } from '@/chats/dtos/chat.response.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-from-chat.request.dto';
 import { DocumentNotFoundException } from '@/chats/exceptions/document-not-found.exception';
+import { chatDocumentsFolder } from '@/common/constants/files';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
 import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
-import { chatDocumentsFolder } from '@/utils/global';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 

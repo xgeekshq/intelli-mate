@@ -1,4 +1,6 @@
-export const ACCEPTED_FILE_SIZE_LIMIT = 16_000_000; // 16MB in bytes -> limit of blob in mongo for collections. If more than this is needed, then use GridFS
+import * as process from 'process';
+
+export const ACCEPTED_FILE_SIZE_LIMIT = 16_000_000;
 
 export const ACCEPTED_FILE_MIMETYPES_REGEXP =
   /^(application\/pdf|text\/csv|text\/plain|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document)$/;
@@ -24,3 +26,5 @@ export function sanitizeFilename(filename: string): string {
     .replace(/-+/g, '-')
     .toLowerCase();
 }
+
+export const chatDocumentsFolder = process.env.CHAT_DOCUMENTS_FOLDER;
