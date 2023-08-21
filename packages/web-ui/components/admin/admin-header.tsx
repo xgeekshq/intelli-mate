@@ -18,7 +18,7 @@ export function AdminHeader({ id, name }: RoomHeaderProps) {
 
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
-      <p className="relative text-lg font-semibold tracking-tight">
+      <p className="text-lg relative font-semibold tracking-tight">
         {getTitleByPathname(pathname)}
       </p>
     </div>
