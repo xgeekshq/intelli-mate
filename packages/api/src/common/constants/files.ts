@@ -29,7 +29,7 @@ export function sanitizeFilename(filename: string): string {
     .replace(/-+/g, '-')
     .toLowerCase();
 
-  if (filename.length + roomIdLength >= 62) {
+  if (filename.length + roomIdLength >= maxCollectionNameLength) {
     sanitizedFilename = sanitizedFilename.substring(
       0,
       maxCollectionNameLength - roomIdLength
