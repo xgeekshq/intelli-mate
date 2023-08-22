@@ -12,6 +12,6 @@ ingress:
 persistence:
   enabled: true
   name: documents
-  storageClass: default
+  storageClass: azurefile
   size: 5Gi
   mountPath: /app/api/documents
