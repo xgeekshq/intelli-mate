@@ -18,6 +18,7 @@ import { useRecoilValue } from 'recoil';
 import { ChatMessageType, ChatUserType } from '@/types/chat';
 import { useRefState } from '@/hooks/use-ref-state';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useToast } from '@/components/ui/use-toast';
 import { Message } from '@/components/message';
 import { MessageForm } from '@/components/message-form';
 import { socketState } from '@/app/state/socket';
@@ -67,6 +68,7 @@ async function baseGetRequest<T>(
 
 export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const socket = useRecoilValue(socketState);
+  const { toast } = useToast();
 
   const { sessionId, userId } = useAuth();
   const token = getCookie('__session');
@@ -126,6 +128,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   useEffect(() => {
     socket.emit('joinRoom', { data: { roomId, userId } });
+
     socket.on('message', async (message) => {
       if (message.isAi) {
         setMessages((messages) =>
@@ -153,6 +156,14 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
         });
       }
     });
+
+    socket.on('documentReady', async (message) => {
+      toast({
+        title: 'Document ready',
+        description: `The document ${message.filename} is ready to be consulted.`,
+      });
+    });
+
     return () => {
       socket.emit('leaveRoom', { data: { roomId } });
     };

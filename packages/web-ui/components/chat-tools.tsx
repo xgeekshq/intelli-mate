@@ -76,15 +76,20 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
     <div className="flex h-full min-w-[220px] max-w-[220px] flex-col border-l">
       <ScrollArea className="flex-1">
         <div className="space-y-1">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem className="p-4" value="item-1">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full"
+            defaultValue="documents"
+          >
+            <AccordionItem className="p-4" value="documents">
               <AccordionTrigger className="p-0">Documents</AccordionTrigger>
               <AccordionContent className="pb-0 pt-2">
                 {documents?.map((document) => (
                   <HoverCard key={document.meta.filename}>
                     <HoverCardTrigger className="flex items-center justify-between rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
                       <div>
-                        <p className="text-sm text-gray-500">
+                        <p className=" text-gray-500">
                           {document.meta.vectorDBDocumentName}
                         </p>
                         <p>{document.meta.filename}</p>
@@ -99,9 +104,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                           <AlertDialogContent className="sm:max-w-[425px]">
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Are you sure you want to delete
-                                {document.meta.vectorDBDocumentName} -
-                                {document.meta.filename}?
+                                {`Are you sure you want to delete ${document.meta.vectorDBDocumentName} - ${document.meta.filename}?`}
                               </AlertDialogTitle>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

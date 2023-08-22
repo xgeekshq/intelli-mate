@@ -68,7 +68,7 @@ export function MessageForm({
           value={input}
           placeholder="Send a message..."
           spellCheck={false}
-          className="text-sm w-full resize-none bg-transparent p-2 focus-within:outline-none"
+          className="w-full resize-none bg-transparent p-2 focus-within:outline-none"
           onKeyDown={handleKeyDown}
         />
       </div>
