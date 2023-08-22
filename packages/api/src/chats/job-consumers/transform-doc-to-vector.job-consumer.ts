@@ -8,10 +8,15 @@ import {
   TEXT_MIMETYPE,
 } from '@/common/constants/files';
 import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
+import {
+  DocumentProcessingFinishedEventKey,
+  createDocumentProcessingFinishedEventFactory,
+} from '@/common/events/document-processing-finished.event';
 import { ChatDocUploadJob } from '@/common/jobs/chat-doc-upload.job';
 import { ChatDocument } from '@/common/types/chat';
 import { OnQueueError, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Job } from 'bull';
 import { Document } from 'langchain/document';
 import { BaseDocumentLoader } from 'langchain/document_loaders';
@@ -27,7 +32,8 @@ export class TransformDocToVectorJobConsumer {
 
   constructor(
     private readonly chatsRepository: ChatsRepository,
-    private readonly aiService: AiService
+    private readonly aiService: AiService,
+    private eventEmitter: EventEmitter2
   ) {}
 
   @Process()
@@ -170,5 +176,13 @@ export class TransformDocToVectorJobConsumer {
       },
       vectorDBDocumentMetadata,
     });
+
+    this.eventEmitter.emit(
+      DocumentProcessingFinishedEventKey,
+      createDocumentProcessingFinishedEventFactory(
+        roomId,
+        document.meta.filename
+      )
+    );
   }
 }

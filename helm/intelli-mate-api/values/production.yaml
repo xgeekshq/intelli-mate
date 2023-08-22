@@ -9,7 +9,9 @@ ingress:
         - api.intelli-mate.xgeeks.tech
       secretName: intelli-mate-api-tls
 
-extraVolumeMounts:
-  - name: documents
-    mountPath: /app/api/documents
-    size: 5Gi
+persistence:
+  enabled: true
+  name: documents
+  storageClass: azurefile
+  size: 5Gi
+  mountPath: /app/api/documents

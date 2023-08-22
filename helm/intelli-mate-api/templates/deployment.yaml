@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "intelli-mate-api.fullname" . }}
   labels:
@@ -44,13 +44,11 @@ spec:
             - secretRef:
                 name: {{ .Values.secret.name | default (include "intelli-mate-api.fullname" .) | quote }}
             {{- end }}
-          {{- if .Values.extraVolumeMounts }}
           volumeMounts:
-          {{- range .Values.extraVolumeMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-          {{- end }}
-          {{- end }}
+            {{- if .Values.persistence.enabled }}
+            - name: {{ .Values.persistence.name }}
+              mountPath: {{ .Values.persistence.mountPath }}
+            {{- end }}
           {{- if .Values.healthcheck.readiness.enabled }}
           readinessProbe:
             httpGet:
@@ -71,6 +69,12 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        {{- if .Values.persistence.enabled }}
+        - name: {{ .Values.persistence.name }}
+          persistentVolumeClaim:
+            claimName:  {{ template "intelli-mate-api.fullname" . }}-pvc
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -83,16 +87,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- if .Values.extraVolumeMounts }}
-  volumeClaimTemplates:
-  {{- range .Values.extraVolumeMounts }}
-  - metadata:
-      name: {{ .name }}
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .size }}
-      storageClassName: default
-  {{- end }}
-  {{- end }}

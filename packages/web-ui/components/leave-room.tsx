@@ -52,7 +52,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="flex flex-col gap-4">
-          <p className="text-sm">Are you sure you want to leave this room?</p>
+          <p>Are you sure you want to leave this room?</p>
           <Button
             onClick={() => onLeaveRoom({ roomId })}
             className="w-1/4 self-end"

@@ -13,7 +13,7 @@ interface MainNavProps {
 export function MainNav({ items }: MainNavProps) {
   return (
     <div className="flex gap-6 md:gap-10">
-      <Link href="/" className="flex items-center space-x-2">
+      <Link href="/rooms" className="flex items-center space-x-2">
         <Icons.logo className="h-6 w-6" />
         <span className="inline-block font-bold">{siteConfig.name}</span>
       </Link>
@@ -26,7 +26,7 @@ export function MainNav({ items }: MainNavProps) {
                   key={index}
                   href={item.href}
                   className={cn(
-                    'text-sm flex items-center font-medium text-muted-foreground',
+                    ' flex items-center font-medium text-muted-foreground',
                     item.disabled && 'cursor-not-allowed opacity-80'
                   )}
                 >

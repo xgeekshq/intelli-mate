@@ -83,7 +83,7 @@ export default function UserSearchItems({
               <AvatarImage src={item.imageUrl} alt="Profile Avatar" />
             </Avatar>
             <div className="flex flex-col">
-              <p className="text-sm">{item.value}</p>
+              <p className="">{item.value}</p>
             </div>
           </div>
           {verifyUserRoles(item) ? (

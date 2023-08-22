@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
+import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { getCookie } from 'cookies-next';
 
@@ -30,6 +31,7 @@ export default function RoomSearchItems({
         sessionId: sessionId ?? '',
         jwtToken: token?.toString() ?? '',
       });
+
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
         toast({
@@ -38,10 +40,14 @@ export default function RoomSearchItems({
         });
         return;
       }
+
+      const room: RoomResponseDto = await res.json();
       toast({
-        title: 'Room joined successfully!',
+        title: `Joined ${room.name}, welcome!`,
       });
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
       router.refresh();
+      router.push(`/rooms/${room.id}`);
     } catch (e) {
       console.log(e);
     }

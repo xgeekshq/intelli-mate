@@ -82,7 +82,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
       setOpen(false);
       toast({
         title:
-          'The file(s) have been uploaded successfully. It will take a few moments before you can start interacting with these documents using the AI',
+          'The document has been uploaded successfully! We will notify you when the document is ready to be consulted.',
       });
       form.reset();
       router.refresh();
@@ -111,9 +111,10 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
                 render={() => (
                   <FormItem>
                     <div className="mb-4">
-                      <FormLabel>File roles</FormLabel>
+                      <FormLabel>Document roles</FormLabel>
                       <FormDescription>
-                        Select the roles for the files that you will upload.
+                        Select the permission roles for the documents you are
+                        uploading.
                       </FormDescription>
                     </div>
                     {fileRoles.map((item) => (
@@ -162,7 +163,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
                 name="files"
                 render={() => (
                   <FormItem>
-                    <FormLabel>File roles</FormLabel>
+                    <FormLabel>Select document(s)</FormLabel>
                     <FormControl>
                       <Input
                         {...form.register('files')}
@@ -178,7 +179,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
               />
 
               <div className="flex w-full justify-end">
-                <Button type="submit">Submit</Button>
+                <Button type="submit">Upload</Button>
               </div>
             </form>
           </Form>

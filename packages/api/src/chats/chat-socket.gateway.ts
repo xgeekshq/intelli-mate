@@ -4,12 +4,17 @@ import { ChatsRepository } from '@/chats/chats.repository';
 import { createSocketMessageResponseFactory } from '@/chats/factory/create-socket-message.factory';
 import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
 import { CHAT_MESSAGE_HISTORY_QUEUE } from '@/common/constants/queues';
+import {
+  DocumentProcessingFinishedEvent,
+  DocumentProcessingFinishedEventKey,
+} from '@/common/events/document-processing-finished.event';
 import { createChatAddMessagePairToHistoryJobFactory } from '@/common/jobs/chat-add-message-pair-to-history.job';
 import { ChatDocument } from '@/common/types/chat';
 import { AddMessageToChatRequestSchema } from '@/contract/chats/add-message-to-chat.request.dto';
 import { SocketCreateRoomRequestDto } from '@/contract/chats/socket-create-room.request.dto';
 import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request.dto';
 import { InjectQueue } from '@nestjs/bull';
+import { OnEvent } from '@nestjs/event-emitter';
 import {
   ConnectedSocket,
   MessageBody,
@@ -108,6 +113,13 @@ export class ChatSocketGateway {
         data.userId
       )
     );
+  }
+
+  @OnEvent(DocumentProcessingFinishedEventKey, { async: true })
+  async handleEvent(event: DocumentProcessingFinishedEvent): Promise<void> {
+    this.server
+      .to(event.payload.roomId)
+      .emit('documentReady', { filename: event.payload.filename });
   }
 
   private async shouldSummarizeChat(roomId: string): Promise<boolean> {
