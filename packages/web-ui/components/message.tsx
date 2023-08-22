@@ -26,9 +26,7 @@ export function Message({ message }: MessageProps) {
             <p>{getUserIdentification(message.user)}</p>
           </div>
         )}
-        <p className="">
-          {format(new Date(message.createdAt), 'dd-MM-yyyy HH:mm')}
-        </p>
+        <p>{format(new Date(message.createdAt), 'dd-MM-yyyy HH:mm')}</p>
       </div>
       <p className="px-4">{message.content}</p>
       {message.response ? (
