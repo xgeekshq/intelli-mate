@@ -104,9 +104,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                           <AlertDialogContent className="sm:max-w-[425px]">
                             <AlertDialogHeader>
                               <AlertDialogTitle>
-                                Are you sure you want to delete
-                                {document.meta.vectorDBDocumentName} -
-                                {document.meta.filename}?
+                                {`Are you sure you want to delete ${document.meta.vectorDBDocumentName} - ${document.meta.filename}?`}
                               </AlertDialogTitle>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
