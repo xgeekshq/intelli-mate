@@ -76,8 +76,13 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
     <div className="flex h-full min-w-[220px] max-w-[220px] flex-col border-l">
       <ScrollArea className="flex-1">
         <div className="space-y-1">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem className="p-4" value="item-1">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full"
+            defaultValue="documents"
+          >
+            <AccordionItem className="p-4" value="documents">
               <AccordionTrigger className="p-0">Documents</AccordionTrigger>
               <AccordionContent className="pb-0 pt-2">
                 {documents?.map((document) => (

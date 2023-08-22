@@ -70,7 +70,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border p-4">
-      <p className="text-sm font-bold">Update Room</p>
+      <p className="text-sm font-bold">General</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

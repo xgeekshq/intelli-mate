@@ -43,12 +43,9 @@ export default async function Rooms() {
   const publicRoomsSearchList = getSearchRoomsList(await getPublicRooms());
   return (
     <div className="flex h-full w-full flex-col items-center gap-20 py-24">
-      <p className="text-2xl w-2/3 text-center">
-        Introducing Intelli-Mate: the ultimate collaborative rooms chat system
-        that revolutionizes team communication. With real-time messaging, and
-        seamless integration, teams can effortlessly collaborate, share ideas,
-        and boost productivity. Say goodbye to scattered conversations and hello
-        to streamlined teamwork.
+      <p className="text-2xl w-2/3">
+        Start chatting with your co-workers and our helpful AI by joining a
+        public room or by creating your own room.
       </p>
       <SearchList
         notFoundText="Room not found."

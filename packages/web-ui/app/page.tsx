@@ -1,32 +1,40 @@
-import Link from 'next/link';
-import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import { SignInButton, SignedOut } from '@clerk/nextjs';
 
 import { Button } from '@/components/ui/button';
 
 export default function IndexPage() {
   return (
     <div className="flex h-full flex-col items-center gap-10 py-24">
-      <p className="text-2xl w-1/3 text-center">
-        intelli-mate is an AI tool that will allow your organization to unlock
-        the full potential of AI chat with seamless collaboration. Do not miss
-        out on the opportunity to revolutionize your AI experience.
+      <p className="text-2xl w-1/2">
+        Welcome to intelli-mate! Explore our cutting-edge product tailored to
+        everything AI-related. With intelli-mate, collaboration takes on a whole
+        new dimension as it seamlessly combines chat functionality with AI
+        participation.
       </p>
-      <iframe
-        src="https://embed.lottiefiles.com/animation/96654"
-        className="h-[500px] w-[500px] rounded-full border-2 border-black bg-white dark:border-white"
-      ></iframe>
+      <p className="text-2xl w-1/2">
+        Experience the power of interactive discussions where humans and
+        intelligent algorithms work hand in hand. We understand the paramount
+        importance of information security, particularly in enterprise
+        environments.
+      </p>
+      <p className="text-2xl w-1/2">
+        That is why intelli-mate places a strong emphasis on safeguarding your
+        data throughout every interaction. Engage with confidence, knowing that
+        your valuable information remains protected. Unleash the potential of
+        collaborative AI-driven conversations and elevate your enterprise
+        experience with intelli-mate. Get ready to embark on a journey where
+        innovation merges seamlessly with enhanced security for unparalleled
+        productivity.
+      </p>
       <div>
-        <SignedIn>
-          <Link href={'/rooms'}>
-            <Button value="ghost" size="lg">
-              Start chatting
-            </Button>
-          </Link>
-        </SignedIn>
         <SignedOut>
-          <SignInButton mode="modal" afterSignInUrl="/rooms">
+          <SignInButton
+            mode="modal"
+            afterSignInUrl="/rooms"
+            afterSignUpUrl="/rooms"
+          >
             <Button value="ghost" size="lg">
-              Sign in
+              Register / Sign in
             </Button>
           </SignInButton>
         </SignedOut>

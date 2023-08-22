@@ -187,7 +187,7 @@ export default async function Settings({
           />
         )}
         <div className="flex flex-col gap-2 rounded-lg border p-4">
-          <p className="text-sm font-bold">Room Owner</p>
+          <p className="text-sm font-bold">Room owner</p>
           <div className="flex gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={owner.profileImageUrl} alt="Profile Image" />
@@ -210,7 +210,7 @@ export default async function Settings({
           </div>
         </div>
         <div className="flex flex-col gap-2 rounded-lg border p-4">
-          <p className="text-sm font-bold">Invite User</p>
+          <p className="text-sm font-bold">Invite a user</p>
           <SearchList
             notFoundText="User not found."
             searchPlaceholder="Type a user username"
@@ -225,7 +225,7 @@ export default async function Settings({
           </SearchList>
         </div>
         <div className="flex flex-col gap-2 rounded-lg border p-4">
-          <p className="text-sm font-bold">Member List</p>
+          <p className="text-sm font-bold">Member list</p>
           <ScrollArea className="flex h-96">
             {membersSearchList.map((item) => (
               <div className="flex items-center gap-4 py-1">

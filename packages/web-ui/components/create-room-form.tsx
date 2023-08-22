@@ -6,6 +6,7 @@ import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
+import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getCookie } from 'cookies-next';
@@ -65,6 +66,8 @@ export function CreateRoomForm() {
         });
         return;
       }
+
+      const room: RoomResponseDto = await res.json();
       setOpen(false);
       toast({
         title: 'Room created successfully!',
@@ -72,6 +75,7 @@ export function CreateRoomForm() {
       form.reset();
       // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
       router.refresh();
+      router.push(`/rooms/${room.id}`);
     } catch (e) {
       console.log(e);
     }
@@ -86,9 +90,9 @@ export function CreateRoomForm() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create a new Room</DialogTitle>
+          <DialogTitle>Create new Room</DialogTitle>
           <DialogDescription>
-            Create a new room and start chatting with the AI bot!
+            Create a new room and start chatting!
           </DialogDescription>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -123,7 +127,7 @@ export function CreateRoomForm() {
                 )}
               />
               <div className="flex w-full justify-end">
-                <Button type="submit">Submit</Button>
+                <Button type="submit">Create</Button>
               </div>
             </form>
           </Form>
