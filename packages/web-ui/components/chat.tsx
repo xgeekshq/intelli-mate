@@ -13,10 +13,12 @@ import {
 } from '@/factory/create-chat.factory';
 import { useAuth } from '@clerk/nextjs';
 import { getCookie } from 'cookies-next';
+import { ChevronDownCircle } from 'lucide-react';
 import { useRecoilValue } from 'recoil';
 
 import { ChatMessageType, ChatUserType } from '@/types/chat';
 import { useRefState } from '@/hooks/use-ref-state';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Message } from '@/components/message';
 import { MessageForm } from '@/components/message-form';
@@ -73,6 +75,9 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
+  const [showScrollToBottomButton, setShowScrollToBottomButton] =
+    useState(false);
+
   const bottomEl = useRef<HTMLDivElement>(null);
 
   const requestOptions = {
@@ -124,6 +129,8 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     return parsedUser;
   };
 
+  const chatWithDocuments = chat.documents.length > 0;
+
   useEffect(() => {
     socket.emit('joinRoom', { data: { roomId, userId } });
     socket.on('message', async (message) => {
@@ -159,8 +166,30 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
+    if (!showScrollToBottomButton) {
+      scrollToBottom();
+    }
   }, [messages]);
+
+  useEffect(() => {
+    function watchScroll() {
+      bottomEl.current?.addEventListener('scroll', () =>
+        setShowScrollToBottomButton(
+          bottomEl.current?.scrollTop! + bottomEl.current?.clientHeight! <
+            bottomEl.current?.scrollHeight!
+        )
+      );
+    }
+    watchScroll();
+    return () => {
+      bottomEl.current?.removeEventListener('scroll', () =>
+        setShowScrollToBottomButton(
+          bottomEl.current?.scrollTop! + bottomEl.current?.clientHeight! <
+            bottomEl.current?.scrollHeight!
+        )
+      );
+    };
+  });
 
   useEffect(() => {
     async function setInitialData() {
@@ -187,10 +216,23 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   return (
     <div className="flex h-full w-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">
-        <div className="w-full px-4 pt-4">
+        <div className="relative w-full px-4 pt-4">
           {messages.map((message) => {
             return <Message key={message.id} message={message} />;
           })}
+          {showScrollToBottomButton && (
+            <Button
+              onClick={scrollToBottom}
+              variant="ghost"
+              className={`fixed bottom-20 h-7 w-7 rounded-full p-0 ${
+                chatWithDocuments
+                  ? 'right-[calc(var(--chat-tools)+24px)]'
+                  : 'right-6'
+              }`}
+            >
+              <ChevronDownCircle width={28} height={28} />
+            </Button>
+          )}
         </div>
       </ScrollArea>
       <div className="mx-4 mt-2 rounded-t-xl border bg-background px-4 py-2 shadow-lg">
