@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ClerkFetcherParamsType, apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
@@ -69,6 +70,8 @@ async function baseGetRequest<T>(
 }
 
 export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
+  const router = useRouter();
+
   const socket = useRecoilValue(socketState);
   const { toast } = useToast();
 
@@ -169,6 +172,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
         title: 'Document ready',
         description: `The document ${message.filename} is ready to be consulted.`,
       });
+      router.refresh();
     });
 
     return () => {
