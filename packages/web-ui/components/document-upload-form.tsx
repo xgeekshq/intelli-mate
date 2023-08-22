@@ -82,7 +82,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
       setOpen(false);
       toast({
         title:
-          'The document(s) have been uploaded successfully. It will take a few moments before you can start interacting with these documents using the AI',
+          'The document has been uploaded successfully! We will notify you when the document is ready to be consulted.',
       });
       form.reset();
       router.refresh();

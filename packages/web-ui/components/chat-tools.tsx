@@ -89,7 +89,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                   <HoverCard key={document.meta.filename}>
                     <HoverCardTrigger className="flex items-center justify-between rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
                       <div>
-                        <p className="text-sm text-gray-500">
+                        <p className=" text-gray-500">
                           {document.meta.vectorDBDocumentName}
                         </p>
                         <p>{document.meta.filename}</p>
