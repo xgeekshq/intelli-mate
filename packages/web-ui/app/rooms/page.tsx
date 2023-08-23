@@ -43,7 +43,7 @@ export default async function Rooms() {
   const publicRoomsSearchList = getSearchRoomsList(await getPublicRooms());
   return (
     <div className="flex h-full w-full flex-col items-center gap-20 py-24">
-      <p className="w-2/3 text-xl">
+      <p className="w-2/3 text-center text-xl">
         Start chatting with your co-workers and our helpful AI by joining a
         public room or by creating your own room.
       </p>

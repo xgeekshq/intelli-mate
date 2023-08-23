@@ -94,13 +94,13 @@ export default function UserSearchItems({
                 void onInviteUser({ userId: item.userId, roomId: roomId });
               }}
             >
-              Invite to room
+              <span className="text-sm">Invite to room</span>
             </Button>
           ) : (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="xs" variant="success">
-                  Invite to room
+                  <span className="text-sm">Invite to room</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -109,9 +109,11 @@ export default function UserSearchItems({
                     Are you sure you want to add {item.value} to this chat?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    The user&apos;s current permissions are insufficient to
-                    access the content in this room. To address this, we
-                    recommend creating a new room and including the user in it.
+                    The user&apos;s current role permissions differ from the
+                    room owner. This may lead to unintended breaches of
+                    information. We recommend creating a new room and including
+                    the user in it. You can still add the user in this room
+                    though.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -124,7 +126,7 @@ export default function UserSearchItems({
                       });
                     }}
                   >
-                    Add any way
+                    Add anyway
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

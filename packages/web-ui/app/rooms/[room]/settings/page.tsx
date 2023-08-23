@@ -54,6 +54,7 @@ const getRoom = async (
     console.log(e);
   }
 };
+
 const getOwner = async (
   sessionId: string,
   clerkJwtToken: string,
@@ -144,27 +145,23 @@ export default async function Settings({
     params.room
   );
 
-  const members: UserResponseDto[] = await getRoomMembers(
-    sessionId!,
-    clerkJwtToken!.value,
-    room.members
-  );
-
-  const allUsers: UserResponseDto[] = await getAllUsers(
-    sessionId!,
-    clerkJwtToken!.value
-  );
+  const [members, allUsers, owner] = await Promise.all<
+    [
+      Promise<UserResponseDto[]>,
+      Promise<UserResponseDto[]>,
+      Promise<UserResponseDto>
+    ]
+  >([
+    getRoomMembers(sessionId!, clerkJwtToken!.value, room.members),
+    getAllUsers(sessionId!, clerkJwtToken!.value),
+    getOwner(sessionId!, clerkJwtToken!.value, room.ownerId),
+  ]);
 
   const userSearchList = getUserList(
     allUsers.filter((user) => !members.some((member) => user.id === member.id))
   );
-  const membersSearchList = getUserList(members);
 
-  const owner: UserResponseDto = await getOwner(
-    sessionId!,
-    clerkJwtToken!.value,
-    room.ownerId
-  );
+  const membersSearchList = getUserList(members);
 
   const isOwner = owner.id === userId;
 

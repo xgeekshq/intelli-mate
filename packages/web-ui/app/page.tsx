@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 export default function IndexPage() {
   return (
     <div className="flex h-full flex-col items-center gap-10 py-24">
+      <p className="w-1/2 text-xl">LANDING PAGE TO BE CREATED.</p>
       <p className="w-1/2 text-xl">
         Welcome to intelli-mate! Explore our cutting-edge product tailored to
         everything AI-related. With intelli-mate, collaboration takes on a whole
