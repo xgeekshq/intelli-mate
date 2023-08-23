@@ -69,7 +69,7 @@ export default function RoomSearchItems({
               variant="success"
               onClick={() => onJoinRoom({ roomId: item.roomId })}
             >
-              <span className="text-sm">Join Room</span>
+              <span className="text-xs">Join Room</span>
             </Button>
           )}
         </CommandItem>

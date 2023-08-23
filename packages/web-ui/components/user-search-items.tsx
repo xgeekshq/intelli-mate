@@ -94,13 +94,13 @@ export default function UserSearchItems({
                 void onInviteUser({ userId: item.userId, roomId: roomId });
               }}
             >
-              <span className="text-sm">Invite to room</span>
+              <span className="text-xs">Invite to room</span>
             </Button>
           ) : (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button size="xs" variant="success">
-                  <span className="text-sm">Invite to room</span>
+                  <span className="text-xs">Invite to room</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
