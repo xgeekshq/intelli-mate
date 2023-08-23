@@ -95,3 +95,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+persistence:
+  enabled: false
+  name: documents
+  storageClass: # name of the storage class
+  size: # 5Gi
+  mountPath: # path inside the container

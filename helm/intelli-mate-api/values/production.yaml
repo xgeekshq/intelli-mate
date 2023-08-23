@@ -14,4 +14,4 @@ persistence:
   name: documents
   storageClass: azurefile
   size: 5Gi
-  mountPath: /app/api/documents
+  mountPath: /app/documents
