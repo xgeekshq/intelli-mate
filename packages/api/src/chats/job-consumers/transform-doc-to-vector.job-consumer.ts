@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import { AiService } from '@/ai/facades/ai.service';
 import { ChatsRepository } from '@/chats/chats.repository';
 import {
-  CSV_MIMETYPE,
   DOCX_MIMETYPE,
   PDF_MIMETYPE,
   TEXT_MIMETYPE,
@@ -20,7 +19,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Job } from 'bull';
 import { Document } from 'langchain/document';
 import { BaseDocumentLoader } from 'langchain/document_loaders';
-import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
@@ -110,9 +108,6 @@ export class TransformDocToVectorJobConsumer {
 
     if (document.meta.mimetype === PDF_MIMETYPE) {
       loader = new PDFLoader(documentBlob);
-    }
-    if (document.meta.mimetype === CSV_MIMETYPE) {
-      loader = new CSVLoader(documentBlob);
     }
     if (document.meta.mimetype === TEXT_MIMETYPE) {
       loader = new TextLoader(documentBlob);

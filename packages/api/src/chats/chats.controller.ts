@@ -8,7 +8,6 @@ import { ChatNotFoundExceptionSchema } from '@/chats/exceptions/chat-not-found.e
 import { DocumentNotFoundExceptionSchema } from '@/chats/exceptions/document-not-found.exception';
 import { DocumentPermissionsMismatchExceptionSchema } from '@/chats/exceptions/document-permissions-mismatch.exception';
 import { MaxDocumentSizeLimitExceptionSchema } from '@/chats/exceptions/max-document-size-limit.exception';
-import { NoMoreDocumentsCanBeUploadedToChatExceptionSchema } from '@/chats/exceptions/no-more-documents-can-be-uploaded-to-chat.exception';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
 import { RemoveDocumentFromChatUsecase } from '@/chats/usecases/remove-document-from-chat.usecase';
@@ -35,13 +34,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConflictResponse,
   ApiConsumes,
-  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -110,7 +108,7 @@ export class ChatsController {
   @Post(':roomId/upload-documents')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseInterceptors(
-    FilesInterceptor('files', 2, {
+    AnyFilesInterceptor({
       storage: diskStorage({
         destination: (req, file, cb) => {
           const uploadPath = `${chatDocumentsFolder()}/${req.params.roomId}`;
@@ -148,9 +146,6 @@ export class ChatsController {
   @ApiNoContentResponse({ description: 'No content' })
   @ApiBadRequestResponse({ schema: MaxDocumentSizeLimitExceptionSchema })
   @ApiConflictResponse({ schema: DocumentPermissionsMismatchExceptionSchema })
-  @ApiForbiddenResponse({
-    schema: NoMoreDocumentsCanBeUploadedToChatExceptionSchema,
-  })
   @ApiNotFoundResponse({ schema: ChatNotFoundExceptionSchema })
   @ApiOperation({ description: 'Upload documents into a chat' })
   uploadDocumentsToChat(
