@@ -5,7 +5,6 @@ import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatNotFoundException } from '@/chats/exceptions/chat-not-found.exception';
 import { DocumentPermissionsMismatchException } from '@/chats/exceptions/document-permissions-mismatch.exception';
 import { MaxDocumentSizeLimitException } from '@/chats/exceptions/max-document-size-limit.exception';
-import { NoMoreDocumentsCanBeUploadedToChatException } from '@/chats/exceptions/no-more-documents-can-be-uploaded-to-chat.exception';
 import { ACCEPTED_FILE_SIZE_LIMIT } from '@/common/constants/files';
 import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { createChatDocUploadJobFactory } from '@/common/jobs/chat-doc-upload.job';
@@ -38,8 +37,6 @@ export class UploadDocumentsToChatUsecase implements Usecase {
       throw new ChatNotFoundException();
     }
 
-    this.checkMaxDocumentsPerRoomInvariant(existingChat, files);
-
     this.checkMaxDocumentsSizePerRoomInvariant(existingChat, files);
 
     await this.checkDocumentRolesMatchUserRolesInvariant(
@@ -61,22 +58,6 @@ export class UploadDocumentsToChatUsecase implements Usecase {
 
     this.aiService.invalidateAgentCache(roomId);
   }
-
-  private checkMaxDocumentsPerRoomInvariant(
-    chat: Chat,
-    files: Express.Multer.File[]
-  ) {
-    const maxNumberOfDocumentsPerChat =
-      this.appConfigService.getChatConfig().maxNumberOfDocumentsPerChat;
-
-    if (
-      chat.documents.length >= maxNumberOfDocumentsPerChat ||
-      files.length + chat.documents.length > maxNumberOfDocumentsPerChat
-    ) {
-      throw new NoMoreDocumentsCanBeUploadedToChatException();
-    }
-  }
-
   private checkMaxDocumentsSizePerRoomInvariant(
     chat: Chat,
     files: Express.Multer.File[]
