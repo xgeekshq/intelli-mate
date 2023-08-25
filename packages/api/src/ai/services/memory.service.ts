@@ -29,6 +29,11 @@ export class MemoryService {
     return this.memoryMap.get(roomId);
   }
 
+  async deleteMemory(roomId: string) {
+    await this.cacheClient.del(roomId);
+    this.memoryMap.delete(roomId);
+  }
+
   private hasMemory(roomId: string): boolean {
     return this.memoryMap.has(roomId);
   }

@@ -9,7 +9,6 @@ import { InternalServerErrorException } from '@/common/exceptions/internal-serve
 import { Usecase } from '@/common/types/usecase';
 import { ChatResponseSchema } from '@/contract/chats/chat.response.dto';
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RemoveDocumentFromChatUsecase implements Usecase {
@@ -17,8 +16,7 @@ export class RemoveDocumentFromChatUsecase implements Usecase {
 
   constructor(
     private readonly chatsRepository: ChatsRepository,
-    private readonly aiService: AiService,
-    private readonly configService: ConfigService
+    private readonly aiService: AiService
   ) {}
 
   async execute(

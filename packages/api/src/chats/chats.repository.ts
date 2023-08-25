@@ -46,6 +46,10 @@ export class ChatsRepository {
     return chat;
   }
 
+  async deleteChat(roomId: string): Promise<void> {
+    await this.chatModel.deleteOne({ roomId });
+  }
+
   async addParticipantToChat(chat: Chat, userId: string): Promise<Chat> {
     if (!chat.participantIds.find((id) => userId === id)) {
       chat.participantIds.push(userId);

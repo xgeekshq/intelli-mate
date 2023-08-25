@@ -5,6 +5,7 @@ import { RoomsController } from '@/rooms/rooms.controller';
 import { roomsMongooseProviders } from '@/rooms/rooms.mongoose.providers';
 import { RoomsRepository } from '@/rooms/rooms.repository';
 import { CreateRoomUsecase } from '@/rooms/usecases/create-room.usecase';
+import { DeleteRoomUsecase } from '@/rooms/usecases/delete-room.usecase';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomUsecase } from '@/rooms/usecases/find-room.usecase';
@@ -32,6 +33,7 @@ import { Module } from '@nestjs/common';
     UpdateRoomSettingsUsecase,
     FindRoomUsecase,
     JoinRoomUsecase,
+    DeleteRoomUsecase,
   ],
 })
 export class RoomsModule {}
