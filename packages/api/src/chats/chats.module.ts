@@ -9,10 +9,12 @@ import { ChatsController } from '@/chats/chats.controller';
 import { chatsMongooseProviders } from '@/chats/chats.mongoose.providers';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { OnCreateRoomEventHandler } from '@/chats/event-handlers/on-create-room.event-handler';
+import { OnDeleteRoomEventHandler } from '@/chats/event-handlers/on-delete-room.event-handler';
 import { OnJoinRoomEventHandler } from '@/chats/event-handlers/on-join-room.event-handler';
 import { AddMessagePairToHistoryJobConsumer } from '@/chats/job-consumers/add-message-pair-to-history.job-consumer';
 import { TransformDocToVectorJobConsumer } from '@/chats/job-consumers/transform-doc-to-vector.job-consumer';
 import { AddMessageToChatUsecase } from '@/chats/usecases/add-message-to-chat.usecase';
+import { DeleteChatUsecase } from '@/chats/usecases/delete-chat.usecase';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
 import { JoinChatUsecase } from '@/chats/usecases/join-chat.usecase';
@@ -53,9 +55,11 @@ import { Module } from '@nestjs/common';
     AddMessageToChatUsecase,
     RemoveDocumentFromChatUsecase,
     UploadDocumentsToChatUsecase,
+    DeleteChatUsecase,
     // Event handlers
     OnJoinRoomEventHandler,
     OnCreateRoomEventHandler,
+    OnDeleteRoomEventHandler,
     // Job consumers
     TransformDocToVectorJobConsumer,
     AddMessagePairToHistoryJobConsumer,

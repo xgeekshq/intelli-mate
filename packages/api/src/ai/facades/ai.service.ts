@@ -126,6 +126,10 @@ Helpful answer:`
     }
   }
 
+  async deleteChatHistoryMessages(roomId: string): Promise<void> {
+    return this.memoryService.deleteMemory(roomId);
+  }
+
   async getChatHistoryMessages(roomId: string): Promise<BaseMessage[]> {
     const redisChatMemory = await (
       await this.memoryService.getMemory(roomId)

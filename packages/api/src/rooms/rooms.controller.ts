@@ -13,9 +13,11 @@ import { NotRoomOwnerExceptionSchema } from '@/rooms/exceptions/not-room-owner.e
 import { OwnerCannotLeaveRoomExceptionSchema } from '@/rooms/exceptions/owner-cannot-leave-room.exception';
 import { OwnerMustBeLoggedExceptionSchema } from '@/rooms/exceptions/owner-must-be-logged.exception';
 import { RoomIsPrivateExceptionSchema } from '@/rooms/exceptions/room-is-private.exception';
+import { RoomMustBeEmptyToDeleteExceptionSchema } from '@/rooms/exceptions/room-must-be-empty-to-delete.exception';
 import { RoomNotFoundExceptionSchema } from '@/rooms/exceptions/room-not-found.exception';
 import { UserAlreadyInRoomExceptionSchema } from '@/rooms/exceptions/user-already-in-room.exception';
 import { UserNotRoomMemberExceptionSchema } from '@/rooms/exceptions/user-not-room-member.exception';
+import { DeleteRoomUsecase } from '@/rooms/usecases/delete-room.usecase';
 import { FindMyRoomsUsecase } from '@/rooms/usecases/find-my-rooms.usecase';
 import { FindPublicRoomsUsecase } from '@/rooms/usecases/find-public-rooms.usecase';
 import { FindRoomUsecase } from '@/rooms/usecases/find-room.usecase';
@@ -26,6 +28,7 @@ import { UpdateRoomSettingsUsecase } from '@/rooms/usecases/update-room-settings
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -40,6 +43,7 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -63,7 +67,8 @@ export class RoomsController {
     private readonly leaveRoomUsecase: LeaveRoomUsecase,
     private readonly updateRoomSettingsUsecase: UpdateRoomSettingsUsecase,
     private readonly findRoomUsecase: FindRoomUsecase,
-    private readonly joinRoomUsecase: JoinRoomUsecase
+    private readonly joinRoomUsecase: JoinRoomUsecase,
+    private readonly deleteRoomUsecase: DeleteRoomUsecase
   ) {}
 
   @Get('public')
@@ -175,5 +180,20 @@ export class RoomsController {
       roomId,
       updateRoomSettingsRequestDto
     );
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiClerkAuthHeaders()
+  @ApiNoContentResponse({ description: 'No content' })
+  @ApiBadRequestResponse({ schema: RoomMustBeEmptyToDeleteExceptionSchema })
+  @ApiForbiddenResponse({ schema: NotRoomOwnerExceptionSchema })
+  @ApiNotFoundResponse({ schema: RoomNotFoundExceptionSchema })
+  @ApiOperation({ description: 'Delete room' })
+  deleteRoom(
+    @Request() req: Request,
+    @Param('id') roomId: string
+  ): Promise<void> {
+    return this.deleteRoomUsecase.execute(req.auth.userId, roomId);
   }
 }

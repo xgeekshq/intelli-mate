@@ -35,6 +35,10 @@ export class RoomsRepository {
     return room;
   }
 
+  async deleteRoom(roomId: string): Promise<void> {
+    await this.roomModel.deleteOne({ _id: roomId });
+  }
+
   async inviteUserToRoom(userId: string, room: Room): Promise<Room> {
     room.members.push(userId);
     await room.save();

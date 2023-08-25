@@ -31,7 +31,7 @@ export class TransformDocToVectorJobConsumer {
   constructor(
     private readonly chatsRepository: ChatsRepository,
     private readonly aiService: AiService,
-    private eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   @Process()

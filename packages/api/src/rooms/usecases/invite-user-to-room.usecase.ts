@@ -18,7 +18,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 @Injectable()
 export class InviteUserToRoomUsecase implements Usecase {
   constructor(
-    private eventEmitter: EventEmitter2,
+    private readonly eventEmitter: EventEmitter2,
     private readonly roomsRepository: RoomsRepository,
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider
   ) {}
