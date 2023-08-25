@@ -80,7 +80,9 @@ Helpful answer:`
         `Failed to ask AI in room ${roomId} for a response for question: `,
         {
           question: input,
-          error: e.message,
+          error: e,
+          errorMessage: e.message,
+          stack: e.stack,
         }
       );
     }
@@ -121,7 +123,9 @@ Helpful answer:`
       this.logger.error(
         'Failed to generate a document description from langchain documents. Error message: ',
         {
-          error: e.message,
+          error: e,
+          errorMessage: e.message,
+          stack: e.stack,
         }
       );
     }
@@ -169,7 +173,9 @@ Helpful answer:`
       this.logger.error(
         `Error while removing documents from vector store for room ${roomId}: file ${filename}. Error message: `,
         {
-          error: e.message,
+          error: e,
+          errorMessage: e.message,
+          stack: e.stack,
         }
       );
     }
@@ -200,7 +206,9 @@ Helpful answer:`
       this.logger.error(
         `Error while adding documents to vector store for room ${roomId}: file ${filename}. Error message: `,
         {
-          error: e.message,
+          error: e,
+          errorMessage: e.message,
+          stack: e.stack,
         }
       );
     }
@@ -231,7 +239,9 @@ Helpful answer:`
       this.logger.error(
         `Error while summarizing message history for room ${roomId} chat. Error message: `,
         {
-          error: e.message,
+          error: e,
+          errorMessage: e.message,
+          stack: e.stack,
         }
       );
     }
