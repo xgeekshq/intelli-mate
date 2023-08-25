@@ -43,37 +43,37 @@ export default function DeleteRoom({ roomId }: { roomId: string }) {
   }
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <div className="flex w-full items-end justify-between">
-          <div className="flex flex-col">
-            <p className="font-bold">Delete this room</p>
-            <p>
-              Once you delete a room, there is no going back. Please be certain.
-            </p>
-          </div>
+    <div className="flex w-full items-end justify-between">
+      <div className="flex flex-col">
+        <p className="font-bold">Delete this room</p>
+        <p>
+          Deleting a room will delete all messages in that room as well as all
+          the documents uploaded to that room.
+        </p>
+      </div>
+      <Popover>
+        <PopoverTrigger asChild>
           <Button variant="destructive" size="lg">
             Delete room
           </Button>
-        </div>
-      </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="flex flex-col gap-4">
-          <p>
-            Are you sure you want to delete this room? This action will delete
-            all the data associated to this room including messages, history and
-            documents.
-          </p>
-          <Button
-            onClick={onDeleteRoom}
-            className="w-1/4 self-end"
-            size="sm"
-            variant="destructive"
-          >
-            Delete
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverTrigger>
+        <PopoverContent className="w-80">
+          <div className="flex flex-col gap-4">
+            <p>
+              Are you sure you want to delete this room? This action is
+              permanent.
+            </p>
+            <Button
+              onClick={onDeleteRoom}
+              className="w-1/4 self-end"
+              size="sm"
+              variant="destructive"
+            >
+              Delete
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
