@@ -57,9 +57,9 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
             onClick={() => onLeaveRoom({ roomId })}
             className="w-1/4 self-end"
             size="sm"
-            variant="success"
+            variant="destructive"
           >
-            Yes
+            Leave
           </Button>
         </div>
       </PopoverContent>

@@ -28,11 +28,13 @@ interface UserSearchItemsProps {
   data: UserListType[];
   roomId: string;
   roomOwnerRoles: string[];
+  isPrivateRoom: boolean;
 }
 export default function UserSearchItems({
   data,
   roomId,
   roomOwnerRoles,
+  isPrivateRoom,
 }: UserSearchItemsProps) {
   const { toast } = useToast();
   const { sessionId } = useAuth();
@@ -86,7 +88,7 @@ export default function UserSearchItems({
               <p className="">{item.value}</p>
             </div>
           </div>
-          {verifyUserRoles(item) ? (
+          {verifyUserRoles(item) || !isPrivateRoom ? (
             <Button
               size="xs"
               variant="success"

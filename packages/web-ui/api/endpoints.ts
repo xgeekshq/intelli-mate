@@ -15,6 +15,7 @@ const Endpoints = {
     leaveRoom: () => '/rooms/leave',
     inviteToRoom: () => '/rooms/invite',
     joinRoom: () => '/rooms/join',
+    deleteRoom: (id: string) => `/rooms/${id}`,
   },
   users: {
     getUser: (id: string) => `/auth/users/${id}`,

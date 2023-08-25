@@ -10,6 +10,7 @@ import { UserListType } from '@/types/searchList';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { CommandItem } from '@/components/ui/command';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import DeleteRoom from '@/components/delete-room';
 import LeaveRoom from '@/components/leave-room';
 import { SearchList } from '@/components/search-list';
 import { UpdateRoomForm } from '@/components/update-room-form';
@@ -168,14 +169,6 @@ export default async function Settings({
   return (
     <div className="h-full">
       <div className="flex flex-col gap-4 p-4">
-        {!isOwner && (
-          <div className="flex flex-col gap-2 rounded-lg border p-4">
-            <p className="font-bold">Room Actions</p>
-            <div className="w-60">
-              <LeaveRoom roomId={room.id} />
-            </div>
-          </div>
-        )}
         {isOwner && (
           <UpdateRoomForm
             id={room.id}
@@ -218,6 +211,7 @@ export default async function Settings({
               data={userSearchList}
               roomId={room.id}
               roomOwnerRoles={owner.roles}
+              isPrivateRoom={room.isPrivate}
             />
           </SearchList>
         </div>
@@ -239,6 +233,20 @@ export default async function Settings({
             ))}
           </ScrollArea>
         </div>
+        {!isOwner && (
+          <div className="flex flex-col gap-2 rounded-lg border p-4">
+            <p className="font-bold">Room Actions</p>
+            <div className="w-60">
+              <LeaveRoom roomId={room.id} />
+            </div>
+          </div>
+        )}
+        {isOwner && (
+          <div className="flex flex-col gap-2 rounded-lg border border-red-500 p-4">
+            <p className="font-bold text-red-500">Danger Zone</p>
+            <DeleteRoom roomId={room.id} />
+          </div>
+        )}
       </div>
     </div>
   );
