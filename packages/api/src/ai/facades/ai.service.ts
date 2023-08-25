@@ -80,6 +80,7 @@ Helpful answer:`
         `Failed to ask AI in room ${roomId} for a response for question: `,
         {
           question: input,
+          error: e.message,
         }
       );
     }
