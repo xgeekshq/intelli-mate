@@ -23,7 +23,8 @@ export class ClerkAuthGuard extends AuthGuard {
         })
         .catch((e) => {
           this.logger.error('Failed to authenticate user. Error message: ', {
-            error: e.message,
+            error: e,
+            stack: e.stack,
           });
           reject(new UserUnauthorizedException());
         });
