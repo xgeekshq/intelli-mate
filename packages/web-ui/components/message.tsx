@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { memo } from 'react';
 import Image from 'next/image';
 import { getUserIdentification } from '@/utils/get-user-identification';
 import { format } from 'date-fns';
@@ -14,7 +16,7 @@ export interface MessageProps {
   message: ChatMessageType;
 }
 
-export function Message({ message }: MessageProps) {
+const Message = memo(function Message({ message }: MessageProps) {
   return (
     <div className="mb-2 flex flex-col rounded border bg-background">
       <div className="mb-2 flex items-center justify-between p-4 text-gray-500">
@@ -88,4 +90,6 @@ export function Message({ message }: MessageProps) {
       )}
     </div>
   );
-}
+});
+
+export default Message;

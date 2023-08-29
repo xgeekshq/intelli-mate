@@ -21,7 +21,7 @@ import { useRefState } from '@/hooks/use-ref-state';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
-import { Message } from '@/components/message';
+import Message from '@/components/message';
 import { MessageForm } from '@/components/message-form';
 import { socketState } from '@/app/state/socket';
 
