@@ -13,7 +13,6 @@ import {
   createSocketMessageRequestFactory,
 } from '@/factory/create-chat.factory';
 import { useAuth } from '@clerk/nextjs';
-import { getCookie } from 'cookies-next';
 import { ChevronDownCircle } from 'lucide-react';
 import { useRecoilValue } from 'recoil';
 
@@ -75,8 +74,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const socket = useRecoilValue(socketState);
   const { toast } = useToast();
 
-  const { sessionId, userId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, userId, getToken } = useAuth();
 
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
@@ -88,7 +86,6 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const requestOptions = {
     options: { method: 'GET' },
     sessionId: sessionId ?? '',
-    jwtToken: token?.toString() ?? '',
   };
 
   const scrollToBottom = () => {
@@ -102,12 +99,14 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const getChatParticipants = async (participants: string[]) =>
     baseGetRequest<UserResponseDto[]>({
       url: Endpoints.users.getUsers(participants),
+      jwtToken: (await getToken()) ?? '',
       ...requestOptions,
     });
 
   const getUser = async (userId: string) =>
     baseGetRequest<UserResponseDto>({
       url: Endpoints.users.getUser(userId),
+      jwtToken: (await getToken()) ?? '',
       ...requestOptions,
     });
 
@@ -195,6 +194,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
         )
       );
     }
+
     watchScroll();
     return () => {
       bottomEl.current?.removeEventListener('scroll', () =>

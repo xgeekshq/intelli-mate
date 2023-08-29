@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { useAuth } from '@clerk/nextjs';
-import { getCookie } from 'cookies-next';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,15 +13,14 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 export default function DeleteRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
   const { toast } = useToast();
-  const { sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, getToken } = useAuth();
   async function onDeleteRoom() {
     try {
       const res = await apiClient({
         url: Endpoints.rooms.deleteRoom(roomId),
         options: { method: 'DELETE' },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());

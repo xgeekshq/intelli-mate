@@ -9,7 +9,6 @@ import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getCookie } from 'cookies-next';
 import { Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -37,8 +36,7 @@ import { useToast } from '@/components/ui/use-toast';
 export function CreateRoomForm() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const { userId, sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { userId, sessionId, getToken } = useAuth();
   const router = useRouter();
 
   const form = useForm<CreateRoomRequestDto>({
@@ -56,7 +54,7 @@ export function CreateRoomForm() {
         url: Endpoints.rooms.createRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
