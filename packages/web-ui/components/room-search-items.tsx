@@ -6,7 +6,6 @@ import Endpoints from '@/api/endpoints';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
-import { getCookie } from 'cookies-next';
 
 import { PublicRoomsListType } from '@/types/searchList';
 import { Badge } from '@/components/ui/badge';
@@ -20,16 +19,15 @@ export default function RoomSearchItems({
   data: PublicRoomsListType[];
 }) {
   const { toast } = useToast();
-  const { sessionId } = useAuth();
+  const { sessionId, getToken } = useAuth();
   const router = useRouter();
-  const token = getCookie('__session');
   async function onJoinRoom(values: JoinRoomRequestDto) {
     try {
       const res = await apiClient({
         url: Endpoints.rooms.joinRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
 
       if (!res.ok) {

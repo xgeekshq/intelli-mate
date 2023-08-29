@@ -7,7 +7,6 @@ import { UpdateRoomSettingsRequestSchema } from '@/contract/rooms/update-room-se
 import { UpdateRoomSettingsRequestDto } from '@/contract/rooms/update-room-settings.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getCookie } from 'cookies-next';
 import { Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -32,8 +31,7 @@ interface UpdateRoomFormProps {
 export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const { sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, getToken } = useAuth();
 
   const form = useForm<UpdateRoomSettingsRequestDto>({
     resolver: zodResolver(UpdateRoomSettingsRequestSchema),
@@ -49,7 +47,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
         url: Endpoints.rooms.updateRoom(id),
         options: { method: 'PATCH', body: JSON.stringify(values) },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());

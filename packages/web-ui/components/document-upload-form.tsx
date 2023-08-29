@@ -8,7 +8,6 @@ import { UploadDocumentsRequestSchema } from '@/contract/chats/upload-documents.
 import { UploadDocumentsRequestDto } from '@/contract/chats/upload-documents.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getCookie } from 'cookies-next';
 import { Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -43,8 +42,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const { sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, getToken } = useAuth();
   const router = useRouter();
 
   const form = useForm<UploadDocumentsRequestDto>({
@@ -68,7 +66,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
           body: formData,
         },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
         isApplicationJson: false,
       });
       if (!res.ok) {

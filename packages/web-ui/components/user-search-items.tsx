@@ -5,7 +5,6 @@ import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { InviteUserToRoomRequestDto } from '@/contract/rooms/invite-user-to-room.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
-import { getCookie } from 'cookies-next';
 
 import { UserListType } from '@/types/searchList';
 import {
@@ -37,8 +36,7 @@ export default function UserSearchItems({
   isPrivateRoom,
 }: UserSearchItemsProps) {
   const { toast } = useToast();
-  const { sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, getToken } = useAuth();
   const router = useRouter();
   async function onInviteUser(values: InviteUserToRoomRequestDto) {
     try {
@@ -46,7 +44,7 @@ export default function UserSearchItems({
         url: Endpoints.rooms.inviteToRoom(),
         options: { method: 'POST', body: JSON.stringify(values) },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());

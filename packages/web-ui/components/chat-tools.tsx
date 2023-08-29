@@ -6,7 +6,6 @@ import Endpoints from '@/api/endpoints';
 import { ChatDocumentSchema } from '@/contract/chats/chat.response.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/contract/chats/remove-document-from-chat.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
-import { getCookie } from 'cookies-next';
 import { Trash } from 'lucide-react';
 import { z } from 'zod';
 
@@ -42,8 +41,7 @@ type ChatToolsProps = {
 };
 
 export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
-  const { sessionId } = useAuth();
-  const token = getCookie('__session');
+  const { sessionId, getToken } = useAuth();
   const router = useRouter();
 
   const deleteDocument = async (values: RemoveDocumentFromChatRequestDto) => {
@@ -52,7 +50,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
         url: Endpoints.chats.deleteDocument(roomId),
         options: { method: 'PATCH', body: JSON.stringify(values) },
         sessionId: sessionId ?? '',
-        jwtToken: token?.toString() ?? '',
+        jwtToken: (await getToken()) ?? '',
       });
       if (!res.ok) {
         const { error } = JSON.parse(await res.text());
