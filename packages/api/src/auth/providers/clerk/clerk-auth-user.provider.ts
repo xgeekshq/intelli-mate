@@ -26,7 +26,12 @@ export class ClerkAuthUserProvider implements AuthProvider {
     const userRolesList = await this.authRepository.findUserRolesForMultiUsers(
       ids
     );
-    const userList = await users.getUserList({ userId: ids });
+
+    // FIXME: get around the limit imposed by clerk when pagination is implemented
+    const userList = await users.getUserList(
+      ids ? { userId: ids, limit: 100 } : { limit: 100 }
+    );
+
     return userList.map((user) => ({
       ...user,
       roles:
