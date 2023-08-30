@@ -24,16 +24,16 @@ By combining these security factors, we ensure that the workplace information st
 
 We are using a **monorepo** approach to handling the existing **UI**, **API** and **Contract** (with a bit of help from `nx`).
 
-#### UI (packages/web-ui)
+#### *UI (packages/web-ui)*
 
 The framework chosen to create the UI web client for intelli-mate was `nextjs` at version `13` using `app router`.
 
-#### API (packages/api)
+#### *API (packages/api)*
 
 The framework chosen to handle the API logic was `nestjs`, as well as a persistence layer with `mongodb` and caching mechanism with `redis`.
 No specific architecture (clean, DDD, etc) is being followed, but **SOLID** best practices apply.
 
-#### Contract (packages/contract)
+#### *Contract (packages/contract)*
 
 All DTOs (TS types and zod schemas) being used to communicate between UI and API live in this package.
 
@@ -42,17 +42,13 @@ This would make it easier to communicate changes in the contract communication p
 
 #### Additional tech
 
-##### AI
+##### *AI*
 
 For the AI orchestration framework we are using `langchain` as it's currently the best open source framework for the topic.
 
-##### Socket
+##### *Socket*
 
 As a collaborative chat, we need to have a real-time communication mechanism. We chose to use `web sockets` for the job and specifically the `Socket.io` tool to handle this.
-
-Currently, socket connections and servers are handled in the application side (API), making it tightly coupled with applicational logic and hard to scale the API. We chose to do this at the start since it sped up the development of the MVP.
-
-Because of this restriction, [we have in the roadmap](https://github.com/xgeekshq/intelli-mate/issues/45) a task where we will replace `Socket.io` with `soketi`, that is already prepared to scale in a cloud-native environment and independently of the applicational logic.
 
 ## Development environment
 
@@ -87,13 +83,17 @@ _Step 4:_
 
 Start the API in watch mode with `npm run dev` and start the UI in dev mode with `npm run dev`, this should start your whole platform without any issues,
 
+## Deployment
+
+Check out our [deployment guide](./DEPLOYMENT.md) to the most common cloud providers.
+
 ## Want to contribute or found an issue?
 
 Read our [contributing guidelines](./CONTRIBUTING.md).
 
 ## Our Code of Conduct
 
-Read or [code of conduct](./CODE_OF_CONDUCT.md).
+Read our [code of conduct](./CODE_OF_CONDUCT.md).
 
 ## License
 
