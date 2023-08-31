@@ -11,7 +11,7 @@ import { siteConfig } from '@/site-config/site';
 import { SignedIn, UserButton, useAuth, useUser } from '@clerk/nextjs';
 import { Command } from 'lucide-react';
 
-import { useMacUser } from '@/hooks/use-mac-user';
+import { useBrowserInfo } from '@/hooks/use-browser-info';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   CommandDialog,
@@ -34,7 +34,7 @@ export function SiteHeader() {
   const router = useRouter();
   const { isSignedIn } = useUser();
   const { sessionId, getToken, userId } = useAuth();
-  const { isMacUser } = useMacUser();
+  const { isMacUser } = useBrowserInfo();
 
   async function getMyRooms() {
     try {

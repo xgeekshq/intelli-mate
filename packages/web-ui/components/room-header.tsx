@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ArrowLeft, Command, Settings } from 'lucide-react';
 
-import { useMacUser } from '@/hooks/use-mac-user';
+import { useBrowserInfo } from '@/hooks/use-browser-info';
 import {
   HoverCard,
   HoverCardContent,
@@ -20,7 +20,7 @@ interface RoomHeaderProps {
 export function RoomHeader({ id, name }: RoomHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isMacUser } = useMacUser();
+  const { isMacUser } = useBrowserInfo();
 
   const isSettingsPage = pathname.includes('settings');
   useEffect(() => {

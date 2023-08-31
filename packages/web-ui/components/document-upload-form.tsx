@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Command, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import { useMacUser } from '@/hooks/use-mac-user';
+import { useBrowserInfo } from '@/hooks/use-browser-info';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -51,7 +51,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
-  const { isMacUser } = useMacUser();
+  const { isMacUser } = useBrowserInfo();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
