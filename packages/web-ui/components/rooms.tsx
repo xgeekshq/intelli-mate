@@ -20,7 +20,7 @@ export function Rooms({ rooms }: RoomsProps) {
     <div className="flex h-full w-60 min-w-[220px] flex-col border-r">
       <div className="flex items-center justify-between border-b">
         <Link
-          className="text-lg relative px-4 font-semibold tracking-tight"
+          className="relative px-4 text-lg font-semibold tracking-tight"
           href={'/rooms'}
         >
           Rooms
