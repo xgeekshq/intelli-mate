@@ -13,5 +13,10 @@ export const UserResponseSchema = z.object({
   firstName: z.string().nullable(),
   lastName: z.string().nullable(),
   emailAddresses: z.array(EmailAddressResponseSchema),
-  roles: z.array(z.string()),
+  roles: z.array(
+    z.object({
+      key: z.string(),
+      priority: z.number(),
+    })
+  ),
 });

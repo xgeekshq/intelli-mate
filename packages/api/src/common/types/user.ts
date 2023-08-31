@@ -1,3 +1,5 @@
+import { Role } from '@/common/types/user-roles';
+
 type EmailAddress = {
   readonly id: string;
   readonly emailAddress: string;
@@ -11,5 +13,5 @@ export type User = {
   readonly firstName: string | null;
   readonly lastName: string | null;
   readonly emailAddresses: EmailAddress[];
-  readonly roles: string[];
+  readonly roles: Role[];
 };

@@ -1,4 +1,5 @@
 import { AppConfigNotFoundException } from '@/app-config/exceptions/app-config-not-found.exception';
+import { Role } from '@/common/types/user-roles';
 import { Injectable } from '@nestjs/common';
 import * as appConfig from 'config';
 
@@ -15,12 +16,12 @@ export class AppConfigService {
 
     return appConfig.get<AiAppConfig>('ai');
   }
-  async getAppRoles(): Promise<string[]> {
+  async getAppRoles(): Promise<Role[]> {
     if (!appConfig.has('authorization.roles')) {
       throw new AppConfigNotFoundException();
     }
 
-    return Promise.resolve(appConfig.get<string[]>('authorization.roles'));
+    return Promise.resolve(appConfig.get<Role[]>('authorization.roles'));
   }
 
   getDefaultRole(): string {

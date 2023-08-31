@@ -19,9 +19,11 @@ export class AdminUpdateUserRolesUsecase implements Usecase {
     superAdminUpdateUserRoleDto: SuperAdminUpdateUserRoleRequestDto
   ): Promise<User> {
     const roles = await this.appConfigService.getAppRoles();
+    const roleKeys = roles.map((role) => role.key);
+
     if (
       !superAdminUpdateUserRoleDto.roles.every((element) =>
-        roles.includes(element)
+        roleKeys.includes(element)
       )
     ) {
       throw new RolesNotConfiguredException();
@@ -29,7 +31,8 @@ export class AdminUpdateUserRolesUsecase implements Usecase {
 
     await this.authRepository.assignRolesToUser(
       superAdminUpdateUserRoleDto.userId,
-      superAdminUpdateUserRoleDto.roles
+      superAdminUpdateUserRoleDto.roles,
+      roles
     );
 
     return this.clerkAuthUserProvider.findUser(
