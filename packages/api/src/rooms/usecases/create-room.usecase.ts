@@ -28,6 +28,13 @@ export class CreateRoomUsecase implements Usecase {
       throw new OwnerMustBeLoggedException();
     }
 
+    const existingRoom = await this.roomsRepository.findRoomByName(
+      createRoomRequestDto.name.toLowerCase()
+    );
+    if (existingRoom) {
+      throw new DuplicateRoomNameException();
+    }
+
     try {
       const room = await this.roomsRepository.createRoom(createRoomRequestDto);
 

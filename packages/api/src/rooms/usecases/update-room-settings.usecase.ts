@@ -27,6 +27,17 @@ export class UpdateRoomSettingsUsecase implements Usecase {
       throw new NoRoomSettingsDefinedException();
     }
 
+    const duplicateRoom = await this.roomsRepository.findRoomByName(
+      updateRoomSettingsRequestDto.name.toLowerCase()
+    );
+    if (
+      duplicateRoom &&
+      updateRoomSettingsRequestDto.name &&
+      updateRoomSettingsRequestDto.name !== existingRoom.name
+    ) {
+      throw new DuplicateRoomNameException();
+    }
+
     try {
       const room = await this.roomsRepository.updateRoomSettings(
         updateRoomSettingsRequestDto,

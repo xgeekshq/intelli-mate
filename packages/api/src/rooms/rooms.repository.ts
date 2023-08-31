@@ -29,7 +29,10 @@ export class RoomsRepository {
   }
 
   async createRoom(createRoomRequestDto: CreateRoomRequestDto): Promise<Room> {
-    const room = new this.roomModel(createRoomRequestDto);
+    const room = new this.roomModel({
+      ...createRoomRequestDto,
+      name: createRoomRequestDto.name.toLowerCase(),
+    });
     room.members.push(createRoomRequestDto.ownerId);
     await room.save();
     return room;
@@ -62,7 +65,7 @@ export class RoomsRepository {
     room: Room
   ): Promise<Room> {
     if (updateRoomSettingsRequestDto.name !== undefined) {
-      room.name = updateRoomSettingsRequestDto.name;
+      room.name = updateRoomSettingsRequestDto.name.toLowerCase();
     }
     if (updateRoomSettingsRequestDto.isPrivate !== undefined) {
       room.isPrivate = updateRoomSettingsRequestDto.isPrivate;
