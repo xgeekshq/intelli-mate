@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
@@ -8,9 +8,10 @@ import { UploadDocumentsRequestSchema } from '@/contract/chats/upload-documents.
 import { UploadDocumentsRequestDto } from '@/contract/chats/upload-documents.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus } from 'lucide-react';
+import { Command, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
+import { useMacUser } from '@/hooks/use-mac-user';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -29,6 +30,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -41,9 +47,23 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
   const roomId = params.room;
 
   const [open, setOpen] = useState(false);
+
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
+  const { isMacUser } = useMacUser();
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'u' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+    document.addEventListener('keydown', down);
+
+    return () => document.removeEventListener('keydown', down);
+  }, []);
 
   const form = useForm<UploadDocumentsRequestDto>({
     resolver: zodResolver(UploadDocumentsRequestSchema),
@@ -93,11 +113,30 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
   });
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Plus className="h-5 w-5" />
-        </Button>
-      </DialogTrigger>
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <DialogTrigger asChild>
+            <Button variant="ghost">
+              <Plus className="h-5 w-5" />
+            </Button>
+          </DialogTrigger>
+        </HoverCardTrigger>
+        <HoverCardContent side="top" className="w-52">
+          <div className="flex items-center justify-between">
+            <p className="text-xs">Upload documents</p>
+            <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1">
+              {isMacUser ? (
+                <>
+                  <Command height={10} width={10} />
+                  <p className="text-xs">U</p>
+                </>
+              ) : (
+                <p className="text-xs">Ctrl + U</p>
+              )}
+            </div>
+          </div>
+        </HoverCardContent>
+      </HoverCard>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="mb-4">Upload documents to chat</DialogTitle>
