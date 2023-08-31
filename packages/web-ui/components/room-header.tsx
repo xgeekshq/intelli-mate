@@ -62,7 +62,7 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
           >
             <div className="flex items-center justify-between">
               <p className="text-xs">Room settings</p>
-              <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1">
+              <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1 dark:bg-gray-700">
                 {isMacUser ? (
                   <>
                     <Command height={10} width={10} />

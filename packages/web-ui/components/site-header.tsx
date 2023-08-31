@@ -142,7 +142,7 @@ export function SiteHeader() {
                 onClick={() => setOpen(true)}
               >
                 Search room...
-                <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1">
+                <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1 dark:bg-gray-700">
                   {isMacUser ? (
                     <>
                       <Command height={10} width={10} />

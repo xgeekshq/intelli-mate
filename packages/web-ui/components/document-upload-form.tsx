@@ -124,7 +124,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
         <HoverCardContent side="top" className="w-52">
           <div className="flex items-center justify-between">
             <p className="text-xs">Upload documents</p>
-            <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1">
+            <div className="flex items-center gap-1 rounded-lg border bg-gray-200 p-1 dark:bg-gray-700">
               {isMacUser ? (
                 <>
                   <Command height={10} width={10} />
