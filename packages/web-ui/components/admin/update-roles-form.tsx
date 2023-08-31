@@ -38,7 +38,7 @@ interface UpdateRolesFormProps {
   defaultRoles: string[];
 }
 
-const roles = getAppRoles().map((role) => ({ id: role, label: role }));
+const roles = getAppRoles().map((role) => ({ id: role.key, label: role.key }));
 
 export function UpdateRolesForm({
   userId,

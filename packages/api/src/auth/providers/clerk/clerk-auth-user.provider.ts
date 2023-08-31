@@ -41,11 +41,13 @@ export class ClerkAuthUserProvider implements AuthProvider {
   }
 
   async assignRolesToUser(id: string, roles: string[]): Promise<void> {
-    await this.authRepository.assignRolesToUser(id, roles);
+    const allRoles = await this.appConfigService.getAppRoles();
+    await this.authRepository.assignRolesToUser(id, roles, allRoles);
   }
 
   async assignDefaultRoleToUser(id: string): Promise<void> {
+    const allRoles = await this.appConfigService.getAppRoles();
     const defaultRole = this.appConfigService.getDefaultRole();
-    await this.authRepository.assignRolesToUser(id, [defaultRole]);
+    await this.authRepository.assignRolesToUser(id, [defaultRole], allRoles);
   }
 }

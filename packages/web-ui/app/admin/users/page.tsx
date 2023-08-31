@@ -83,12 +83,15 @@ export default async function AdminUsers() {
                   </TableCell>
                   <TableCell>{getUserEmail(user)}</TableCell>
                   <TableCell>
-                    {user.roles.sort(alphaAscSortPredicate).join(', ')}
+                    {user.roles
+                      .map((role) => role.key)
+                      .sort(alphaAscSortPredicate)
+                      .join(', ')}
                   </TableCell>
                   <TableCell className="text-right">
                     <UpdateRolesForm
                       userId={user.id}
-                      defaultRoles={user.roles}
+                      defaultRoles={user.roles.map((role) => role.key)}
                     />
                   </TableCell>
                 </TableRow>

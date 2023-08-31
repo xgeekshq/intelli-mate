@@ -1,5 +1,5 @@
 import { DB_USER_ROLES_MODEL_KEY } from '@/common/constants/models/user-roles';
-import { UserRoles } from '@/common/types/user-roles';
+import { Role, UserRoles } from '@/common/types/user-roles';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
@@ -19,8 +19,18 @@ export class AuthRepository {
     return this.userRolesModel.find({ userId: { $in: userIds } });
   }
 
-  async assignRolesToUser(userId: string, roles: string[]): Promise<UserRoles> {
+  async assignRolesToUser(
+    userId: string,
+    rolesToAssign: string[],
+    allRoles: Role[]
+  ): Promise<UserRoles> {
     const userRoles: UserRoles = await this.userRolesModel.findOne({ userId });
+    const roles: Role[] = [];
+
+    for (const roleToAssign of rolesToAssign) {
+      roles.push(allRoles.find((role) => role.key === roleToAssign));
+    }
+
     if (userRoles) {
       userRoles.roles = roles;
       await userRoles.save();
