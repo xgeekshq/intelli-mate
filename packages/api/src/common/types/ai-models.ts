@@ -1,7 +1,9 @@
 import { Document } from 'mongoose';
 
-export interface AiModels extends Document {
-  chatModelName: string;
+export interface AiModel extends Document {
+  chatLlmName: string;
   modelName: string;
-  apiKey: string;
+  temperature: number;
+  description: string;
+  meta: Record<string, string>;
 }

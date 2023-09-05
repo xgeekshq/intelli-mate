@@ -1,4 +1,5 @@
 import { AgentConversationService } from '@/ai/services/agent-conversation.service';
+import { ChatModelService } from '@/ai/services/chat-model.service';
 import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
@@ -12,17 +13,15 @@ import {
   LLMChain,
   loadSummarizationChain,
 } from 'langchain/chains';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { Document } from 'langchain/document';
 import { PromptTemplate } from 'langchain/prompts';
 import { BaseMessage, ChainValues } from 'langchain/schema';
 
 type AIExecutor = AgentExecutor | ConversationChain;
-
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  private readonly llmModel: ChatOpenAI;
+  // private readonly llmModel: ChatOpenAI;
   private readonly documentSummarizePrompt = PromptTemplate.fromTemplate(
     `Given the following context, identify the main actor or topic. Your answer should be 1 word.
 Context:
@@ -36,17 +35,19 @@ Helpful answer:`
     private readonly agentConversationService: AgentConversationService,
     private readonly appConfigService: AppConfigService,
     private readonly memoryService: MemoryService,
-    private readonly vectorDbService: VectorDbService
+    private readonly vectorDbService: VectorDbService,
+    private readonly chatModelService: ChatModelService
   ) {
-    this.llmModel = new ChatOpenAI({
-      temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
-      modelName: this.appConfigService.getAiAppConfig().defaultAiModel,
-    });
+    // this.llmModel = new ChatOpenAI({
+    //   temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
+    //   modelName: this.appConfigService.getAiAppConfig().defaultAiModel,
+    // });
   }
 
   async askAiInFreeText(
     input: string,
     roomId: string,
+    chatLlm: string,
     shouldSummarize: boolean,
     documents: ChatDocument[]
   ): Promise<string> {
@@ -54,20 +55,20 @@ Helpful answer:`
     let aiExecutor: AIExecutor;
 
     if (shouldSummarize) {
-      summary = await this.askAiToSummarize(roomId);
+      summary = await this.askAiToSummarize(roomId, chatLlm);
     }
 
     if (documents.length > 0) {
       aiExecutor = await this.agentConversationService.getAgent(
         roomId,
-        this.llmModel,
+        await this.chatModelService.getChatModel(chatLlm),
         documents,
         summary?.response
       );
     } else {
       aiExecutor = await this.simpleConversationChainService.getChain(
         roomId,
-        this.llmModel,
+        await this.chatModelService.getChatModel(chatLlm),
         summary?.response
       );
     }
@@ -94,18 +95,24 @@ Helpful answer:`
     }
   }
 
-  async askAiToDescribeDocument(lcDocuments: Document[]): Promise<{
+  async askAiToDescribeDocument(
+    lcDocuments: Document[],
+    chatLlm: string
+  ): Promise<{
     name: string;
     description: string;
   }> {
     try {
       const titleChain = new LLMChain({
-        llm: this.llmModel,
+        llm: await this.chatModelService.getChatModel(chatLlm),
         prompt: this.documentSummarizePrompt,
       });
-      const summarizationChain = loadSummarizationChain(this.llmModel, {
-        type: 'map_reduce',
-      });
+      const summarizationChain = loadSummarizationChain(
+        await this.chatModelService.getChatModel(chatLlm),
+        {
+          type: 'map_reduce',
+        }
+      );
 
       const summary = await summarizationChain.call({
         input_documents: lcDocuments,
@@ -214,12 +221,15 @@ Helpful answer:`
     }
   }
 
-  private async askAiToSummarize(roomId: string): Promise<ChainValues> {
+  private async askAiToSummarize(
+    roomId: string,
+    chatLlm: string
+  ): Promise<ChainValues> {
     this.logger.log(`Creating summarization for room ${roomId} chat`);
 
     const chain = await this.simpleConversationChainService.getChain(
       roomId,
-      this.llmModel
+      await this.chatModelService.getChatModel(chatLlm)
     );
 
     try {

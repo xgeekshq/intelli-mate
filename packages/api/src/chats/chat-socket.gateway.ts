@@ -76,6 +76,7 @@ export class ChatSocketGateway {
     const aiResponse = await this.aiService.askAiInFreeText(
       data.content,
       data.roomId,
+      '64f5f5732d06129c8cf80f4f',
       await this.shouldSummarizeChat(data.roomId),
       await this.fetchDocumentsForContext(data.roomId)
     );

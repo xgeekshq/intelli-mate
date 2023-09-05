@@ -13,8 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -26,11 +26,11 @@ export class AiAdminController {
     private readonly adminAddChatModelUsecase: AdminAddChatModelUsecase
   ) {}
 
-  @Post('add-ai-model')
-  @HttpCode(HttpStatus.OK)
+  @Post('ai-models')
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(SuperAdminAuthGuard)
   @ApiSuperAdminAuthHeaders()
-  @ApiOkResponse({ type: AiModelResponseDto })
+  @ApiCreatedResponse({ type: AiModelResponseDto })
   @ApiForbiddenResponse({ schema: UserNotSuperAdminExceptionSchema })
   @ApiOperation({ description: 'Add a new ai chat model' })
   async superAdminAddModel(
