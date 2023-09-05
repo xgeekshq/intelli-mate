@@ -27,9 +27,9 @@ const Message = memo(function Message({ message }: MessageProps) {
         )}
         <p>{format(new Date(message.createdAt), 'dd-MM-yyyy HH:mm')}</p>
       </div>
-      <p className="px-4">
+      <div className="px-4">
         <Markdown content={message.content} />
-      </p>
+      </div>
       {message.response ? (
         <div className="mt-4 flex gap-2 border-t bg-gray-50 p-4 dark:bg-gray-900">
           <Avatar className="h-8 w-8 rounded-none">

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Send } from 'lucide-react';
 import Textarea from 'react-textarea-autosize';
 
@@ -33,7 +33,7 @@ export function MessageForm({
     }
   }, [formRef.current?.scrollHeight]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.shiftKey && event.key === 'Enter') {
       return;
     }

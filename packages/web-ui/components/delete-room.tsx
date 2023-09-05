@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
+import { debounce } from '@/utils/debounce';
 import { useAuth } from '@clerk/nextjs';
 
 import { Button } from '@/components/ui/button';
@@ -62,7 +63,7 @@ export default function DeleteRoom({ roomId }: { roomId: string }) {
               permanent.
             </p>
             <Button
-              onClick={onDeleteRoom}
+              onClick={debounce(onDeleteRoom, 500)}
               className="w-1/4 self-end"
               size="sm"
               variant="destructive"
