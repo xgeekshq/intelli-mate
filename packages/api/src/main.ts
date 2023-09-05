@@ -1,6 +1,6 @@
 import { CACHE_CLIENT } from '@/common/constants/cache';
 import { ZodValidationPipe } from '@anatine/zod-nestjs';
-import { VersioningType } from '@nestjs/common';
+import { LogLevel, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -9,8 +9,17 @@ import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chats/adapters/redis-io.adapter';
 
+function getLogLevels(isProduction: boolean): LogLevel[] {
+  if (isProduction) {
+    return ['log', 'warn', 'error'];
+  }
+  return ['error', 'warn', 'log', 'verbose', 'debug'];
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: getLogLevels(process.env.NODE_ENV === 'production'),
+  });
   const configService = app.get(ConfigService);
   const cacheClient = app.get(CACHE_CLIENT);
 
