@@ -1,9 +1,10 @@
 import { z } from "zod";
 
-export const SuperAdminAddModelRequestSchema = z.object({
+export const SuperAdminAddAiModelRequestSchema = z.object({
   chatLlmName: z.string(),
+  alias: z.string(),
   modelName: z.string(),
   temperature: z.number(),
   description: z.string(),
-  meta: z.record(z.string()).optional(),
+  meta: z.record(z.string()),
 });

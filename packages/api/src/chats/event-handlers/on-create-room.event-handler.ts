@@ -21,9 +21,9 @@ export class OnCreateRoomEventHandler implements IntelliMateEventHandler {
         payload: event.payload,
       }
     );
-
     await this.joinChatUsecase.execute(event.payload.userId, {
       roomId: event.payload.roomId,
+      aiModelId: event.payload.aiModelId,
     });
 
     this.logger.log(

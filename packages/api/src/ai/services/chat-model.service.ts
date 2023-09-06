@@ -17,8 +17,8 @@ export class ChatModelService {
   }
 
   async getChatModel(chatLlm: string) {
-    const chatLlmOptions = await this.aiModelRepository.findAiModel(chatLlm);
     if (!this.hasChatModel(chatLlm)) {
+      const chatLlmOptions = await this.aiModelRepository.findAiModel(chatLlm);
       this.createChatModel(chatLlm, chatLlmOptions);
     }
     return this.chatModelMap.get(chatLlm);

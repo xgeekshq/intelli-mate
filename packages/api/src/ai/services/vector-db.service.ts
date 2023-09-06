@@ -26,7 +26,6 @@ export class VectorDbService {
   }
 
   private getCollectionName(roomId: string, filename: string) {
-    console.log('collection name: ', `${roomId}_${sanitizeFilename(filename)}`);
     return `${roomId}_${sanitizeFilename(filename)}`;
   }
 }

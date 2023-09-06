@@ -5,6 +5,9 @@ export const AiModelSchema = new mongoose.Schema(
     chatLlmName: {
       type: String,
     },
+    alias: {
+      type: String,
+    },
     modelName: {
       type: String,
     },
@@ -15,7 +18,7 @@ export const AiModelSchema = new mongoose.Schema(
       type: String,
     },
     meta: {
-      type: Map,
+      type: Object,
       of: String,
     },
   },

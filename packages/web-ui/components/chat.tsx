@@ -224,7 +224,12 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   const sendMessage = (value: string) => {
     socket.emit('message', {
-      data: createSocketMessageRequestFactory(roomId, value, userId ?? ''),
+      data: createSocketMessageRequestFactory(
+        roomId,
+        chat.aiModelId,
+        value,
+        userId ?? ''
+      ),
     });
   };
 

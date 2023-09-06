@@ -1,6 +1,7 @@
-import { SuperAdminAddModelRequestDto } from '@/ai/dtos/super-admin-add-model.request.dto';
+import { SuperAdminAddAiModelRequestDto } from '@/ai/dtos/super-admin-add-ai-model.request.dto';
 import { DB_AI_MODELS_MODEL_KEY } from '@/common/constants/models/ai-model';
 import { AiModel } from '@/common/types/ai-models';
+import { encrypt } from '@/common/utils/encrypt-string';
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 
@@ -14,12 +15,21 @@ export class AiModelsRepository {
   async findAiModel(id: string): Promise<AiModel> {
     return this.aiModelModel.findById(id);
   }
+
+  async findAll(): Promise<AiModel[]> {
+    return this.aiModelModel.find();
+  }
   async addAiModel(
-    superAdminAddModelRequestDto: SuperAdminAddModelRequestDto
+    superAdminAddModelRequestDto: SuperAdminAddAiModelRequestDto
   ): Promise<AiModel> {
     const aiModel = new this.aiModelModel({
       ...superAdminAddModelRequestDto,
-      chatLlmName: superAdminAddModelRequestDto.chatLlmName.toLowerCase(),
+      meta: {
+        ...superAdminAddModelRequestDto.meta,
+        ...(superAdminAddModelRequestDto.meta.apiKey
+          ? { apiKey: encrypt(superAdminAddModelRequestDto.meta['apiKey']) }
+          : {}),
+      },
     });
     await aiModel.save();
     return aiModel;

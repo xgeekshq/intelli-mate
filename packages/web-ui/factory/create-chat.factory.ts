@@ -42,12 +42,14 @@ export const createChatParticipantsFactory = (
 
 export const createSocketMessageRequestFactory = (
   roomId: string,
+  aiModelId: string,
   content: string,
   userId: string
 ): SocketMessageRequestDto => {
   return {
     id: uuidv4(),
     roomId,
+    aiModelId,
     content,
     userId,
   };

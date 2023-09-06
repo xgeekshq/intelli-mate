@@ -21,7 +21,6 @@ type AIExecutor = AgentExecutor | ConversationChain;
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  // private readonly llmModel: ChatOpenAI;
   private readonly documentSummarizePrompt = PromptTemplate.fromTemplate(
     `Given the following context, identify the main actor or topic. Your answer should be 1 word.
 Context:
@@ -37,12 +36,7 @@ Helpful answer:`
     private readonly memoryService: MemoryService,
     private readonly vectorDbService: VectorDbService,
     private readonly chatModelService: ChatModelService
-  ) {
-    // this.llmModel = new ChatOpenAI({
-    //   temperature: this.appConfigService.getAiAppConfig().defaultTemperature,
-    //   modelName: this.appConfigService.getAiAppConfig().defaultAiModel,
-    // });
-  }
+  ) {}
 
   async askAiInFreeText(
     input: string,
@@ -103,16 +97,14 @@ Helpful answer:`
     description: string;
   }> {
     try {
+      const llm = await this.chatModelService.getChatModel(chatLlm);
       const titleChain = new LLMChain({
-        llm: await this.chatModelService.getChatModel(chatLlm),
+        llm,
         prompt: this.documentSummarizePrompt,
       });
-      const summarizationChain = loadSummarizationChain(
-        await this.chatModelService.getChatModel(chatLlm),
-        {
-          type: 'map_reduce',
-        }
-      );
+      const summarizationChain = loadSummarizationChain(llm, {
+        type: 'map_reduce',
+      });
 
       const summary = await summarizationChain.call({
         input_documents: lcDocuments,

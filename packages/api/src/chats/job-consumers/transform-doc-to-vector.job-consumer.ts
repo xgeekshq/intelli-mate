@@ -50,7 +50,7 @@ export class TransformDocToVectorJobConsumer {
     );
     await this.createDocumentVectorIndexes(
       job.data.payload.roomId,
-      '64f5f5732d06129c8cf80f4f',
+      job.data.payload.aiModelId,
       chatDocument,
       lcDocuments
     );
