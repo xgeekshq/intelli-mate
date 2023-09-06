@@ -88,16 +88,20 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                     <HoverCardTrigger className="flex items-center justify-between rounded-md p-2 hover:bg-accent hover:text-accent-foreground">
                       <div className="max-w-[140px] truncate">
                         <p className="text-gray-500">
-                          {document.meta.vectorDBDocumentName}
+                          {document.meta.queryable
+                            ? document.meta.vectorDBDocumentName
+                            : 'processing...'}
                         </p>
                         <p>{document.meta.filename}</p>
                       </div>
                       {isOwner && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="xs">
-                              <Trash className="h-4 w-4 text-red-500" />
-                            </Button>
+                            {document.meta.queryable && (
+                              <Button variant="ghost" size="xs">
+                                <Trash className="h-4 w-4 text-red-500" />
+                              </Button>
+                            )}
                           </AlertDialogTrigger>
                           <AlertDialogContent className="sm:max-w-[425px]">
                             <AlertDialogHeader>

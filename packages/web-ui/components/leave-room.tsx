@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { LeaveRoomRequestDto } from '@/contract/rooms/leave-room.request.dto.d';
+import { debounce } from '@/utils/debounce';
 import { useAuth } from '@clerk/nextjs';
 
 import { Button } from '@/components/ui/button';
@@ -52,7 +53,7 @@ export default function LeaveRoom({ roomId }: { roomId: string }) {
         <div className="flex flex-col gap-4">
           <p>Are you sure you want to leave this room?</p>
           <Button
-            onClick={() => onLeaveRoom({ roomId })}
+            onClick={debounce(() => onLeaveRoom({ roomId }), 500)}
             className="w-1/4 self-end"
             size="sm"
             variant="destructive"

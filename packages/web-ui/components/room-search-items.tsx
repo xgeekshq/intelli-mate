@@ -5,6 +5,7 @@ import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
+import { debounce } from '@/utils/debounce';
 import { useAuth } from '@clerk/nextjs';
 
 import { PublicRoomsListType } from '@/types/searchList';
@@ -65,7 +66,7 @@ export default function RoomSearchItems({
             <Button
               size="xs"
               variant="success"
-              onClick={() => onJoinRoom({ roomId: item.roomId })}
+              onClick={debounce(() => onJoinRoom({ roomId: item.roomId }), 500)}
             >
               <span className="text-xs">Join Room</span>
             </Button>
