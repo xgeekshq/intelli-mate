@@ -4,7 +4,7 @@ import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request
 import { SocketMessageResponseDto } from '@/contract/chats/socket-message.response.dto';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ChatMessageType, ChatUserType } from '@/types/chat';
+import { ChatMessageType, ChatUserType, SocketMessageType } from '@/types/chat';
 
 export const createChatMessageFactory = (
   message: ChatMessageResponseDto,
@@ -40,12 +40,12 @@ export const createChatParticipantsFactory = (
   });
 };
 
-export const createSocketMessageRequestFactory = (
-  roomId: string,
-  aiModelId: string,
-  content: string,
-  userId: string
-): SocketMessageRequestDto => {
+export const createSocketMessageRequestFactory = ({
+  roomId,
+  aiModelId,
+  content,
+  userId,
+}: SocketMessageType): SocketMessageRequestDto => {
   return {
     id: uuidv4(),
     roomId,

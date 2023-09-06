@@ -12,11 +12,11 @@ export class AiModelsRepository {
     private aiModelModel: Model<AiModel>
   ) {}
 
-  async findAiModel(id: string): Promise<AiModel> {
+  findAiModel(id: string): Promise<AiModel> {
     return this.aiModelModel.findById(id);
   }
 
-  async findAll(): Promise<AiModel[]> {
+  findAll(): Promise<AiModel[]> {
     return this.aiModelModel.find();
   }
   async addAiModel(

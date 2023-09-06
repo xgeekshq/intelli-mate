@@ -16,18 +16,20 @@ export class ChatModelService {
     this.chatModelMap = new Map();
   }
 
-  async getChatModel(chatLlm: string) {
-    if (!this.hasChatModel(chatLlm)) {
-      const chatLlmOptions = await this.aiModelRepository.findAiModel(chatLlm);
-      this.createChatModel(chatLlm, chatLlmOptions);
+  async getChatModel(chatLlmId: string) {
+    if (!this.hasChatModel(chatLlmId)) {
+      const chatLlmOptions = await this.aiModelRepository.findAiModel(
+        chatLlmId
+      );
+      this.createChatModel(chatLlmId, chatLlmOptions);
     }
-    return this.chatModelMap.get(chatLlm);
+    return this.chatModelMap.get(chatLlmId);
   }
-  private hasChatModel(chatLlm: string): boolean {
-    return this.chatModelMap.has(chatLlm);
+  private hasChatModel(chatLlmId: string): boolean {
+    return this.chatModelMap.has(chatLlmId);
   }
 
-  private createChatModel(chatLlm: string, chatLlmOptions: AiModel) {
-    this.chatModelMap.set(chatLlm, createChatLlmModelFactory(chatLlmOptions));
+  private createChatModel(chatLlmId: string, chatLlmOptions: AiModel) {
+    this.chatModelMap.set(chatLlmId, createChatLlmModelFactory(chatLlmOptions));
   }
 }

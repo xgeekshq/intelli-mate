@@ -41,7 +41,7 @@ Helpful answer:`
   async askAiInFreeText(
     input: string,
     roomId: string,
-    chatLlm: string,
+    chatLlmId: string,
     shouldSummarize: boolean,
     documents: ChatDocument[]
   ): Promise<string> {
@@ -49,20 +49,20 @@ Helpful answer:`
     let aiExecutor: AIExecutor;
 
     if (shouldSummarize) {
-      summary = await this.askAiToSummarize(roomId, chatLlm);
+      summary = await this.askAiToSummarize(roomId, chatLlmId);
     }
 
     if (documents.length > 0) {
       aiExecutor = await this.agentConversationService.getAgent(
         roomId,
-        await this.chatModelService.getChatModel(chatLlm),
+        await this.chatModelService.getChatModel(chatLlmId),
         documents,
         summary?.response
       );
     } else {
       aiExecutor = await this.simpleConversationChainService.getChain(
         roomId,
-        await this.chatModelService.getChatModel(chatLlm),
+        await this.chatModelService.getChatModel(chatLlmId),
         summary?.response
       );
     }
@@ -91,13 +91,13 @@ Helpful answer:`
 
   async askAiToDescribeDocument(
     lcDocuments: Document[],
-    chatLlm: string
+    chatLlmId: string
   ): Promise<{
     name: string;
     description: string;
   }> {
     try {
-      const llm = await this.chatModelService.getChatModel(chatLlm);
+      const llm = await this.chatModelService.getChatModel(chatLlmId);
       const titleChain = new LLMChain({
         llm,
         prompt: this.documentSummarizePrompt,
@@ -215,13 +215,13 @@ Helpful answer:`
 
   private async askAiToSummarize(
     roomId: string,
-    chatLlm: string
+    chatLlmId: string
   ): Promise<ChainValues> {
     this.logger.log(`Creating summarization for room ${roomId} chat`);
 
     const chain = await this.simpleConversationChainService.getChain(
       roomId,
-      await this.chatModelService.getChatModel(chatLlm)
+      await this.chatModelService.getChatModel(chatLlmId)
     );
 
     try {

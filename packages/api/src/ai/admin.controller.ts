@@ -1,6 +1,6 @@
 import { AiModelResponseDto } from '@/ai/dtos/ai-model.response.dto';
 import { SuperAdminAddAiModelRequestDto } from '@/ai/dtos/super-admin-add-ai-model.request.dto';
-import { AdminAddChatModelUsecase } from '@/ai/usecases/admin-add-chat-model.usecase';
+import { AdminAddAiModelUsecase } from '@/ai/usecases/admin-add-ai-model.usecase';
 import { AdminFindAiModelsUsecase } from '@/ai/usecases/admin-find-ai-models.usecase';
 import { UserNotSuperAdminExceptionSchema } from '@/auth/exceptions/user-not-super-admin.exception';
 import { ApiSuperAdminAuthHeaders } from '@/auth/guards/super-admin/open-api-super-admin-headers.decorator';
@@ -26,7 +26,7 @@ import {
 @ApiTags('ai/admin')
 export class AiAdminController {
   constructor(
-    private readonly adminAddChatModelUsecase: AdminAddChatModelUsecase,
+    private readonly adminAddChatModelUsecase: AdminAddAiModelUsecase,
     private readonly adminFindAiModelsUsecase: AdminFindAiModelsUsecase
   ) {}
 

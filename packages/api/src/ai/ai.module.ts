@@ -9,7 +9,7 @@ import { RedisKeepAliveService } from '@/ai/services/redis-keep-alive.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { ToolService } from '@/ai/services/tool.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
-import { AdminAddChatModelUsecase } from '@/ai/usecases/admin-add-chat-model.usecase';
+import { AdminAddAiModelUsecase } from '@/ai/usecases/admin-add-ai-model.usecase';
 import { AdminFindAiModelsUsecase } from '@/ai/usecases/admin-find-ai-models.usecase';
 import { AppConfigModule } from '@/app-config/app-config.module';
 import { AdminValidateCredentialsUsecase } from '@/auth/usecases/admin-validate-credentials.usecase';
@@ -33,7 +33,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ...aiModelsMongooseProviders,
     // Usecases
     AdminValidateCredentialsUsecase,
-    AdminAddChatModelUsecase,
+    AdminAddAiModelUsecase,
     AdminFindAiModelsUsecase,
     // Private services
     AiModelsRepository,

@@ -136,7 +136,7 @@ export class TransformDocToVectorJobConsumer {
 
   private async createDocumentVectorIndexes(
     roomId: string,
-    chatLlm: string,
+    chatLlmId: string,
     document: ChatDocument,
     lcDocuments: Document[]
   ) {
@@ -152,7 +152,7 @@ export class TransformDocToVectorJobConsumer {
     });
 
     const vectorDBDocumentMetadata =
-      await this.aiService.askAiToDescribeDocument(lcDocuments, chatLlm);
+      await this.aiService.askAiToDescribeDocument(lcDocuments, chatLlmId);
 
     this.logger.debug(`File summary fetched: `, {
       title: vectorDBDocumentMetadata.name,

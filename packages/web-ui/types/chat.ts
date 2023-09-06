@@ -13,3 +13,10 @@ export interface ChatUserType {
   name: string | null;
   email: string;
 }
+
+export interface SocketMessageType {
+  roomId: string;
+  aiModelId: string;
+  content: string;
+  userId: string;
+}

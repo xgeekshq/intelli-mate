@@ -7,7 +7,7 @@ import { AiModelResponseSchema } from '@/contract/ai/ai-model.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AdminAddChatModelUsecase implements Usecase {
+export class AdminAddAiModelUsecase implements Usecase {
   constructor(private readonly aiModelRepository: AiModelsRepository) {}
 
   async execute(
