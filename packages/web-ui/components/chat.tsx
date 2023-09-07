@@ -64,8 +64,12 @@ async function baseGetRequest<T>(
   }
 }
 
-const requestOptions = (sessionId?: string | null) => ({
+const requestOptions = async (
+  getToken: () => Promise<string | null>,
+  sessionId?: string | null
+) => ({
   options: { method: 'GET' },
+  jwtToken: (await getToken()) ?? '',
   sessionId: sessionId ?? '',
 });
 
@@ -96,8 +100,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     const getUser = async (userId: string) =>
       baseGetRequest<UserResponseDto>({
         url: Endpoints.users.getUser(userId),
-        jwtToken: (await getToken()) ?? '',
-        ...requestOptions(sessionId),
+        ...(await requestOptions(getToken, sessionId)),
       });
 
     const userInParticipants = participants.current.find(
@@ -140,8 +143,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     const getChatParticipants = async (participants: string[]) =>
       baseGetRequest<UserResponseDto[]>({
         url: Endpoints.users.getUsers(participants),
-        jwtToken: (await getToken()) ?? '',
-        ...requestOptions(sessionId),
+        ...(await requestOptions(getToken, sessionId)),
       });
 
     async function setInitialData() {
