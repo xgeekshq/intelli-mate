@@ -45,7 +45,7 @@ export default function SuperAdminLogin() {
         });
         return;
       }
-      router.push('/admin/users');
+      router.push('/admin/manage/users');
     } catch (e) {
       console.log(e);
     }

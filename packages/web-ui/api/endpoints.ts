@@ -5,6 +5,8 @@ const Endpoints = {
     validateCredentials: () => '/auth/admin/validate-credentials',
     getUsers: () => '/auth/admin/users',
     updateUserRoles: () => '/auth/admin/update-user-roles',
+    getAiModels: () => '/ai/admin/ai-models',
+    addAiModel: () => '/ai/admin/ai-models',
   },
   rooms: {
     getMyRooms: () => '/rooms/my',
@@ -31,6 +33,9 @@ const Endpoints = {
     getChat: (roomId: string) => `/chats/${roomId}`,
     uploadDocuments: (roomId: string) => `/chats/${roomId}/upload-documents`,
     deleteDocument: (roomId: string) => `/chats/${roomId}/remove-document`,
+  },
+  ai: {
+    getAiModels: () => '/ai/ai-models',
   },
 };
 export default Endpoints;

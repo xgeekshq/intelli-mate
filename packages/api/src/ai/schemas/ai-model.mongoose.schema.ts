@@ -7,6 +7,7 @@ export const AiModelSchema = new mongoose.Schema(
     },
     alias: {
       type: String,
+      required: false,
     },
     modelName: {
       type: String,

@@ -1,5 +1,5 @@
-import { AiModelResponseDto } from '@/ai/dtos/ai-model.response.dto';
 import { SuperAdminAddAiModelRequestDto } from '@/ai/dtos/super-admin-add-ai-model.request.dto';
+import { SuperAdminAiModelResponseDto } from '@/ai/dtos/super-admin-ai-model.response.dto';
 import { AdminAddAiModelUsecase } from '@/ai/usecases/admin-add-ai-model.usecase';
 import { AdminFindAiModelsUsecase } from '@/ai/usecases/admin-find-ai-models.usecase';
 import { UserNotSuperAdminExceptionSchema } from '@/auth/exceptions/user-not-super-admin.exception';
@@ -33,10 +33,10 @@ export class AiAdminController {
   @Get('ai-models')
   @UseGuards(SuperAdminAuthGuard)
   @ApiSuperAdminAuthHeaders()
-  @ApiOkResponse({ type: AiModelResponseDto, isArray: true })
+  @ApiOkResponse({ type: SuperAdminAiModelResponseDto, isArray: true })
   @ApiForbiddenResponse({ schema: UserNotSuperAdminExceptionSchema })
   @ApiOperation({ description: 'Get the AI Model list for the super admin' })
-  async superAdminFindAiModels(): Promise<AiModelResponseDto[]> {
+  async superAdminFindAiModels(): Promise<SuperAdminAiModelResponseDto[]> {
     return this.adminFindAiModelsUsecase.execute();
   }
 
@@ -44,7 +44,7 @@ export class AiAdminController {
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(SuperAdminAuthGuard)
   @ApiSuperAdminAuthHeaders()
-  @ApiCreatedResponse({ type: AiModelResponseDto })
+  @ApiCreatedResponse({ type: SuperAdminAiModelResponseDto })
   @ApiForbiddenResponse({ schema: UserNotSuperAdminExceptionSchema })
   @ApiOperation({ description: 'Add a new ai chat model' })
   async superAdminAddAiModel(

@@ -1,9 +1,9 @@
 import { AiModelsRepository } from '@/ai/ai-models.repository';
-import { AiModelResponseDto } from '@/ai/dtos/ai-model.response.dto';
 import { SuperAdminAddAiModelRequestDto } from '@/ai/dtos/super-admin-add-ai-model.request.dto';
+import { SuperAdminAiModelResponseDto } from '@/ai/dtos/super-admin-ai-model.response.dto';
 import { InternalServerErrorException } from '@/common/exceptions/internal-server-error.exception';
 import { Usecase } from '@/common/types/usecase';
-import { AiModelResponseSchema } from '@/contract/ai/ai-model.response.dto';
+import { SuperAdminAiModelResponseSchema } from '@/contract/ai/super-admin-ai-model.response.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -12,13 +12,13 @@ export class AdminAddAiModelUsecase implements Usecase {
 
   async execute(
     addAiModelRequestDto: SuperAdminAddAiModelRequestDto
-  ): Promise<AiModelResponseDto> {
+  ): Promise<SuperAdminAiModelResponseDto> {
     try {
       const aiModel = await this.aiModelRepository.addAiModel(
         addAiModelRequestDto
       );
 
-      return AiModelResponseSchema.parse(aiModel);
+      return SuperAdminAiModelResponseSchema.parse(aiModel);
     } catch (e) {
       throw new InternalServerErrorException(e.message);
     }

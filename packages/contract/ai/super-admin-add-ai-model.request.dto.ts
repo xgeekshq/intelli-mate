@@ -1,10 +1,17 @@
 import { z } from "zod";
 
+const defaultStringValidation = z
+  .string()
+  .transform((value) => value.trim())
+  .refine((value) => value.length >= 1, {
+    message: "Required",
+  });
+
 export const SuperAdminAddAiModelRequestSchema = z.object({
-  chatLlmName: z.string(),
+  chatLlmName: defaultStringValidation,
   alias: z.string().optional(),
-  modelName: z.string(),
+  modelName: defaultStringValidation,
   temperature: z.number(),
-  description: z.string(),
-  meta: z.record(z.string()),
+  description: defaultStringValidation,
+  meta: z.record(defaultStringValidation),
 });
