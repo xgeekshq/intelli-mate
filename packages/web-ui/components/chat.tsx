@@ -125,6 +125,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   const { sendMessage } = useSocketCommunication({
     roomId,
+    aiModelId: chat.aiModelId,
     userId,
     messages,
     setMessages,
@@ -160,17 +161,6 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     void setInitialData();
     scrollToBottom();
   }, [chat, parseMessageList]);
-
-  const sendMessage = (value: string) => {
-    socket.emit('message', {
-      data: createSocketMessageRequestFactory({
-        roomId,
-        aiModelId: chat.aiModelId,
-        content: value,
-        userId: userId ?? '',
-      }),
-    });
-  };
 
   return (
     <div className="flex h-full w-full flex-col">
