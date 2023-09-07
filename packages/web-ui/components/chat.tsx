@@ -1,29 +1,25 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ClerkFetcherParamsType, apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
 import { ChatResponseDto } from '@/contract/chats/chat.response.dto.d';
 import {
   createChatMessageFactory,
-  createChatMessagesWithResponseFactory,
   createChatParticipantsFactory,
-  createSocketMessageRequestFactory,
 } from '@/factory/create-chat.factory';
 import { useAuth } from '@clerk/nextjs';
 import { ChevronDownCircle } from 'lucide-react';
-import { useRecoilValue } from 'recoil';
 
 import { ChatMessageType, ChatUserType } from '@/types/chat';
+import { useAutoScroll } from '@/hooks/use-auto-scroll';
 import { useRefState } from '@/hooks/use-ref-state';
+import { useSocketCommunication } from '@/hooks/use-socket-communication';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useToast } from '@/components/ui/use-toast';
 import Message from '@/components/message';
 import { MessageForm } from '@/components/message-form';
-import { socketState } from '@/app/state/socket';
 
 interface ChatProps {
   chat: ChatResponseDto;
@@ -68,25 +64,22 @@ async function baseGetRequest<T>(
   }
 }
 
+const requestOptions = (sessionId?: string | null) => ({
+  options: { method: 'GET' },
+  sessionId: sessionId ?? '',
+});
+
 export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
-  const router = useRouter();
-
-  const socket = useRecoilValue(socketState);
-  const { toast } = useToast();
-
   const { sessionId, userId, getToken } = useAuth();
-
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
     useState(false);
-
   const bottomEl = useRef<HTMLDivElement>(null);
-
-  const requestOptions = {
-    options: { method: 'GET' },
-    sessionId: sessionId ?? '',
-  };
+  const chatHasDocuments = useMemo(
+    () => chat.documents.length > 0,
+    [chat.documents]
+  );
 
   const scrollToBottom = () => {
     if (bottomEl) {
@@ -96,23 +89,17 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
       });
     }
   };
-  const getChatParticipants = async (participants: string[]) =>
-    baseGetRequest<UserResponseDto[]>({
-      url: Endpoints.users.getUsers(participants),
-      jwtToken: (await getToken()) ?? '',
-      ...requestOptions,
-    });
-
-  const getUser = async (userId: string) =>
-    baseGetRequest<UserResponseDto>({
-      url: Endpoints.users.getUser(userId),
-      jwtToken: (await getToken()) ?? '',
-      ...requestOptions,
-    });
 
   const addUserToMessage = async (
     userId: string
   ): Promise<ChatUserType | undefined> => {
+    const getUser = async (userId: string) =>
+      baseGetRequest<UserResponseDto>({
+        url: Endpoints.users.getUser(userId),
+        jwtToken: (await getToken()) ?? '',
+        ...requestOptions(sessionId),
+      });
+
     const userInParticipants = participants.current.find(
       (participant) => participant.userId === userId
     );
@@ -133,51 +120,15 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     return parsedUser;
   };
 
-  const chatWithDocuments = chat.documents.length > 0;
+  const { sendMessage } = useSocketCommunication({
+    roomId,
+    userId,
+    messages,
+    setMessages,
+    addUserToMessage,
+  });
 
-  useEffect(() => {
-    socket.emit('joinRoom', { data: { roomId, userId } });
-
-    socket.on('message', async (message) => {
-      if (message.isAi) {
-        setMessages((messages) =>
-          createChatMessagesWithResponseFactory(messages, message)
-        );
-      } else {
-        const messageIds = messages.map(({ id }) => id);
-
-        if (messageIds.includes(message.id)) {
-          return;
-        }
-
-        const user = await addUserToMessage(message.userId);
-
-        setMessages((messages) => {
-          return [
-            ...messages,
-            {
-              id: message.id,
-              content: message.response,
-              createdAt: message.createdAt,
-              user,
-            },
-          ];
-        });
-      }
-    });
-
-    socket.on('documentReady', async (message) => {
-      toast({
-        title: 'Document ready',
-        description: `The document ${message.filename} is ready to be consulted.`,
-      });
-      router.refresh();
-    });
-
-    return () => {
-      socket.emit('leaveRoom', { data: { roomId } });
-    };
-  }, []);
+  useAutoScroll(bottomEl, setShowScrollToBottomButton);
 
   useEffect(() => {
     if (!showScrollToBottomButton) {
@@ -186,27 +137,13 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   }, [messages]);
 
   useEffect(() => {
-    function watchScroll() {
-      bottomEl.current?.addEventListener('scroll', () =>
-        setShowScrollToBottomButton(
-          bottomEl.current?.scrollTop! + bottomEl.current?.clientHeight! <
-            bottomEl.current?.scrollHeight!
-        )
-      );
-    }
+    const getChatParticipants = async (participants: string[]) =>
+      baseGetRequest<UserResponseDto[]>({
+        url: Endpoints.users.getUsers(participants),
+        jwtToken: (await getToken()) ?? '',
+        ...requestOptions(sessionId),
+      });
 
-    watchScroll();
-    return () => {
-      bottomEl.current?.removeEventListener('scroll', () =>
-        setShowScrollToBottomButton(
-          bottomEl.current?.scrollTop! + bottomEl.current?.clientHeight! <
-            bottomEl.current?.scrollHeight!
-        )
-      );
-    };
-  });
-
-  useEffect(() => {
     async function setInitialData() {
       if (chat && chat.participantIds.length > 0) {
         const participantList = createChatParticipantsFactory(
@@ -222,12 +159,6 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
     scrollToBottom();
   }, [chat, parseMessageList]);
 
-  const sendMessage = (value: string) => {
-    socket.emit('message', {
-      data: createSocketMessageRequestFactory(roomId, value, userId ?? ''),
-    });
-  };
-
   return (
     <div className="flex h-full w-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">
@@ -240,7 +171,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
               onClick={scrollToBottom}
               variant="ghost"
               className={`fixed bottom-20 h-7 w-7 rounded-full p-0 ${
-                chatWithDocuments
+                chatHasDocuments
                   ? 'right-[calc(var(--chat-tools)+24px)]'
                   : 'right-6'
               }`}

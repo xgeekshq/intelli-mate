@@ -13,6 +13,7 @@ import { ChatDocument } from '@/common/types/chat';
 import { AddMessageToChatRequestSchema } from '@/contract/chats/add-message-to-chat.request.dto';
 import { SocketCreateRoomRequestDto } from '@/contract/chats/socket-create-room.request.dto';
 import { SocketMessageRequestDto } from '@/contract/chats/socket-message.request.dto';
+import { SocketRejoinRoomRequestDto } from '@/contract/chats/socket-rejoin-room.request.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
@@ -48,6 +49,14 @@ export class ChatSocketGateway {
     const chat = await this.joinChatUsecase.execute(data.userId, data);
     client.join(chat.roomId);
     return chat.roomId;
+  }
+
+  @SubscribeMessage('rejoinRoom')
+  async handleRejoinRoom(
+    @MessageBody('data') data: SocketRejoinRoomRequestDto,
+    @ConnectedSocket() client: Socket
+  ) {
+    client.join(data.roomId);
   }
 
   @SubscribeMessage('leaveRoom')
