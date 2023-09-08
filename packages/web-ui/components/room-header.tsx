@@ -16,7 +16,7 @@ import {
 interface RoomHeaderProps {
   id: string;
   name: string;
-  llmModel: AiModelResponseDto;
+  llmModel?: AiModelResponseDto;
 }
 
 export function RoomHeader({ id, name, llmModel }: RoomHeaderProps) {
@@ -52,7 +52,7 @@ export function RoomHeader({ id, name, llmModel }: RoomHeaderProps) {
       ) : (
         <>
           <p className="text-lg font-semibold tracking-tight">{name}</p>
-          <p className="text-sm text-gray-500">{`${llmModel.chatLlmName} - ${llmModel.alias}`}</p>
+          <p className="text-sm text-gray-500">{`${llmModel?.chatLlmName} - ${llmModel?.alias}`}</p>
         </>
       )}
       {!isSettingsPage && (
