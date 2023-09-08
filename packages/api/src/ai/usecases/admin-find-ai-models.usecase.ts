@@ -15,7 +15,7 @@ export class AdminFindAiModelsUsecase implements Usecase {
       const aiModels = await this.aiModelsRepository.findAll();
       for (const aiModel of aiModels) {
         if (aiModel.meta && aiModel.meta['apiKey']) {
-          aiModel.meta['apiKey'] = decrypt(aiModel.meta['apiKey']);
+          aiModel.meta.apiKey = decrypt(aiModel.meta.apiKey);
         }
       }
       return aiModels.map((aiModel) =>

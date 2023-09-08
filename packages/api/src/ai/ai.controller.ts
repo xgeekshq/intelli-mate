@@ -15,7 +15,7 @@ export class AiController {
   @ApiClerkAuthHeaders()
   @ApiOkResponse({ type: AiModelResponseDto, isArray: true })
   @ApiOperation({ description: 'Get the AI Model list for all users' })
-  async superAdminFindAiModels(): Promise<AiModelResponseDto[]> {
+  async findAiModels(): Promise<AiModelResponseDto[]> {
     return this.findAiModelsUsecase.execute();
   }
 }

@@ -27,7 +27,7 @@ export class AiModelsRepository {
       meta: {
         ...superAdminAddModelRequestDto.meta,
         ...(superAdminAddModelRequestDto.meta.apiKey
-          ? { apiKey: encrypt(superAdminAddModelRequestDto.meta['apiKey']) }
+          ? { apiKey: encrypt(superAdminAddModelRequestDto.meta.apiKey) }
           : {}),
       },
     });
