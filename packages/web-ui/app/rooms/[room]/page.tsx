@@ -44,6 +44,7 @@ const getChat = async (
     console.log(e);
   }
 };
+
 const getOwner = async (
   sessionId: string,
   clerkJwtToken: string,

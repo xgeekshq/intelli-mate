@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { AiModelResponseDto } from '@/contract/ai/ai-model.response.dto.d';
 import { ArrowLeft, Command, Settings } from 'lucide-react';
 
 import { useBrowserInfo } from '@/hooks/use-browser-info';
@@ -15,9 +16,10 @@ import {
 interface RoomHeaderProps {
   id: string;
   name: string;
+  llmModel: AiModelResponseDto;
 }
 
-export function RoomHeader({ id, name }: RoomHeaderProps) {
+export function RoomHeader({ id, name, llmModel }: RoomHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { isMacUser } = useBrowserInfo();
@@ -36,6 +38,7 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
       return () => document.removeEventListener('keydown', down);
     }
   }, [isSettingsPage]);
+
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
       {isSettingsPage ? (
@@ -47,7 +50,10 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
           {name} | settings
         </Link>
       ) : (
-        <p className="text-lg font-semibold tracking-tight">{name}</p>
+        <>
+          <p className="text-lg font-semibold tracking-tight">{name}</p>
+          <p className="text-sm text-gray-500">{`${llmModel.chatLlmName} - ${llmModel.alias}`}</p>
+        </>
       )}
       {!isSettingsPage && (
         <HoverCard>

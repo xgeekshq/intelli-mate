@@ -36,6 +36,7 @@ const Endpoints = {
   },
   ai: {
     getAiModels: () => '/ai/ai-models',
+    getAiModel: (aiModelId: string) => `/ai/ai-models/${aiModelId}`,
   },
 };
 export default Endpoints;

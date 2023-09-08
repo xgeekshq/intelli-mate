@@ -60,7 +60,7 @@ const getOwner = async (
   sessionId: string,
   clerkJwtToken: string,
   ownerId: string
-) => {
+): Promise<UserResponseDto | undefined> => {
   try {
     const res = await apiClient({
       url: Endpoints.users.getUser(ownerId),
@@ -74,7 +74,10 @@ const getOwner = async (
   }
 };
 
-const getAllUsers = async (sessionId: string, clerkJwtToken: string) => {
+const getAllUsers = async (
+  sessionId: string,
+  clerkJwtToken: string
+): Promise<UserResponseDto[] | undefined> => {
   try {
     const res = await apiClient({
       url: Endpoints.users.getUsers(),
@@ -92,7 +95,7 @@ const getRoomMembers = async (
   sessionId: string,
   clerkJwtToken: string,
   members: string[]
-) => {
+): Promise<UserResponseDto[] | undefined> => {
   try {
     const res = await apiClient({
       url: Endpoints.users.getUsers(members),
@@ -146,13 +149,7 @@ export default async function Settings({
     params.room
   );
 
-  const [members, allUsers, owner] = await Promise.all<
-    [
-      Promise<UserResponseDto[]>,
-      Promise<UserResponseDto[]>,
-      Promise<UserResponseDto>
-    ]
-  >([
+  const [members = [], allUsers = [], owner] = await Promise.all([
     getRoomMembers(sessionId!, clerkJwtToken!.value, room.members),
     getAllUsers(sessionId!, clerkJwtToken!.value),
     getOwner(sessionId!, clerkJwtToken!.value, room.ownerId),
@@ -164,7 +161,7 @@ export default async function Settings({
 
   const membersSearchList = getUserList(members);
 
-  const isOwner = owner.id === userId;
+  const isOwner = owner?.id === userId;
 
   return (
     <div className="h-full">
@@ -180,22 +177,22 @@ export default async function Settings({
           <p className="font-bold">Room owner</p>
           <div className="flex gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={owner.profileImageUrl} alt="Profile Image" />
+              <AvatarImage src={owner?.profileImageUrl} alt="Profile Image" />
             </Avatar>
             <div className="flex flex-col text-gray-500">
               <p>{`Name: ${
-                owner.firstName && owner.lastName
+                owner?.firstName && owner.lastName
                   ? `${owner.firstName} ${owner.lastName}`
                   : ' - '
               }`}</p>
               <p>
                 {`Email: ${
-                  owner.emailAddresses.find(
+                  owner?.emailAddresses.find(
                     (email) => owner.primaryEmailAddressId === email.id
                   )?.emailAddress ?? ' - '
                 }`}
               </p>
-              <p>{`Username: ${owner.username}`}</p>
+              <p>{`Username: ${owner?.username}`}</p>
             </div>
           </div>
         </div>
@@ -210,7 +207,7 @@ export default async function Settings({
             <UserSearchItems
               data={userSearchList}
               roomId={room.id}
-              roomOwnerRoles={owner.roles}
+              roomOwnerRoles={owner?.roles ?? []}
               isPrivateRoom={room.isPrivate}
             />
           </SearchList>

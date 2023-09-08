@@ -12,6 +12,7 @@ import { ToolService } from '@/ai/services/tool.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
 import { AdminAddAiModelUsecase } from '@/ai/usecases/admin-add-ai-model.usecase';
 import { AdminFindAiModelsUsecase } from '@/ai/usecases/admin-find-ai-models.usecase';
+import { FindAiModelUsecase } from '@/ai/usecases/find-ai-model.usecase';
 import { FindAiModelsUsecase } from '@/ai/usecases/find-ai-models.usecase';
 import { AppConfigModule } from '@/app-config/app-config.module';
 import { ClerkAuthGuard } from '@/auth/guards/clerk/clerk.auth.guard';
@@ -41,6 +42,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AdminAddAiModelUsecase,
     AdminFindAiModelsUsecase,
     FindAiModelsUsecase,
+    FindAiModelUsecase,
     // Private services
     AiModelsRepository,
     MemoryService,
