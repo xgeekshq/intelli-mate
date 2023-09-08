@@ -12,6 +12,7 @@ import { socketState } from '@/app/state/socket';
 
 interface UseSocketCommunicationProps {
   roomId: string;
+  aiModelId: string;
   userId?: string | null;
   messages: ChatMessageType[];
   setMessages: Dispatch<SetStateAction<ChatMessageType[]>>;
@@ -20,6 +21,7 @@ interface UseSocketCommunicationProps {
 
 export function useSocketCommunication({
   roomId,
+  aiModelId,
   userId,
   messages,
   setMessages,
@@ -31,7 +33,12 @@ export function useSocketCommunication({
 
   const sendMessage = (value: string) => {
     socket.emit('message', {
-      data: createSocketMessageRequestFactory(roomId, value, userId ?? ''),
+      data: createSocketMessageRequestFactory({
+        roomId,
+        aiModelId,
+        content: value,
+        userId: userId ?? '',
+      }),
     });
   };
 
@@ -84,7 +91,7 @@ export function useSocketCommunication({
       socket.emit('leaveRoom', { data: { roomId } });
       window.removeEventListener('focus', onWindowFocus);
     };
-  });
+  }, []);
 
   return { sendMessage };
 }

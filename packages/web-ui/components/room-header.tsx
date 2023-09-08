@@ -35,7 +35,7 @@ export function RoomHeader({ id, name }: RoomHeaderProps) {
 
       return () => document.removeEventListener('keydown', down);
     }
-  }, []);
+  }, [isSettingsPage]);
   return (
     <div className="flex min-h-[41px] w-full items-center justify-between border-b px-4">
       {isSettingsPage ? (

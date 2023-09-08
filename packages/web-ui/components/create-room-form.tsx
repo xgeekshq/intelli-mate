@@ -1,15 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
+import { AiModelResponseDto } from '@/contract/ai/ai-model.response.dto.d';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock, Plus } from 'lucide-react';
+import { Info, Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -30,10 +31,20 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
 import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
 
-export function CreateRoomForm() {
+type CreateRoomFormProps = {
+  aiModels: AiModelResponseDto[];
+};
+
+export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { userId, sessionId, getToken } = useAuth();
@@ -43,6 +54,7 @@ export function CreateRoomForm() {
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
       name: '',
+      aiModelId: '',
       isPrivate: false,
       ownerId: userId ?? '',
     },
@@ -102,6 +114,58 @@ export function CreateRoomForm() {
                     <FormLabel>Room Name</FormLabel>
                     <FormControl>
                       <Input placeholder="intelli-mate" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="aiModelId"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>
+                      <div className="flex items-end gap-2">
+                        Chat LLM
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <Info width="14" height="14" />
+                          </HoverCardTrigger>
+                          <HoverCardContent className="min-w-[360px]">
+                            Select an LLM that better matches your needs.
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>
+                    </FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {aiModels.map((aiModel) => (
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value={aiModel.id} />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <p>
+                                    {aiModel.chatLlmName} -{' '}
+                                    {aiModel.alias ?? 'no alias provided'}
+                                  </p>
+                                </HoverCardTrigger>
+                                <HoverCardContent>
+                                  <div className="flex justify-between space-x-4">
+                                    {aiModel.description}
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

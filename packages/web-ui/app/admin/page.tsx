@@ -1,7 +1,13 @@
+import { cookies, headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
 export default async function AdminDashboard() {
-  return (
-    <div className="flex h-full w-full flex-col items-center gap-20 py-24">
-      <p className="w-2/3 text-center text-xl">Admin Dashboard</p>
-    </div>
-  );
+  const nextCookies = cookies();
+  const { get: getHeader } = headers();
+  const adminCredentialsCookie = nextCookies.get('__admin');
+  const urlPath = getHeader('x-invoke-path');
+  if (adminCredentialsCookie && urlPath === '/admin') {
+    redirect('/admin/manage/users');
+  }
+  return null;
 }

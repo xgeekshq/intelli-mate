@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
@@ -32,10 +32,14 @@ export function SiteHeader() {
   const [publicRooms, setPublicRooms] = useState<RoomResponseDto[]>([]);
 
   const router = useRouter();
+  const pathname = usePathname();
+
   const { isSignedIn } = useUser();
   const { sessionId, getToken, userId } = useAuth();
   const { isMacUser } = useBrowserInfo();
 
+  const shouldShowSearchRoomsShortCut =
+    isSignedIn && !pathname.includes('admin');
   async function getMyRooms() {
     try {
       const res = await apiClient({
@@ -65,7 +69,7 @@ export function SiteHeader() {
   }
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (shouldShowSearchRoomsShortCut) {
       const down = (e: KeyboardEvent) => {
         if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
           e.preventDefault();
@@ -91,7 +95,7 @@ export function SiteHeader() {
 
       return () => document.removeEventListener('keydown', down);
     }
-  }, [isSignedIn, open]);
+  }, [shouldShowSearchRoomsShortCut, open]);
 
   const handleMyRoomSelect = (roomId: string) => {
     router.push(`/rooms/${roomId}`);
@@ -135,7 +139,7 @@ export function SiteHeader() {
         <MainNav />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center gap-1">
-            {isSignedIn && (
+            {shouldShowSearchRoomsShortCut && (
               <Button
                 className="flex w-52 justify-between rounded-lg border"
                 variant="ghost"

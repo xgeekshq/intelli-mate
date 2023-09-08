@@ -100,6 +100,10 @@ export const ChatSchema = new mongoose.Schema(
       index: true,
       required: true,
     },
+    aiModelId: {
+      type: String,
+      required: true,
+    },
     messageHistory: {
       type: [MessageSchema],
     },

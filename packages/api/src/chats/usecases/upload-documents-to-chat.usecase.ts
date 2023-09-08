@@ -52,7 +52,11 @@ export class UploadDocumentsToChatUsecase implements Usecase {
 
     for (const file of files) {
       await this.chatDocUploadQueue.add(
-        createChatDocUploadJobFactory(roomId, file.originalname)
+        createChatDocUploadJobFactory(
+          roomId,
+          existingChat.aiModelId,
+          file.originalname
+        )
       );
     }
 

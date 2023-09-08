@@ -27,7 +27,6 @@ export class CreateRoomUsecase implements Usecase {
     if (createRoomRequestDto.ownerId !== userId) {
       throw new OwnerMustBeLoggedException();
     }
-
     const existingRoom = await this.roomsRepository.findRoomByName(
       createRoomRequestDto.name.toLowerCase()
     );
@@ -37,10 +36,13 @@ export class CreateRoomUsecase implements Usecase {
 
     try {
       const room = await this.roomsRepository.createRoom(createRoomRequestDto);
-
       this.eventEmitter.emit(
         UserCreatedRoomEventKey,
-        createUserCreatedRoomEventFactory(room.id, userId)
+        createUserCreatedRoomEventFactory(
+          room.id,
+          createRoomRequestDto.aiModelId,
+          userId
+        )
       );
 
       return RoomResponseSchema.parse(room);

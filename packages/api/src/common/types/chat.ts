@@ -41,6 +41,7 @@ export interface ChatDocument {
 export interface Chat extends Document {
   readonly id: string;
   roomId: string;
+  aiModelId: string;
   messageHistory: ChatMessage[];
   participantIds: string[];
   documents: ChatDocument[];

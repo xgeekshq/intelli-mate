@@ -16,6 +16,7 @@ export const ChatDocumentSchema = z.object({
 export const ChatResponseSchema = z.object({
   id: z.string(),
   roomId: z.string(),
+  aiModelId: z.string(),
   messageHistory: z.array(ChatMessageResponseSchema),
   documents: z.array(ChatDocumentSchema),
   participantIds: z.array(z.string()),

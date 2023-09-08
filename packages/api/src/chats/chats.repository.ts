@@ -38,6 +38,7 @@ export class ChatsRepository {
   ): Promise<Chat> {
     const chat = new this.chatModel({
       roomId: createChatForRoomRequestDto.roomId,
+      aiModelId: createChatForRoomRequestDto.aiModelId,
       participantIds: [userId],
       messageHistory: [],
     });

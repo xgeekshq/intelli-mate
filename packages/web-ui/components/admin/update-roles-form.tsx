@@ -109,8 +109,7 @@ export function UpdateRolesForm({
         <DialogHeader>
           <DialogTitle>User Roles</DialogTitle>
           <DialogDescription>
-            {/* eslint-disable-next-line react/no-unescaped-entities */}
-            Manage this users' roles in intelli-mate
+            Manage this users&apos; roles in intelli-mate
           </DialogDescription>
           <Separator className="!my-4" />
           <Form {...form}>

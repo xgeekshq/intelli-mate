@@ -125,6 +125,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   const { sendMessage } = useSocketCommunication({
     roomId,
+    aiModelId: chat.aiModelId,
     userId,
     messages,
     setMessages,

@@ -1,8 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { apiClient } from '@/api/apiClient';
+import Endpoints from '@/api/endpoints';
+import { AiModelResponseDto } from '@/contract/ai/ai-model.response.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
+import { useAuth } from '@clerk/nextjs';
 import { Lock } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -15,7 +20,32 @@ type RoomsProps = {
 
 export function Rooms({ rooms }: RoomsProps) {
   const params = useParams();
+  const [aiModels, setAiModels] = useState<AiModelResponseDto[]>([]);
 
+  const { sessionId, getToken } = useAuth();
+
+  async function getAiModels() {
+    try {
+      const res = await apiClient({
+        url: Endpoints.ai.getAiModels(),
+        options: { method: 'GET' },
+        sessionId: sessionId ?? '',
+        jwtToken: (await getToken()) ?? '',
+      });
+      return res.json();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    const setInitialData = async () => {
+      const aiModels: AiModelResponseDto[] = await getAiModels();
+      setAiModels(aiModels);
+    };
+
+    void setInitialData();
+  }, []);
   return (
     <div className="flex h-full w-60 min-w-[220px] flex-col border-r">
       <div className="flex items-center justify-between border-b">
@@ -25,7 +55,7 @@ export function Rooms({ rooms }: RoomsProps) {
         >
           Rooms
         </Link>
-        <CreateRoomForm />
+        <CreateRoomForm aiModels={aiModels} />
       </div>
       <ScrollArea className="flex-1 p-2">
         <div className="space-y-1">
