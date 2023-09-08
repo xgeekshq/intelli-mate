@@ -1,11 +1,5 @@
+import { defaultStringValidation } from "../validators/string.validator";
 import { z } from "zod";
-
-const defaultStringValidation = z
-  .string()
-  .transform((value) => value.trim())
-  .refine((value) => value.length >= 1, {
-    message: "Required",
-  });
 
 export const SuperAdminAddAiModelRequestSchema = z.object({
   chatLlmName: defaultStringValidation,

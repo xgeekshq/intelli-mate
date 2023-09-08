@@ -1,3 +1,4 @@
+import { defaultStringValidation } from "../validators/string.validator";
 import { z } from "zod";
 
 export const CreateRoomRequestSchema = z.object({
@@ -10,7 +11,7 @@ export const CreateRoomRequestSchema = z.object({
     .refine((value) => value.length <= 50, {
       message: "Name must have at most 50 characters",
     }),
-  aiModelId: z.string(),
+  aiModelId: defaultStringValidation,
   isPrivate: z.boolean().default(false),
   ownerId: z.string(),
 });
