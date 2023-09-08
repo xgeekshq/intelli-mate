@@ -17,6 +17,7 @@ const ModelMapper: Record<Model, (configs: AiModel) => BaseChatModel> = {
   ChatMinimax: (config) => {
     return new ChatMinimax({
       proVersion: false,
+      tokensToGenerate: 1000,
       modelName: config.modelName,
       minimaxGroupId: config.meta['groupId'],
       minimaxApiKey: decrypt(config.meta['apiKey']),
