@@ -38,7 +38,7 @@
     "d3-dsv": "^2.0.0",
     "fs": "^0.0.1-security",
     "gpt-3-encoder": "^1.1.4",
-    "langchain": "^0.0.120",
+    "langchain": "^0.0.145",
     "mammoth": "^1.6.0",
     "mongodb": "^5.6.0",
     "mongoose": "^7.4.0",
