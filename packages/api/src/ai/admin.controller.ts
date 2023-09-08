@@ -49,7 +49,7 @@ export class AiAdminController {
   @ApiOperation({ description: 'Add a new ai chat model' })
   async superAdminAddAiModel(
     @Body() superAdminAddAiModelDto: SuperAdminAddAiModelRequestDto
-  ): Promise<any> {
+  ): Promise<SuperAdminAiModelResponseDto> {
     return this.adminAddChatModelUsecase.execute(superAdminAddAiModelDto);
   }
 }
