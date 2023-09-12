@@ -50,7 +50,6 @@ export function useSocketCommunication({
     socket.emit('joinRoom', { data: { roomId, userId } });
 
     socket.on('message', async (message) => {
-      console.log('onMessage: ', message);
       if (message.isAi) {
         setMessages((messages) =>
           createChatMessagesWithResponseFactory(messages, message)
