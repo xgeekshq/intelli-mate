@@ -1,9 +1,10 @@
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
+import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 
 export const createRoom = async (
-  values: Record<string, unknown>,
+  values: CreateRoomRequestDto,
   sessionId: string | null,
   jwtToken: string | null
 ) => {
