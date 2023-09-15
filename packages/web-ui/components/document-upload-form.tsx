@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { uploadDocuments } from '@/api/requests/rooms/upload-documents';
 import { UploadDocumentsRequestSchema } from '@/contract/chats/upload-documents.request.dto';
 import { UploadDocumentsRequestDto } from '@/contract/chats/upload-documents.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Command, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -43,15 +43,50 @@ export interface DocumentUploadFormProps {
 }
 
 export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
-  const params = useParams();
-  const roomId = params.room;
-
+  const { room: roomId } = useParams();
   const [open, setOpen] = useState(false);
-
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
   const { isMacUser } = useBrowserInfo();
+  const { mutate: uploadDocumentsMutationReq, isLoading } = useMutation({
+    mutationFn: async ({
+      roomId,
+      formData,
+    }: {
+      roomId: string;
+      formData: FormData;
+    }) => uploadDocuments(roomId, formData, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: () => {
+      setOpen(false);
+      toast({
+        title:
+          'The document has been uploaded successfully! We will notify you when the document is ready to be consulted.',
+      });
+      form.reset();
+      router.refresh();
+    },
+  });
+  const form = useForm<UploadDocumentsRequestDto>({
+    resolver: zodResolver(UploadDocumentsRequestSchema),
+    defaultValues: {
+      fileRoles: [],
+      files: undefined,
+    },
+  });
+  const fileRoles = useMemo(
+    () =>
+      ownerRoles.map((ownerRole) => {
+        return { id: ownerRole, label: ownerRole };
+      }),
+    [ownerRoles]
+  );
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -65,52 +100,18 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
-  const form = useForm<UploadDocumentsRequestDto>({
-    resolver: zodResolver(UploadDocumentsRequestSchema),
-    defaultValues: {
-      fileRoles: [],
-      files: undefined,
-    },
-  });
-
   async function onSubmit(values: UploadDocumentsRequestDto) {
     const formData = new FormData();
     formData.append('fileRoles', values.fileRoles.toString());
     Array.from(values.files).map((file) => formData.append('files', file));
 
     try {
-      const res = await apiClient({
-        url: Endpoints.chats.uploadDocuments(roomId),
-        options: {
-          method: 'POST',
-          body: formData,
-        },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-        isApplicationJson: false,
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      setOpen(false);
-      toast({
-        title:
-          'The document has been uploaded successfully! We will notify you when the document is ready to be consulted.',
-      });
-      form.reset();
-      router.refresh();
+      uploadDocumentsMutationReq({ roomId, formData });
     } catch (e) {
       console.log(e);
     }
   }
-  const fileRoles = ownerRoles.map((ownerRole) => {
-    return { id: ownerRole, label: ownerRole };
-  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <HoverCard>
@@ -216,7 +217,9 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
               />
 
               <div className="flex w-full justify-end">
-                <Button type="submit">Upload</Button>
+                <Button disabled={isLoading} type="submit">
+                  Upload
+                </Button>
               </div>
             </form>
           </Form>

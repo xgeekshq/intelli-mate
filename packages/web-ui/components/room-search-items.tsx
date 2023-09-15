@@ -1,12 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { joinRoom } from '@/api/requests/rooms/join-room';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
-import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { debounce } from '@/utils/debounce';
 import { useAuth } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
 
 import { PublicRoomsListType } from '@/types/searchList';
 import { Badge } from '@/components/ui/badge';
@@ -22,35 +21,33 @@ export default function RoomSearchItems({
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
-  async function onJoinRoom(values: JoinRoomRequestDto) {
-    try {
-      const res = await apiClient({
-        url: Endpoints.rooms.joinRoom(),
-        options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
+  const { mutate: joinRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: JoinRoomRequestDto) =>
+      joinRoom(values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
       });
-
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const room: RoomResponseDto = await res.json();
+    },
+    onSuccess: (room) => {
       toast({
         title: `Joined ${room.name}, welcome!`,
       });
       // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
       router.refresh();
       router.push(`/rooms/${room.id}`);
+    },
+  });
+
+  async function onJoinRoom(values: JoinRoomRequestDto) {
+    try {
+      joinRoomMutationReq(values);
     } catch (e) {
       console.log(e);
     }
   }
+
   return (
     <>
       {data.map((item) => (
@@ -64,6 +61,7 @@ export default function RoomSearchItems({
             <Badge variant="outline">Already joined</Badge>
           ) : (
             <Button
+              disabled={isLoading}
               size="xs"
               variant="success"
               onClick={debounce(() => onJoinRoom({ roomId: item.roomId }), 500)}

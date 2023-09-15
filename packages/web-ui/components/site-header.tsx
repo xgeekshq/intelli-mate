@@ -1,14 +1,22 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import {
+  GET_MY_ROOMS_REQ_KEY,
+  getMyRooms,
+} from '@/api/requests/rooms/get-my-rooms';
+import {
+  GET_PUBLIC_ROOMS_REQ_KEY,
+  getPublicRooms,
+} from '@/api/requests/rooms/get-public-rooms';
+import { joinRoom } from '@/api/requests/rooms/join-room';
 import { JoinRoomRequestDto } from '@/contract/rooms/join-room.request.dto.d';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { siteConfig } from '@/site-config/site';
 import { SignedIn, UserButton, useAuth, useUser } from '@clerk/nextjs';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Command } from 'lucide-react';
 
 import { useBrowserInfo } from '@/hooks/use-browser-info';
@@ -28,45 +36,45 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [myRooms, setMyRooms] = useState<RoomResponseDto[]>([]);
-  const [publicRooms, setPublicRooms] = useState<RoomResponseDto[]>([]);
-
+  const [notJoinedPublicRooms, setNotJoinedPublicRooms] = useState<
+    RoomResponseDto[]
+  >([]);
   const router = useRouter();
   const pathname = usePathname();
-
   const { isSignedIn } = useUser();
   const { sessionId, getToken, userId } = useAuth();
   const { isMacUser } = useBrowserInfo();
-
-  const shouldShowSearchRoomsShortCut =
-    isSignedIn && !pathname.includes('admin');
-  async function getMyRooms() {
-    try {
-      const res = await apiClient({
-        url: Endpoints.rooms.getMyRooms(),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
+  const shouldShowSearchRoomsShortCut = useMemo(
+    () => isSignedIn && !pathname.includes('admin'),
+    [isSignedIn, pathname]
+  );
+  const { data: myRooms } = useQuery({
+    queryKey: [GET_MY_ROOMS_REQ_KEY],
+    queryFn: async () => getMyRooms(sessionId!, await getToken()),
+  });
+  const { data: publicRooms } = useQuery({
+    queryKey: [GET_PUBLIC_ROOMS_REQ_KEY],
+    queryFn: async () => getPublicRooms(sessionId!, await getToken()),
+  });
+  const { mutate: joinRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: JoinRoomRequestDto) =>
+      joinRoom(values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
       });
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function getPublicRooms() {
-    try {
-      const res = await apiClient({
-        url: Endpoints.rooms.getPublicRooms(),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
+    },
+    onSuccess: (room) => {
+      toast({
+        title: `Joined ${room.name}, welcome!`,
       });
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
+      setOpen(false);
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
+      router.push(`/rooms/${room.id}`);
+    },
+  });
 
   useEffect(() => {
     if (shouldShowSearchRoomsShortCut) {
@@ -78,56 +86,28 @@ export function SiteHeader() {
       };
       document.addEventListener('keydown', down);
       const setInitialData = async () => {
-        const myRooms: RoomResponseDto[] = await getMyRooms();
-        const publicRooms: RoomResponseDto[] = await getPublicRooms();
-
-        const notJoinedPublicRooms = publicRooms.filter((room) => {
+        const notJoinedPublicRooms = publicRooms?.filter((room) => {
           if (!room.members.includes(userId!)) {
             return room;
           }
         });
 
-        setMyRooms(myRooms);
-        setPublicRooms(notJoinedPublicRooms);
+        setNotJoinedPublicRooms(notJoinedPublicRooms ?? []);
       };
 
       void setInitialData();
-
       return () => document.removeEventListener('keydown', down);
     }
   }, [shouldShowSearchRoomsShortCut, open]);
 
-  const handleMyRoomSelect = (roomId: string) => {
+  const onMyRoomSelect = (roomId: string) => {
     router.push(`/rooms/${roomId}`);
     setOpen(false);
   };
 
-  const handlePublicRoomSelect = async (values: JoinRoomRequestDto) => {
+  const onPublicRoomSelect = (values: JoinRoomRequestDto) => {
     try {
-      const res = await apiClient({
-        url: Endpoints.rooms.joinRoom(),
-        options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-      });
-
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const room: RoomResponseDto = await res.json();
-      toast({
-        title: `Joined ${room.name}, welcome!`,
-      });
-      setOpen(false);
-      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
-      router.refresh();
-      router.push(`/rooms/${room.id}`);
+      joinRoomMutationReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -187,23 +167,22 @@ export function SiteHeader() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="My rooms">
-            {myRooms!.map((myRoom) => (
+            {myRooms?.map((myRoom) => (
               <CommandItem
                 key={myRoom.id}
-                onSelect={() => handleMyRoomSelect(myRoom.id)}
+                onSelect={() => onMyRoomSelect(myRoom.id)}
               >
                 {myRoom.name}
               </CommandItem>
             ))}
           </CommandGroup>
-          {publicRooms.length > 0 && (
+          {notJoinedPublicRooms.length > 0 && (
             <CommandGroup heading="Public rooms">
-              {publicRooms!.map((publicRoom) => (
+              {notJoinedPublicRooms!.map((publicRoom) => (
                 <CommandItem
+                  disabled={isLoading}
                   key={publicRoom.id}
-                  onSelect={() =>
-                    handlePublicRoomSelect({ roomId: publicRoom.id })
-                  }
+                  onSelect={() => onPublicRoomSelect({ roomId: publicRoom.id })}
                 >
                   {publicRoom.name}
                 </CommandItem>

@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { updateRoom } from '@/api/requests/rooms/update-room';
+import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { UpdateRoomSettingsRequestSchema } from '@/contract/rooms/update-room-settings.request.dto';
 import { UpdateRoomSettingsRequestDto } from '@/contract/rooms/update-room-settings.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -24,43 +25,39 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 
 interface UpdateRoomFormProps {
-  id: string;
-  name: string;
-  isPrivate: boolean;
+  room: RoomResponseDto;
 }
-export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
+export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
-
+  const { mutate: updateRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: UpdateRoomSettingsRequestDto) =>
+      updateRoom(room.id, values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Room updated successfully!',
+      });
+      router.refresh();
+    },
+  });
   const form = useForm<UpdateRoomSettingsRequestDto>({
     resolver: zodResolver(UpdateRoomSettingsRequestSchema),
     defaultValues: {
-      name: name,
-      isPrivate: isPrivate,
+      name: room.name,
+      isPrivate: room.isPrivate,
     },
   });
 
   async function onSubmit(values: UpdateRoomSettingsRequestDto) {
     try {
-      const res = await apiClient({
-        url: Endpoints.rooms.updateRoom(id),
-        options: { method: 'PATCH', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      toast({
-        title: 'Room updated successfully!',
-      });
-      router.refresh();
+      updateRoomMutationReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -99,7 +96,7 @@ export function UpdateRoomForm({ id, name, isPrivate }: UpdateRoomFormProps) {
                   />
                 </FormControl>
                 <div className="flex w-full justify-end">
-                  <Button variant="success" type="submit">
+                  <Button disabled={isLoading} variant="success" type="submit">
                     Save
                   </Button>
                 </div>

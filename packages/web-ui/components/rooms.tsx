@@ -1,51 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
-import { AiModelResponseDto } from '@/contract/ai/ai-model.response.dto.d';
-import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
+import {
+  GET_AI_MODELS_REQ_KEY,
+  getAiModels,
+} from '@/api/requests/ai-models/get-ai-models';
+import {
+  GET_MY_ROOMS_REQ_KEY,
+  getMyRooms,
+} from '@/api/requests/rooms/get-my-rooms';
 import { useAuth } from '@clerk/nextjs';
+import { useQuery } from '@tanstack/react-query';
 import { Lock } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
 
-type RoomsProps = {
-  rooms: RoomResponseDto[];
-};
-
-export function Rooms({ rooms }: RoomsProps) {
+export function Rooms() {
   const params = useParams();
-  const [aiModels, setAiModels] = useState<AiModelResponseDto[]>([]);
-
   const { sessionId, getToken } = useAuth();
 
-  async function getAiModels() {
-    try {
-      const res = await apiClient({
-        url: Endpoints.ai.getAiModels(),
-        options: { method: 'GET' },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-      });
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const { data: myRooms } = useQuery({
+    queryKey: [GET_MY_ROOMS_REQ_KEY],
+    queryFn: async () => getMyRooms(sessionId!, await getToken()),
+  });
+  const { data: aiModels } = useQuery({
+    queryKey: [GET_AI_MODELS_REQ_KEY],
+    queryFn: async () => getAiModels(sessionId!, await getToken()),
+  });
 
-  useEffect(() => {
-    const setInitialData = async () => {
-      const aiModels: AiModelResponseDto[] = await getAiModels();
-      setAiModels(aiModels);
-    };
-
-    void setInitialData();
-  }, []);
   return (
     <div className="flex h-full w-60 min-w-[220px] flex-col border-r">
       <div className="flex items-center justify-between border-b">
@@ -59,7 +44,7 @@ export function Rooms({ rooms }: RoomsProps) {
       </div>
       <ScrollArea className="flex-1 p-2">
         <div className="space-y-1">
-          {rooms.map((room) => (
+          {myRooms?.map((room) => (
             <Link key={`${room.id}`} href={`/rooms/${room.id}`}>
               <Button
                 variant="ghost"

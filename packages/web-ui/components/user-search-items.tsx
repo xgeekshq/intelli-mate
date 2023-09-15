@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { inviteUserToRoom } from '@/api/requests/rooms/invite-user-to-room';
 import { InviteUserToRoomRequestDto } from '@/contract/rooms/invite-user-to-room.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
 
 import { UserListType } from '@/types/searchList';
 import {
@@ -38,26 +38,26 @@ export default function UserSearchItems({
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
-  async function onInviteUser(values: InviteUserToRoomRequestDto) {
-    try {
-      const res = await apiClient({
-        url: Endpoints.rooms.inviteToRoom(),
-        options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
+  const { mutate: inviteUserToRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: InviteUserToRoomRequestDto) =>
+      inviteUserToRoom(values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
       });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      router.refresh();
+    },
+    onSuccess: () => {
       toast({
         title: 'User successfully invited',
       });
+      router.refresh();
+    },
+  });
+
+  function onInviteUser(values: InviteUserToRoomRequestDto) {
+    try {
+      inviteUserToRoomMutationReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -88,11 +88,15 @@ export default function UserSearchItems({
           </div>
           {verifyUserRoles(item) || !isPrivateRoom ? (
             <Button
+              disabled={isLoading}
               size="xs"
               variant="success"
-              onClick={() => {
-                void onInviteUser({ userId: item.userId, roomId: roomId });
-              }}
+              onClick={() =>
+                onInviteUser({
+                  userId: item.userId,
+                  roomId,
+                })
+              }
             >
               <span className="text-xs">Invite to room</span>
             </Button>
@@ -119,12 +123,13 @@ export default function UserSearchItems({
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => {
-                      void onInviteUser({
+                    disabled={isLoading}
+                    onClick={() =>
+                      onInviteUser({
                         userId: item.userId,
-                        roomId: roomId,
-                      });
-                    }}
+                        roomId,
+                      })
+                    }
                   >
                     Add anyway
                   </AlertDialogAction>

@@ -1,15 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ClerkFetcherParamsType, apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
-import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
+import { useEffect, useRef, useState } from 'react';
+import { GET_CHAT_REQ_KEY, getChat } from '@/api/requests/rooms/get-chat';
+import { GET_USER_REQ_KEY, getUser } from '@/api/requests/users/get-user';
+import { GET_USERS_REQ_KEY, getUsers } from '@/api/requests/users/get-users';
 import { ChatResponseDto } from '@/contract/chats/chat.response.dto.d';
 import {
   createChatMessageFactory,
   createChatParticipantsFactory,
 } from '@/factory/create-chat.factory';
 import { useAuth } from '@clerk/nextjs';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronDownCircle } from 'lucide-react';
 
 import { ChatMessageType, ChatUserType } from '@/types/chat';
@@ -22,9 +23,9 @@ import Message from '@/components/message';
 import { MessageForm } from '@/components/message-form';
 
 interface ChatProps {
-  chat: ChatResponseDto;
   roomId: string;
   isOwner: boolean;
+  hasDocuments: boolean;
   ownerRoles: string[];
 }
 
@@ -48,42 +49,23 @@ const parseMessageList = (
   return messageArr;
 };
 
-async function baseGetRequest<T>(
-  options: ClerkFetcherParamsType
-): Promise<T | undefined> {
-  try {
-    const res = await apiClient(options);
-    if (!res.ok) {
-      const { error } = JSON.parse(await res.text());
-      return error;
-    }
-
-    return res.json();
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-const requestOptions = async (
-  getToken: () => Promise<string | null>,
-  sessionId?: string | null
-) => ({
-  options: { method: 'GET' },
-  jwtToken: (await getToken()) ?? '',
-  sessionId: sessionId ?? '',
-});
-
-export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
+export default function Chat({
+  roomId,
+  isOwner,
+  hasDocuments,
+  ownerRoles,
+}: ChatProps) {
   const { sessionId, userId, getToken } = useAuth();
+  const queryClient = useQueryClient();
+  const { data: chat } = useQuery({
+    queryKey: [GET_CHAT_REQ_KEY],
+    queryFn: async () => getChat(roomId, sessionId!, await getToken()),
+  });
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
     useState(false);
   const bottomEl = useRef<HTMLDivElement>(null);
-  const chatHasDocuments = useMemo(
-    () => chat.documents.length > 0,
-    [chat.documents]
-  );
 
   const scrollToBottom = () => {
     if (bottomEl) {
@@ -97,12 +79,6 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   const addUserToMessage = async (
     userId: string
   ): Promise<ChatUserType | undefined> => {
-    const getUser = async (userId: string) =>
-      baseGetRequest<UserResponseDto>({
-        url: Endpoints.users.getUser(userId),
-        ...(await requestOptions(getToken, sessionId)),
-      });
-
     const userInParticipants = participants.current.find(
       (participant) => participant.userId === userId
     );
@@ -111,7 +87,10 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
       return userInParticipants;
     }
 
-    const user = await getUser(userId);
+    const user = await queryClient.fetchQuery({
+      queryKey: [GET_USER_REQ_KEY],
+      queryFn: async () => getUser(userId, sessionId!, await getToken()),
+    });
 
     if (!user) {
       return;
@@ -125,7 +104,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
 
   const { sendMessage } = useSocketCommunication({
     roomId,
-    aiModelId: chat.aiModelId,
+    aiModelId: chat?.aiModelId,
     userId,
     messages,
     setMessages,
@@ -141,16 +120,12 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
   }, [messages]);
 
   useEffect(() => {
-    const getChatParticipants = async (participants: string[]) =>
-      baseGetRequest<UserResponseDto[]>({
-        url: Endpoints.users.getUsers(participants),
-        ...(await requestOptions(getToken, sessionId)),
-      });
-
     async function setInitialData() {
       if (chat && chat.participantIds.length > 0) {
         const participantList = createChatParticipantsFactory(
-          await getChatParticipants(chat.participantIds)
+          await queryClient.fetchQuery([GET_USERS_REQ_KEY], async () =>
+            getUsers(chat.participantIds, sessionId!, await getToken())
+          )
         );
 
         setParticipants(participantList);
@@ -174,7 +149,7 @@ export default function Chat({ chat, roomId, isOwner, ownerRoles }: ChatProps) {
               onClick={scrollToBottom}
               variant="ghost"
               className={`fixed bottom-20 h-7 w-7 rounded-full p-0 ${
-                chatHasDocuments
+                hasDocuments
                   ? 'right-[calc(var(--chat-tools)+24px)]'
                   : 'right-6'
               }`}

@@ -12,7 +12,7 @@ import { socketState } from '@/app/state/socket';
 
 interface UseSocketCommunicationProps {
   roomId: string;
-  aiModelId: string;
+  aiModelId?: string;
   userId?: string | null;
   messages: ChatMessageType[];
   setMessages: Dispatch<SetStateAction<ChatMessageType[]>>;
@@ -35,7 +35,7 @@ export function useSocketCommunication({
     socket.emit('message', {
       data: createSocketMessageRequestFactory({
         roomId,
-        aiModelId,
+        aiModelId: aiModelId ?? '',
         content: value,
         userId: userId ?? '',
       }),
@@ -50,7 +50,6 @@ export function useSocketCommunication({
     socket.emit('joinRoom', { data: { roomId, userId } });
 
     socket.on('message', async (message) => {
-      console.log('onMessage: ', message);
       if (message.isAi) {
         setMessages((messages) =>
           createChatMessagesWithResponseFactory(messages, message)
