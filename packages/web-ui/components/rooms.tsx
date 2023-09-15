@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -15,13 +16,17 @@ import { useQuery } from '@tanstack/react-query';
 import { Lock } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CreateRoomForm } from '@/components/create-room-form';
 
 export function Rooms() {
   const params = useParams();
   const { sessionId, getToken } = useAuth();
-
   const { data: myRooms } = useQuery({
     queryKey: [GET_MY_ROOMS_REQ_KEY],
     queryFn: async () => getMyRooms(sessionId!, await getToken()),
@@ -45,22 +50,29 @@ export function Rooms() {
       <ScrollArea className="flex-1 p-2">
         <div className="space-y-1">
           {myRooms?.map((room) => (
-            <Link key={`${room.id}`} href={`/rooms/${room.id}`}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-between"
-              >
-                <p
-                  className={`max-w-[140px] overflow-hidden text-clip ${
-                    room.id === params.room ? 'font-bold' : 'font-normal'
-                  }`}
-                >
-                  {room.name}
-                </p>
-                {room.isPrivate && <Lock className="h-4 w-4" />}
-              </Button>
-            </Link>
+            <HoverCard key={room.id}>
+              <HoverCardTrigger asChild>
+                <Link href={`/rooms/${room.id}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-between"
+                  >
+                    <p
+                      className={`w-[140px] truncate text-left ${
+                        room.id === params.room ? 'font-bold' : 'font-normal'
+                      }`}
+                    >
+                      {room.name}
+                    </p>
+                    {room.isPrivate && <Lock className="h-4 w-4" />}
+                  </Button>
+                </Link>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <div>{room.name}</div>
+              </HoverCardContent>
+            </HoverCard>
           ))}
         </div>
       </ScrollArea>
