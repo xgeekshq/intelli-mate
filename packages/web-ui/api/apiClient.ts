@@ -1,8 +1,8 @@
 export type ClerkFetcherParamsType = {
   url: string;
   options?: RequestInit;
-  sessionId: string;
-  jwtToken: string;
+  sessionId: string | null;
+  jwtToken: string | null;
   isApplicationJson?: boolean;
 };
 
@@ -27,8 +27,8 @@ async function apiClient({
     ...options,
     headers: {
       ...(isApplicationJson ? { 'Content-Type': 'application/json' } : {}),
-      'X-Clerk-Session-Id': sessionId,
-      'X-Clerk-Jwt-Token': jwtToken,
+      'X-Clerk-Session-Id': sessionId ?? '',
+      'X-Clerk-Jwt-Token': jwtToken ?? '',
       ...options?.headers,
     },
   });

@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { deleteDocument } from '@/api/requests/rooms/delete-document';
 import { ChatDocumentSchema } from '@/contract/chats/chat.response.dto';
 import { RemoveDocumentFromChatRequestDto } from '@/contract/chats/remove-document-from-chat.request.dto.d';
 import { useAuth } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
 import { Trash } from 'lucide-react';
 import { z } from 'zod';
 
@@ -43,28 +43,27 @@ type ChatToolsProps = {
 export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
   const { sessionId, getToken } = useAuth();
   const router = useRouter();
-
-  const deleteDocument = async (values: RemoveDocumentFromChatRequestDto) => {
-    try {
-      const res = await apiClient({
-        url: Endpoints.chats.deleteDocument(roomId),
-        options: { method: 'PATCH', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
+  const { mutate: deleteDocumentMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: RemoveDocumentFromChatRequestDto) =>
+      deleteDocument(roomId, values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
       });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
+    },
+    onSuccess: () => {
       toast({
         title: 'Document deleted successfully!',
       });
       // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
       router.refresh();
+    },
+  });
+
+  const onDeleteDocument = (values: RemoveDocumentFromChatRequestDto) => {
+    try {
+      deleteDocumentMutationReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -112,12 +111,13 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
+                                disabled={isLoading}
                                 className="bg-red-500 hover:bg-red-500/80"
-                                onClick={() => {
-                                  void deleteDocument({
+                                onClick={() =>
+                                  onDeleteDocument({
                                     filename: document.meta.filename,
-                                  });
-                                }}
+                                  })
+                                }
                               >
                                 Delete
                               </AlertDialogAction>

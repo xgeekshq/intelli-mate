@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { SiteHeader } from '@/components/site-header';
 import { ThemeProvider } from '@/components/theme-provider';
+import Providers from '@/app/providers';
 
 export const metadata: Metadata = {
   title: {
@@ -48,12 +49,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
           )}
           suppressHydrationWarning
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex h-screen flex-col">
-              <SiteHeader />
-              <div className="h-[calc(100vh-65px)]">{children}</div>
-            </div>
-          </ThemeProvider>
+          <Providers>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <div className="relative flex h-screen flex-col">
+                <SiteHeader />
+                <div className="h-[calc(100vh-65px)]">{children}</div>
+              </div>
+            </ThemeProvider>
+          </Providers>
           <Toaster />
         </body>
       </ClerkProvider>

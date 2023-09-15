@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { createRoom } from '@/api/requests/rooms/create-room';
 import { AiModelResponseDto } from '@/contract/ai/ai-model.response.dto.d';
 import { CreateRoomRequestSchema } from '@/contract/rooms/create-room.request.dto';
 import { CreateRoomRequestDto } from '@/contract/rooms/create-room.request.dto.d';
-import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
 import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { Info, Lock, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -41,7 +40,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
 
 type CreateRoomFormProps = {
-  aiModels: AiModelResponseDto[];
+  aiModels: AiModelResponseDto[] | undefined;
 };
 
 export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
@@ -49,7 +48,26 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
   const { toast } = useToast();
   const { userId, sessionId, getToken } = useAuth();
   const router = useRouter();
-
+  const { mutate: createRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async (values: CreateRoomRequestDto) =>
+      createRoom(values, sessionId!, await getToken()),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: (room) => {
+      setOpen(false);
+      toast({
+        title: 'Room created successfully!',
+      });
+      form.reset();
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
+      router.push(`/rooms/${room.id}`);
+    },
+  });
   const form = useForm<CreateRoomRequestDto>({
     resolver: zodResolver(CreateRoomRequestSchema),
     defaultValues: {
@@ -60,32 +78,9 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
     },
   });
 
-  async function onSubmit(values: CreateRoomRequestDto) {
+  function onSubmit(values: CreateRoomRequestDto) {
     try {
-      const res = await apiClient({
-        url: Endpoints.rooms.createRoom(),
-        options: { method: 'POST', body: JSON.stringify(values) },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const room: RoomResponseDto = await res.json();
-      setOpen(false);
-      toast({
-        title: 'Room created successfully!',
-      });
-      form.reset();
-      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
-      router.refresh();
-      router.push(`/rooms/${room.id}`);
+      createRoomMutationReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -143,8 +138,11 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {aiModels.map((aiModel) => (
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                        {aiModels?.map((aiModel) => (
+                          <FormItem
+                            key={aiModel.id}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
                             <FormControl>
                               <RadioGroupItem value={aiModel.id} />
                             </FormControl>
@@ -189,7 +187,9 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
                 )}
               />
               <div className="flex w-full justify-end">
-                <Button type="submit">Create</Button>
+                <Button disabled={isLoading} type="submit">
+                  Create
+                </Button>
               </div>
             </form>
           </Form>

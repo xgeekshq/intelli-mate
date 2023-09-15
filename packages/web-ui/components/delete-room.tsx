@@ -1,10 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/api/apiClient';
-import Endpoints from '@/api/endpoints';
+import { deleteRoom } from '@/api/requests/rooms/delete-room';
 import { debounce } from '@/utils/debounce';
 import { useAuth } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,27 +15,26 @@ export default function DeleteRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const { sessionId, getToken } = useAuth();
-  async function onDeleteRoom() {
-    try {
-      const res = await apiClient({
-        url: Endpoints.rooms.deleteRoom(roomId),
-        options: { method: 'DELETE' },
-        sessionId: sessionId ?? '',
-        jwtToken: (await getToken()) ?? '',
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
+  const { mutate: deleteRoomMutationReq, isLoading } = useMutation({
+    mutationFn: async () => deleteRoom(roomId, sessionId!, await getToken()),
+    onError: (error: any) => {
       toast({
-        title: 'You left the room.',
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: 'The room was deleted.',
       });
       router.push('/rooms');
       router.refresh();
+    },
+  });
+
+  async function onDeleteRoom() {
+    try {
+      deleteRoomMutationReq();
     } catch (e) {
       console.log(e);
     }
@@ -63,6 +62,7 @@ export default function DeleteRoom({ roomId }: { roomId: string }) {
               permanent.
             </p>
             <Button
+              disabled={isLoading}
               onClick={debounce(onDeleteRoom, 500)}
               className="w-1/4 self-end"
               size="sm"
