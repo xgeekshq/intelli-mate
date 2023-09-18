@@ -1,8 +1,9 @@
 import React from 'react';
-import { cookies } from 'next/headers';
-import Endpoints from '@/api/endpoints';
-import { superAdminApiClient } from '@/api/superAdminApiClient';
-import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
+import {
+  ADMIN_GET_ALL_USERS_REQ_KEY,
+  adminGetAllUsers,
+} from '@/api/requests/super-admin/admin-get-all-users';
+import { getSuperAdminCookieOnServer } from '@/utils/get-super-admin-cookie-server';
 import { getUserEmail } from '@/utils/get-user-email';
 import { alphaAscSortPredicate } from '@/utils/sort-predicates';
 
@@ -19,34 +20,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { UpdateRolesForm } from '@/components/admin/update-roles-form';
-
-const getUsers = async (
-  superAdminEmail: string,
-  superAdminPassword: string
-): Promise<UserResponseDto[]> => {
-  try {
-    const res = await superAdminApiClient({
-      url: Endpoints.admin.getUsers(),
-      options: { method: 'GET' },
-      superAdminEmail,
-      superAdminPassword,
-    });
-    return res.json();
-  } catch (e) {
-    console.log(e);
-  }
-  return [];
-};
+import getQueryClient from '@/app/get-query-client';
 
 export default async function AdminUsers() {
-  const nextCookies = cookies();
-  const adminCredentialsCookie = nextCookies.get('__admin');
+  const { adminCredentialsCookie } = getSuperAdminCookieOnServer();
   const adminCredentials = JSON.parse(adminCredentialsCookie!.value);
-
-  const users = await getUsers(
-    adminCredentials.email,
-    adminCredentials.password
-  );
+  const queryClient = getQueryClient();
+  const users = await queryClient.fetchQuery({
+    queryKey: [ADMIN_GET_ALL_USERS_REQ_KEY],
+    queryFn: () =>
+      adminGetAllUsers(adminCredentials.email, adminCredentials.password),
+  });
 
   return (
     <div className="flex h-full w-full p-4">

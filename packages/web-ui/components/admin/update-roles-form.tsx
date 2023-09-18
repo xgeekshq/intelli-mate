@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Endpoints from '@/api/endpoints';
-import { superAdminApiClient } from '@/api/superAdminApiClient';
+import { updateUserRoles } from '@/api/requests/super-admin/update-user-roles';
 import { SuperAdminUpdateUserRoleRequestSchema } from '@/contract/auth/super-admin-update-role.request.dto';
 import { SuperAdminUpdateUserRoleRequestDto } from '@/contract/auth/super-admin-update-role.request.dto.d';
 import { getAppRoles } from '@/utils/get-app-roles';
+import { getSuperAdminCookieOnClient } from '@/utils/get-super-admin-cookie-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getCookie } from 'cookies-next';
+import { useMutation } from '@tanstack/react-query';
 import { Settings } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
@@ -47,12 +47,31 @@ export function UpdateRolesForm({
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const adminCredentialsCookie = getCookie('__admin');
-  let adminCredentials: { email: string; password: string };
-  if (adminCredentialsCookie) {
-    adminCredentials = JSON.parse(adminCredentialsCookie.toString());
-  }
-
+  const { adminCredentialsCookie } = getSuperAdminCookieOnClient();
+  const { mutate: updateUserRolesReq, isLoading } = useMutation({
+    mutationFn: (values: Omit<SuperAdminUpdateUserRoleRequestDto, 'userId'>) =>
+      updateUserRoles(
+        userId,
+        values,
+        adminCredentialsCookie?.email ?? '',
+        adminCredentialsCookie?.password ?? ''
+      ),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: (room) => {
+      setOpen(false);
+      toast({
+        title: 'Roles updated successfully!',
+      });
+      form.reset();
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
+    },
+  });
   const form = useForm<Pick<SuperAdminUpdateUserRoleRequestDto, 'roles'>>({
     resolver: zodResolver(
       SuperAdminUpdateUserRoleRequestSchema.omit({ userId: true })
@@ -62,37 +81,11 @@ export function UpdateRolesForm({
     },
   });
 
-  async function onSubmit(
+  function onSubmit(
     values: Omit<SuperAdminUpdateUserRoleRequestDto, 'userId'>
   ) {
     try {
-      const res = await superAdminApiClient({
-        url: Endpoints.admin.updateUserRoles(),
-        options: {
-          method: 'POST',
-          body: JSON.stringify({
-            userId,
-            ...values,
-          }),
-        },
-        superAdminEmail: adminCredentials?.email,
-        superAdminPassword: adminCredentials?.password,
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      setOpen(false);
-      toast({
-        title: 'Roles updated successfully!',
-      });
-      form.reset();
-      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
-      router.refresh();
+      updateUserRolesReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -160,7 +153,9 @@ export function UpdateRolesForm({
                 )}
               />
               <div className="flex w-full justify-end">
-                <Button type="submit">Submit</Button>
+                <Button disabled={isLoading} type="submit">
+                  Submit
+                </Button>
               </div>
             </form>
           </Form>

@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Endpoints from '@/api/endpoints';
-import { superAdminApiClient } from '@/api/superAdminApiClient';
+import { validateAdminCredentials } from '@/api/requests/super-admin/validate-admin-credentials';
 import { SuperAdminValidateCredentialsRequestSchema } from '@/contract/auth/super-admin-validate-credentials.request.dto';
 import { SuperAdminValidateCredentialsRequestDto } from '@/contract/auth/super-admin-validate-credentials.request.dto.d';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,19 @@ import { useToast } from '@/components/ui/use-toast';
 export default function SuperAdminLogin() {
   const { toast } = useToast();
   const router = useRouter();
+  const { mutate: validateAdminCredentialsReq, isLoading } = useMutation({
+    mutationFn: (values: SuperAdminValidateCredentialsRequestDto) =>
+      validateAdminCredentials(values),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: (room) => {
+      router.push('/admin/manage/users');
+    },
+  });
   const form = useForm<SuperAdminValidateCredentialsRequestDto>({
     resolver: zodResolver(SuperAdminValidateCredentialsRequestSchema),
     defaultValues: {
@@ -31,21 +44,9 @@ export default function SuperAdminLogin() {
     },
   });
 
-  async function onSubmit(values: SuperAdminValidateCredentialsRequestDto) {
+  function onSubmit(values: SuperAdminValidateCredentialsRequestDto) {
     try {
-      const res = await superAdminApiClient({
-        url: Endpoints.admin.validateCredentials(),
-        options: { method: 'POST', body: JSON.stringify(values) },
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      router.push('/admin/manage/users');
+      validateAdminCredentialsReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -84,7 +85,9 @@ export default function SuperAdminLogin() {
             )}
           />
           <div className="flex w-full justify-end">
-            <Button type="submit">Login</Button>
+            <Button disabled={isLoading} type="submit">
+              Login
+            </Button>
           </div>
         </form>
       </Form>

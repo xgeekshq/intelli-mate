@@ -2,13 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Endpoints from '@/api/endpoints';
-import { superAdminApiClient } from '@/api/superAdminApiClient';
+import { adminAddAiModel } from '@/api/requests/super-admin/admin-add-ai-model';
 import { SuperAdminAddAiModelRequestSchema } from '@/contract/ai/super-admin-add-ai-model.request.dto';
 import { SuperAdminAddAiModelRequestDto } from '@/contract/ai/super-admin-add-ai-model.request.dto.d';
-import { getAppRoles } from '@/utils/get-app-roles';
+import { getSuperAdminCookieOnClient } from '@/utils/get-super-admin-cookie-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { getCookie } from 'cookies-next';
+import { useMutation } from '@tanstack/react-query';
 import { Info } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import Textarea from 'react-textarea-autosize';
@@ -38,18 +37,34 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 
-const roles = getAppRoles().map((role) => ({ id: role, label: role }));
-
 export function AddAiModelsForm() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
-  const adminCredentialsCookie = getCookie('__admin');
-  let adminCredentials: { email: string; password: string };
-  if (adminCredentialsCookie) {
-    adminCredentials = JSON.parse(adminCredentialsCookie.toString());
-  }
-
+  const { adminCredentialsCookie } = getSuperAdminCookieOnClient();
+  const { mutate: addAiModelReq, isLoading } = useMutation({
+    mutationFn: (values: SuperAdminAddAiModelRequestDto) =>
+      adminAddAiModel(
+        values,
+        adminCredentialsCookie?.email ?? '',
+        adminCredentialsCookie?.password ?? ''
+      ),
+    onError: (error: any) => {
+      toast({
+        title: error,
+        variant: 'destructive',
+      });
+    },
+    onSuccess: (room) => {
+      setOpen(false);
+      toast({
+        title: 'AI Model added successfully!',
+      });
+      form.reset();
+      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
+      router.refresh();
+    },
+  });
   const form = useForm<SuperAdminAddAiModelRequestDto>({
     resolver: zodResolver(SuperAdminAddAiModelRequestSchema),
     values: {
@@ -64,37 +79,12 @@ export function AddAiModelsForm() {
     },
   });
 
-  async function onSubmit(values: SuperAdminAddAiModelRequestDto) {
+  function onSubmit(values: SuperAdminAddAiModelRequestDto) {
     try {
       if (values.alias!.trim().length === 0) {
         values.alias = undefined;
       }
-      const res = await superAdminApiClient({
-        url: Endpoints.admin.addAiModel(),
-        options: {
-          method: 'POST',
-          body: JSON.stringify({
-            ...values,
-          }),
-        },
-        superAdminEmail: adminCredentials?.email,
-        superAdminPassword: adminCredentials?.password,
-      });
-      if (!res.ok) {
-        const { error } = JSON.parse(await res.text());
-        toast({
-          title: error,
-          variant: 'destructive',
-        });
-        return;
-      }
-      setOpen(false);
-      toast({
-        title: 'AI Model added successfully!',
-      });
-      form.reset();
-      // this refresh next server component https://nextjs.org/docs/app/api-reference/functions/use-router
-      router.refresh();
+      addAiModelReq(values);
     } catch (e) {
       console.log(e);
     }
@@ -231,7 +221,9 @@ export function AddAiModelsForm() {
                 )}
               />
               <div className="flex w-full justify-end">
-                <Button type="submit">Submit</Button>
+                <Button disabled={isLoading} type="submit">
+                  Submit
+                </Button>
               </div>
             </form>
           </Form>
