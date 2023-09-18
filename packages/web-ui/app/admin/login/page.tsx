@@ -24,7 +24,7 @@ export default function SuperAdminLogin() {
   const { toast } = useToast();
   const router = useRouter();
   const { mutate: validateAdminCredentialsReq, isLoading } = useMutation({
-    mutationFn: async (values: SuperAdminValidateCredentialsRequestDto) =>
+    mutationFn: (values: SuperAdminValidateCredentialsRequestDto) =>
       validateAdminCredentials(values),
     onError: (error: any) => {
       toast({

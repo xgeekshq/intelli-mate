@@ -43,7 +43,7 @@ export function AddAiModelsForm() {
   const router = useRouter();
   const { adminCredentialsCookie } = getSuperAdminCookieOnClient();
   const { mutate: addAiModelReq, isLoading } = useMutation({
-    mutationFn: async (values: SuperAdminAddAiModelRequestDto) =>
+    mutationFn: (values: SuperAdminAddAiModelRequestDto) =>
       adminAddAiModel(
         values,
         adminCredentialsCookie?.email ?? '',

@@ -49,9 +49,7 @@ export function UpdateRolesForm({
   const router = useRouter();
   const { adminCredentialsCookie } = getSuperAdminCookieOnClient();
   const { mutate: updateUserRolesReq, isLoading } = useMutation({
-    mutationFn: async (
-      values: Omit<SuperAdminUpdateUserRoleRequestDto, 'userId'>
-    ) =>
+    mutationFn: (values: Omit<SuperAdminUpdateUserRoleRequestDto, 'userId'>) =>
       updateUserRoles(
         userId,
         values,
