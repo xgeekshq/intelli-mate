@@ -1,8 +1,9 @@
 import '@/styles/globals.css';
-import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Endpoints from '@/api/endpoints';
 import { superAdminApiClient } from '@/api/superAdminApiClient';
+import { getSuperAdminCookieOnServer } from '@/utils/get-super-admin-cookie-server';
+import { getUrlPath } from '@/utils/get-url-path';
 
 import { StateProvider } from '@/components/state-provider';
 
@@ -27,10 +28,8 @@ const validateSuperAdminCredentials = async (
 };
 
 export default async function SuperAdminLayout({ children }: RootLayoutProps) {
-  const nextCookies = cookies();
-  const { get: getHeader } = headers();
-  const adminCredentialsCookie = nextCookies.get('__admin');
-  const urlPath = getHeader('x-invoke-path');
+  const { adminCredentialsCookie } = getSuperAdminCookieOnServer();
+  const { urlPath } = getUrlPath();
 
   // If no cookie credentials -> redirect for login (but if in login already, don't redirect again)
   if (!adminCredentialsCookie && urlPath !== '/admin/login') {

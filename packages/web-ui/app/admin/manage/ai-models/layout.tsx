@@ -1,15 +1,11 @@
 import '@/styles/globals.css';
-import { ReactNode } from 'react';
-
 import { AdminHeader } from '@/components/admin/admin-header';
 
-export default function AdminUsersLayout({
-  children,
-  params,
-}: {
-  children: ReactNode;
-  params: { room: string };
-}) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function AdminUsersLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full w-full">
       <div className="flex h-full w-full flex-col">

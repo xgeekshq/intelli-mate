@@ -1,8 +1,9 @@
 import React from 'react';
-import { cookies } from 'next/headers';
-import Endpoints from '@/api/endpoints';
-import { superAdminApiClient } from '@/api/superAdminApiClient';
-import { SuperAdminAiModelResponseDto } from '@/contract/ai/super-admin-ai-model.response.dto.d';
+import {
+  ADMIN_GET_AI_MODELS_REQ_KEY,
+  adminGetAiModels,
+} from '@/api/requests/super-admin/admin-get-ai-models';
+import { getSuperAdminCookieOnServer } from '@/utils/get-super-admin-cookie-server';
 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,34 +18,17 @@ import {
 } from '@/components/ui/table';
 import { AddAiModelsForm } from '@/components/admin/add-ai-models-form';
 import { HoverableTableCell } from '@/components/admin/hoverable-table-cell';
-
-const getAiModels = async (
-  superAdminEmail: string,
-  superAdminPassword: string
-): Promise<SuperAdminAiModelResponseDto[]> => {
-  try {
-    const res = await superAdminApiClient({
-      url: Endpoints.admin.getAiModels(),
-      options: { method: 'GET' },
-      superAdminEmail,
-      superAdminPassword,
-    });
-    return res.json();
-  } catch (e) {
-    console.log(e);
-  }
-  return [];
-};
+import getQueryClient from '@/app/get-query-client';
 
 export default async function AdminAiModels() {
-  const nextCookies = cookies();
-  const adminCredentialsCookie = nextCookies.get('__admin');
+  const { adminCredentialsCookie } = getSuperAdminCookieOnServer();
   const adminCredentials = JSON.parse(adminCredentialsCookie!.value);
-
-  const aiModels = await getAiModels(
-    adminCredentials.email,
-    adminCredentials.password
-  );
+  const queryClient = getQueryClient();
+  const aiModels = await queryClient.fetchQuery({
+    queryKey: [ADMIN_GET_AI_MODELS_REQ_KEY],
+    queryFn: () =>
+      adminGetAiModels(adminCredentials.email, adminCredentials.password),
+  });
 
   return (
     <div className="flex h-full w-full flex-col p-4">
