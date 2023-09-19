@@ -9,7 +9,7 @@ export default function AdminUsersLayout({ children }: RootLayoutProps) {
   return (
     <div className="flex h-full w-full">
       <div className="flex h-full w-full flex-col">
-        <AdminHeader id="125" name="Users" />
+        <AdminHeader />
         <div className="h-[calc(100%-97px)] w-full">{children}</div>
       </div>
     </div>
