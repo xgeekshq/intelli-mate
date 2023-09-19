@@ -6,14 +6,12 @@ export const GET_AI_MODEL_REQ_KEY = 'ai-model';
 
 export const getAiModel = async (
   aiModelId: string,
-  sessionId: string | null,
   jwtToken: string | null
 ) => {
   return new Promise<AiModelResponseDto>(async (resolve, reject) => {
     const res = await apiClient({
       url: Endpoints.ai.getAiModel(aiModelId),
       options: { method: 'GET' },
-      sessionId,
       jwtToken,
     });
 

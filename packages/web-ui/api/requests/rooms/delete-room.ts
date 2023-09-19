@@ -1,16 +1,11 @@
 import { apiClient } from '@/api/apiClient';
 import Endpoints from '@/api/endpoints';
 
-export const deleteRoom = async (
-  roomId: string,
-  sessionId: string | null,
-  jwtToken: string | null
-) => {
+export const deleteRoom = async (roomId: string, jwtToken: string | null) => {
   return new Promise<void>(async (resolve, reject) => {
     const res = await apiClient({
       url: Endpoints.rooms.deleteRoom(roomId),
       options: { method: 'DELETE' },
-      sessionId,
       jwtToken,
     });
 

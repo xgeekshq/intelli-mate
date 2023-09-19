@@ -6,14 +6,12 @@ import { RemoveDocumentFromChatRequestDto } from '@/contract/chats/remove-docume
 export const deleteDocument = async (
   roomId: string,
   values: RemoveDocumentFromChatRequestDto,
-  sessionId: string | null,
   jwtToken: string | null
 ) => {
   return new Promise<ChatResponseDto>(async (resolve, reject) => {
     const res = await apiClient({
       url: Endpoints.chats.deleteDocument(roomId),
       options: { method: 'PATCH', body: JSON.stringify(values) },
-      sessionId,
       jwtToken,
     });
 

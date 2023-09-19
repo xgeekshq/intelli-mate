@@ -4,15 +4,11 @@ import { UserResponseDto } from '@/contract/auth/user.response.dto.d';
 
 export const GET_ALL_USERS_REQ_KEY = 'all-users';
 
-export const getAllUsers = async (
-  sessionId: string | null,
-  jwtToken: string | null
-) => {
+export const getAllUsers = async (jwtToken: string | null) => {
   return new Promise<UserResponseDto[]>(async (resolve, reject) => {
     const res = await apiClient({
       url: Endpoints.users.getUsers(),
       options: { method: 'GET' },
-      sessionId,
       jwtToken,
     });
 

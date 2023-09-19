@@ -50,20 +50,20 @@ export default async function Settings({
 }: {
   params: { room: string };
 }) {
-  const { userId, sessionId, getToken } = auth();
+  const { userId, getToken } = auth();
   const token = await getToken();
   const queryClient = getQueryClient();
   const room = await queryClient.fetchQuery([GET_ROOM_REQ_KEY], () =>
-    getRoom(params.room, sessionId, token)
+    getRoom(params.room, token)
   );
   const members = await queryClient.fetchQuery([GET_USERS_REQ_KEY], () =>
-    getUsers(room.members, sessionId, token)
+    getUsers(room.members, token)
   );
   const allUsers = await queryClient.fetchQuery([GET_ALL_USERS_REQ_KEY], () =>
-    getAllUsers(sessionId, token)
+    getAllUsers(token)
   );
   const owner = await queryClient.fetchQuery([GET_USER_REQ_KEY], () =>
-    getUser(room.ownerId, sessionId, token)
+    getUser(room.ownerId, token)
   );
 
   const dehydratedState = dehydrate(queryClient);

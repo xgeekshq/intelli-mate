@@ -4,7 +4,6 @@ import Endpoints from '@/api/endpoints';
 export const uploadDocuments = async (
   roomId: string,
   formData: FormData,
-  sessionId: string | null,
   jwtToken: string | null
 ) => {
   return new Promise<void>(async (resolve, reject) => {
@@ -14,7 +13,6 @@ export const uploadDocuments = async (
         method: 'POST',
         body: formData,
       },
-      sessionId,
       jwtToken,
       isApplicationJson: false,
     });

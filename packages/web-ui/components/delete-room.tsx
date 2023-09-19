@@ -14,9 +14,9 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 export default function DeleteRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const { mutate: deleteRoomMutationReq, isLoading } = useMutation({
-    mutationFn: async () => deleteRoom(roomId, sessionId!, await getToken()),
+    mutationFn: async () => deleteRoom(roomId, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

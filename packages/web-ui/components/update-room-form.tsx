@@ -30,10 +30,10 @@ interface UpdateRoomFormProps {
 export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const { mutate: updateRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: UpdateRoomSettingsRequestDto) =>
-      updateRoom(room.id, values, sessionId!, await getToken()),
+      updateRoom(room.id, values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

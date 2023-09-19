@@ -6,14 +6,12 @@ export const GET_USERS_REQ_KEY = 'users';
 
 export const getUsers = async (
   userIds: string[] | undefined,
-  sessionId: string | null,
   jwtToken: string | null
 ) => {
   return new Promise<UserResponseDto[]>(async (resolve, reject) => {
     const res = await apiClient({
       url: Endpoints.users.getUsers(userIds ?? []),
       options: { method: 'GET' },
-      sessionId,
       jwtToken,
     });
 

@@ -1,7 +1,6 @@
 export type ClerkFetcherParamsType = {
   url: string;
   options?: RequestInit;
-  sessionId: string | null;
   jwtToken: string | null;
   isApplicationJson?: boolean;
 };
@@ -19,7 +18,6 @@ const myFetch = createFetch(
 async function apiClient({
   url,
   options,
-  sessionId,
   jwtToken,
   isApplicationJson = true,
 }: ClerkFetcherParamsType) {
@@ -27,7 +25,6 @@ async function apiClient({
     ...options,
     headers: {
       ...(isApplicationJson ? { 'Content-Type': 'application/json' } : {}),
-      'X-Clerk-Session-Id': sessionId ?? '',
       'X-Clerk-Jwt-Token': jwtToken ?? '',
       ...options?.headers,
     },

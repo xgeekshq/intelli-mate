@@ -26,14 +26,14 @@ import { CreateRoomForm } from '@/components/create-room-form';
 
 export function Rooms() {
   const params = useParams();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const { data: myRooms } = useQuery({
     queryKey: [GET_MY_ROOMS_REQ_KEY],
-    queryFn: async () => getMyRooms(sessionId!, await getToken()),
+    queryFn: async () => getMyRooms(await getToken()),
   });
   const { data: aiModels } = useQuery({
     queryKey: [GET_AI_MODELS_REQ_KEY],
-    queryFn: async () => getAiModels(sessionId!, await getToken()),
+    queryFn: async () => getAiModels(await getToken()),
   });
 
   return (
