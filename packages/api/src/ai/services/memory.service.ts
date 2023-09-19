@@ -70,4 +70,26 @@ export class MemoryService {
       })
     );
   }
+
+  async createMemoryWithDocumentInput(
+    roomId: string,
+    input: string,
+    response: string
+  ) {
+    const redisDocumentResponse = new RedisChatMessageHistory({
+      sessionId: roomId,
+      client: this.cacheClient,
+      sessionTTL: this.appConfigService.getAiAppConfig().defaultChatContextTTL,
+    });
+    await redisDocumentResponse.addUserMessage(input);
+    await redisDocumentResponse.addAIChatMessage(response);
+    this.memoryMap.set(
+      roomId,
+      new BufferMemory({
+        returnMessages: true,
+        memoryKey: 'history',
+        chatHistory: redisDocumentResponse,
+      })
+    );
+  }
 }

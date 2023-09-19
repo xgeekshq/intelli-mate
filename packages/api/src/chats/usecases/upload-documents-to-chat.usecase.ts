@@ -59,8 +59,6 @@ export class UploadDocumentsToChatUsecase implements Usecase {
         )
       );
     }
-
-    this.aiService.invalidateAgentCache(roomId);
   }
   private checkMaxDocumentsSizePerRoomInvariant(
     chat: Chat,

@@ -3,12 +3,10 @@ import { aiModelsMongooseProviders } from '@/ai/ai-models.mongoose.providers';
 import { AiModelsRepository } from '@/ai/ai-models.repository';
 import { AiController } from '@/ai/ai.controller';
 import { AiService } from '@/ai/facades/ai.service';
-import { AgentConversationService } from '@/ai/services/agent-conversation.service';
 import { ChatModelService } from '@/ai/services/chat-model.service';
 import { MemoryService } from '@/ai/services/memory.service';
 import { RedisKeepAliveService } from '@/ai/services/redis-keep-alive.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
-import { ToolService } from '@/ai/services/tool.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
 import { AdminAddAiModelUsecase } from '@/ai/usecases/admin-add-ai-model.usecase';
 import { AdminFindAiModelsUsecase } from '@/ai/usecases/admin-find-ai-models.usecase';
@@ -46,9 +44,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     // Private services
     AiModelsRepository,
     MemoryService,
-    ToolService,
     SimpleConversationChainService,
-    AgentConversationService,
     RedisKeepAliveService,
     VectorDbService,
     ChatModelService,
