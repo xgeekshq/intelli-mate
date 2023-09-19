@@ -46,11 +46,11 @@ type CreateRoomFormProps = {
 export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const { userId, sessionId, getToken } = useAuth();
+  const { userId, getToken } = useAuth();
   const router = useRouter();
   const { mutate: createRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: CreateRoomRequestDto) =>
-      createRoom(values, sessionId!, await getToken()),
+      createRoom(values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

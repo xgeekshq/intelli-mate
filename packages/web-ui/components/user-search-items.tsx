@@ -36,11 +36,11 @@ export default function UserSearchItems({
   isPrivateRoom,
 }: UserSearchItemsProps) {
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const router = useRouter();
   const { mutate: inviteUserToRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: InviteUserToRoomRequestDto) =>
-      inviteUserToRoom(values, sessionId!, await getToken()),
+      inviteUserToRoom(values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

@@ -55,11 +55,11 @@ export default function Chat({
   hasDocuments,
   ownerRoles,
 }: ChatProps) {
-  const { sessionId, userId, getToken } = useAuth();
+  const { userId, getToken } = useAuth();
   const queryClient = useQueryClient();
   const { data: chat } = useQuery({
     queryKey: [GET_CHAT_REQ_KEY],
-    queryFn: async () => getChat(roomId, sessionId!, await getToken()),
+    queryFn: async () => getChat(roomId, await getToken()),
   });
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [participants, setParticipants] = useRefState<ChatUserType[]>([]);
@@ -89,7 +89,7 @@ export default function Chat({
 
     const user = await queryClient.fetchQuery({
       queryKey: [GET_USER_REQ_KEY],
-      queryFn: async () => getUser(userId, sessionId!, await getToken()),
+      queryFn: async () => getUser(userId, await getToken()),
     });
 
     if (!user) {
@@ -124,7 +124,7 @@ export default function Chat({
       if (chat && chat.participantIds.length > 0) {
         const participantList = createChatParticipantsFactory(
           await queryClient.fetchQuery([GET_USERS_REQ_KEY], async () =>
-            getUsers(chat.participantIds, sessionId!, await getToken())
+            getUsers(chat.participantIds, await getToken())
           )
         );
 

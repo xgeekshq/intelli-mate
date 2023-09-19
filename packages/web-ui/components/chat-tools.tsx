@@ -41,11 +41,11 @@ type ChatToolsProps = {
 };
 
 export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const router = useRouter();
   const { mutate: deleteDocumentMutationReq, isLoading } = useMutation({
     mutationFn: async (values: RemoveDocumentFromChatRequestDto) =>
-      deleteDocument(roomId, values, sessionId!, await getToken()),
+      deleteDocument(roomId, values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

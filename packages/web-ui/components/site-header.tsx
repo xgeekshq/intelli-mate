@@ -42,7 +42,7 @@ export function SiteHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const { isSignedIn } = useUser();
-  const { sessionId, getToken, userId } = useAuth();
+  const { getToken, userId } = useAuth();
   const { isMacUser } = useBrowserInfo();
   const shouldShowSearchRoomsShortCut = useMemo(
     () => isSignedIn && !pathname.includes('admin'),
@@ -50,15 +50,15 @@ export function SiteHeader() {
   );
   const { data: myRooms } = useQuery({
     queryKey: [GET_MY_ROOMS_REQ_KEY],
-    queryFn: async () => getMyRooms(sessionId!, await getToken()),
+    queryFn: async () => getMyRooms(await getToken()),
   });
   const { data: publicRooms } = useQuery({
     queryKey: [GET_PUBLIC_ROOMS_REQ_KEY],
-    queryFn: async () => getPublicRooms(sessionId!, await getToken()),
+    queryFn: async () => getPublicRooms(await getToken()),
   });
   const { mutate: joinRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: JoinRoomRequestDto) =>
-      joinRoom(values, sessionId!, await getToken()),
+      joinRoom(values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

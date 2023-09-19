@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@anatine/zod-nestjs": "^1.10.0",
-    "@clerk/clerk-sdk-node": "^4.12.1",
+    "@clerk/clerk-sdk-node": "^4.12.5",
     "@nestjs/bull": "^0.6.3",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",

@@ -46,7 +46,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
   const { room: roomId } = useParams();
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const router = useRouter();
   const { isMacUser } = useBrowserInfo();
   const { mutate: uploadDocumentsMutationReq, isLoading } = useMutation({
@@ -56,7 +56,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
     }: {
       roomId: string;
       formData: FormData;
-    }) => uploadDocuments(roomId, formData, sessionId!, await getToken()),
+    }) => uploadDocuments(roomId, formData, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

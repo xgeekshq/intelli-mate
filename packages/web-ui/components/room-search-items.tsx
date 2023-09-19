@@ -19,11 +19,11 @@ export default function RoomSearchItems({
   data: PublicRoomsListType[];
 }) {
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const router = useRouter();
   const { mutate: joinRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: JoinRoomRequestDto) =>
-      joinRoom(values, sessionId!, await getToken()),
+      joinRoom(values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

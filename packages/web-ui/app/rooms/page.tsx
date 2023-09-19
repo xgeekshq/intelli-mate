@@ -26,12 +26,12 @@ const getSearchRoomsList = (
 };
 
 export default async function Rooms() {
-  const { sessionId, getToken, userId } = auth();
+  const { getToken, userId } = auth();
   const token = await getToken();
   const queryClient = getQueryClient();
   const publicRooms = await queryClient.fetchQuery(
     [GET_PUBLIC_ROOMS_REQ_KEY],
-    () => getPublicRooms(sessionId, token)
+    () => getPublicRooms(token)
   );
   const dehydratedState = dehydrate(queryClient);
   const publicRoomsSearchList = getSearchRoomsList(publicRooms, userId);

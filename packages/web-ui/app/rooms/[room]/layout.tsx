@@ -21,18 +21,18 @@ export default async function RoomLayout({
   children,
   params,
 }: RootLayoutProps) {
-  const { sessionId, getToken } = auth();
+  const { getToken } = auth();
   const token = await getToken();
 
   const queryClient = getQueryClient();
   const room = await queryClient.fetchQuery([GET_ROOM_REQ_KEY], () =>
-    getRoom(params.room, sessionId, token)
+    getRoom(params.room, token)
   );
   const chat = await queryClient.fetchQuery([GET_CHAT_REQ_KEY], () =>
-    getChat(params.room, sessionId, token)
+    getChat(params.room, token)
   );
   const aiModel = await queryClient.fetchQuery([GET_AI_MODEL_REQ_KEY], () =>
-    getAiModel(chat.aiModelId ?? '', sessionId, token)
+    getAiModel(chat.aiModelId ?? '', token)
   );
   const dehydratedState = dehydrate(queryClient);
 

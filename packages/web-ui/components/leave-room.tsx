@@ -15,10 +15,10 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 export default function LeaveRoom({ roomId }: { roomId: string }) {
   const router = useRouter();
   const { toast } = useToast();
-  const { sessionId, getToken } = useAuth();
+  const { getToken } = useAuth();
   const { mutate: leaveRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: LeaveRoomRequestDto) =>
-      leaveRoom(values, sessionId!, await getToken()),
+      leaveRoom(values, await getToken()),
     onError: (error: any) => {
       toast({
         title: error,

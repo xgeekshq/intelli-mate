@@ -15,11 +15,11 @@ interface RootLayoutProps {
 }
 
 export default async function RoomsLayout({ children }: RootLayoutProps) {
-  const { sessionId, getToken } = auth();
+  const { getToken } = auth();
   const token = await getToken();
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery([GET_MY_ROOMS_REQ_KEY], () =>
-    getMyRooms(sessionId, token)
+    getMyRooms(token)
   );
   const dehydratedState = dehydrate(queryClient);
 
