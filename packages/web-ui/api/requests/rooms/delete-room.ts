@@ -14,6 +14,6 @@ export const deleteRoom = async (roomId: string, jwtToken: string | null) => {
       return reject(error);
     }
 
-    resolve(await res.json());
+    resolve();
   });
 };
