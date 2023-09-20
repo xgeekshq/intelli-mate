@@ -1,5 +1,5 @@
 import { ChatModelService } from '@/ai/services/chat-model.service';
-import { DocumentConversationChainService } from '@/ai/services/document-conversation-chain.service';
+import { DocumentConversationChain } from '@/ai/services/document-conversation-chain.service';
 import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
@@ -16,7 +16,7 @@ import { Document } from 'langchain/document';
 import { PromptTemplate } from 'langchain/prompts';
 import { BaseMessage, ChainValues } from 'langchain/schema';
 
-type AIExecutor = DocumentConversationChainService | ConversationChain;
+type AIExecutor = DocumentConversationChain | ConversationChain;
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
@@ -51,22 +51,20 @@ Helpful answer:`
     }
 
     if (documents.length > 0) {
-      aiExecutor = new DocumentConversationChainService(
-        this.memoryService,
-        this.vectorDbService,
-        this.simpleConversationChainService,
-        {
-          llmModel: await this.chatModelService.getChatModel(chatLlmId),
-          documents,
-          roomId,
-          summary: summary?.response,
-        }
-      );
+      aiExecutor = new DocumentConversationChain({
+        memoryService: this.memoryService,
+        vectorDbService: this.vectorDbService,
+        simpleConversationChainService: this.simpleConversationChainService,
+        llmModel: await this.chatModelService.getChatModel(chatLlmId),
+        documents,
+        roomId,
+        summary: summary?.output,
+      });
     } else {
       aiExecutor = await this.simpleConversationChainService.getChain(
         roomId,
         await this.chatModelService.getChatModel(chatLlmId),
-        summary?.response
+        summary?.output
       );
     }
 

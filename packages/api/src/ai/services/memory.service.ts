@@ -74,21 +74,26 @@ export class MemoryService {
   async createMemoryWithDocumentInput(
     roomId: string,
     input: string,
-    response: string
+    response: string,
+    summary?: string
   ) {
-    const redisDocumentResponse = new RedisChatMessageHistory({
+    const redisChatHistory = new RedisChatMessageHistory({
       sessionId: roomId,
       client: this.cacheClient,
       sessionTTL: this.appConfigService.getAiAppConfig().defaultChatContextTTL,
     });
-    await redisDocumentResponse.addUserMessage(input);
-    await redisDocumentResponse.addAIChatMessage(response);
+    if (!!summary) {
+      await this.memoryMap.get(roomId).clear();
+      await redisChatHistory.addAIChatMessage(summary);
+    }
+    await redisChatHistory.addUserMessage(input);
+    await redisChatHistory.addAIChatMessage(response);
     this.memoryMap.set(
       roomId,
       new BufferMemory({
         returnMessages: true,
         memoryKey: 'history',
-        chatHistory: redisDocumentResponse,
+        chatHistory: redisChatHistory,
       })
     );
   }

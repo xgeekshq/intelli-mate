@@ -7,41 +7,39 @@ import { RetrievalQAChain, loadQAStuffChain } from 'langchain/chains';
 import { BaseChatModel } from 'langchain/chat_models';
 import { PromptTemplate } from 'langchain/prompts';
 
-type DocumentConversationChainServiceProps = {
+type DocumentConversationChainProps = {
+  memoryService: MemoryService;
+  vectorDbService: VectorDbService;
+  simpleConversationChainService: SimpleConversationChainService;
   llmModel: BaseChatModel;
   documents: ChatDocument[];
   roomId: string;
   summary?: string;
 };
 @Injectable()
-export class DocumentConversationChainService {
+export class DocumentConversationChain {
   defaultChatPrompt: string;
 
-  constructor(
-    private readonly memoryService: MemoryService,
-    private readonly vectorDbService: VectorDbService,
-    private readonly simpleConversationChainService: SimpleConversationChainService,
-    private readonly meta: DocumentConversationChainServiceProps
-  ) {
-    this.defaultChatPrompt = `Use the following pieces of context to answer the question at the end.
+  constructor(private readonly args: DocumentConversationChainProps) {
+    this.defaultChatPrompt = `Use the following context to answer the question at the end.
                               {context}
                               Question: {question}
                               If you don't know the answer return only: Answer not found.
-                              But if you have an answer provide the most detailed response you can.`;
+                              But if you have an answer, provide the most detailed response you can.`;
   }
 
   async call({ input }: { input: string }) {
     const prompt = PromptTemplate.fromTemplate(this.defaultChatPrompt);
 
-    for (const document of this.meta.documents) {
+    for (const document of this.args.documents) {
       const vectorStore =
-        await this.vectorDbService.getVectorDbClientForExistingCollection(
-          this.meta.roomId,
+        await this.args.vectorDbService.getVectorDbClientForExistingCollection(
+          this.args.roomId,
           document.meta.filename
         );
 
       const chain = new RetrievalQAChain({
-        combineDocumentsChain: loadQAStuffChain(this.meta.llmModel, {
+        combineDocumentsChain: loadQAStuffChain(this.args.llmModel, {
           prompt,
         }),
         retriever: vectorStore.asRetriever(),
@@ -54,19 +52,20 @@ export class DocumentConversationChainService {
       });
 
       if (!res.text.includes('Answer not found.')) {
-        await this.memoryService.createMemoryWithDocumentInput(
-          this.meta.roomId,
+        await this.args.memoryService.createMemoryWithDocumentInput(
+          this.args.roomId,
           input,
-          res.text
+          res.text,
+          this.args.summary
         );
         return { output: res.text, source: res.sourceDocuments };
       }
     }
     const simpleConversationChain =
-      await this.simpleConversationChainService.getChain(
-        this.meta.roomId,
-        this.meta.llmModel,
-        this.meta.summary
+      await this.args.simpleConversationChainService.getChain(
+        this.args.roomId,
+        this.args.llmModel,
+        this.args.summary
       );
     return simpleConversationChain.call({ input });
   }
