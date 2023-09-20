@@ -1,5 +1,5 @@
-import { AgentConversationService } from '@/ai/services/agent-conversation.service';
 import { ChatModelService } from '@/ai/services/chat-model.service';
+import { DocumentConversationChain } from '@/ai/services/document-conversation-chain.service';
 import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
@@ -7,7 +7,6 @@ import { AppConfigService } from '@/app-config/app-config.service';
 import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
 import { ChatDocument } from '@/common/types/chat';
 import { Injectable, Logger } from '@nestjs/common';
-import { AgentExecutor } from 'langchain/agents';
 import {
   ConversationChain,
   LLMChain,
@@ -17,7 +16,7 @@ import { Document } from 'langchain/document';
 import { PromptTemplate } from 'langchain/prompts';
 import { BaseMessage, ChainValues } from 'langchain/schema';
 
-type AIExecutor = AgentExecutor | ConversationChain;
+type AIExecutor = DocumentConversationChain | ConversationChain;
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
@@ -31,7 +30,6 @@ Helpful answer:`
 
   constructor(
     private readonly simpleConversationChainService: SimpleConversationChainService,
-    private readonly agentConversationService: AgentConversationService,
     private readonly appConfigService: AppConfigService,
     private readonly memoryService: MemoryService,
     private readonly vectorDbService: VectorDbService,
@@ -53,17 +51,20 @@ Helpful answer:`
     }
 
     if (documents.length > 0) {
-      aiExecutor = await this.agentConversationService.getAgent(
-        roomId,
-        await this.chatModelService.getChatModel(chatLlmId),
+      aiExecutor = new DocumentConversationChain({
+        memoryService: this.memoryService,
+        vectorDbService: this.vectorDbService,
+        simpleConversationChainService: this.simpleConversationChainService,
+        llmModel: await this.chatModelService.getChatModel(chatLlmId),
         documents,
-        summary?.response
-      );
+        roomId,
+        summary: summary?.output,
+      });
     } else {
       aiExecutor = await this.simpleConversationChainService.getChain(
         roomId,
         await this.chatModelService.getChatModel(chatLlmId),
-        summary?.response
+        summary?.output
       );
     }
 
@@ -82,13 +83,6 @@ Helpful answer:`
       );
     }
   }
-
-  invalidateAgentCache(roomId: string): void {
-    if (this.agentConversationService.agentMap.has(roomId)) {
-      this.agentConversationService.agentMap.delete(roomId);
-    }
-  }
-
   async askAiToDescribeDocument(
     lcDocuments: Document[],
     chatLlmId: string
