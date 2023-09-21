@@ -58,7 +58,11 @@ export class DocumentConversationChain {
           res.text,
           this.args.summary
         );
-        return { output: res.text, source: res.sourceDocuments };
+        return {
+          output: res.text,
+          source: res.sourceDocuments,
+          document: document.meta.filename,
+        };
       }
     }
     const simpleConversationChain =

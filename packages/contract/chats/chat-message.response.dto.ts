@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const ChatMessageResponseSchema = z.object({
   id: z.string(),
@@ -13,6 +13,12 @@ export const ChatMessageResponseSchema = z.object({
     ai: z
       .object({
         llmModel: z.string(),
+      })
+      .optional(),
+    source: z
+      .object({
+        filename: z.string(),
+        snippets: z.array(string()),
       })
       .optional(),
   }),
