@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 
 import { ChatMessageType } from '@/types/chat';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { DocumentSnippets } from '@/components/document-snippets';
 import Markdown from '@/components/markdown';
 
 export interface MessageProps {
@@ -31,11 +32,21 @@ const Message = memo(function Message({ message }: MessageProps) {
         <Markdown content={message.content} />
       </div>
       {message.response ? (
-        <div className="mt-4 flex gap-2 border-t bg-gray-50 p-4 dark:bg-gray-900">
-          <Avatar className="h-8 w-8 rounded-none">
-            <AvatarImage src={'/ai.png'} alt="AI Image" />
-          </Avatar>
-          <Markdown content={message.response} />
+        <div className="mt-4 flex flex-col gap-2 border-t bg-gray-50 p-4 dark:bg-gray-900">
+          <div className="flex gap-2">
+            <Avatar className="h-8 w-8 rounded-none">
+              <AvatarImage src={'/ai.png'} alt="AI Image" />
+            </Avatar>
+            <Markdown content={message.response} />
+          </div>
+          {message.source && (
+            <div className="flex justify-end">
+              <p className="text-sm text-gray-500">
+                Answer based on the following document:&nbsp;
+              </p>
+              <DocumentSnippets source={message.source} />
+            </div>
+          )}
         </div>
       ) : (
         <div className="relative mx-4 h-8 w-8">
