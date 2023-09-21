@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 export const AddMessageToChatRequestSchema = z.object({
   sender: z.object({
@@ -16,7 +16,7 @@ export const AddMessageToChatRequestSchema = z.object({
     source: z
       .object({
         filename: z.string(),
-        snippets: z.array(string()),
+        snippets: z.array(z.string()),
       })
       .optional(),
   }),
