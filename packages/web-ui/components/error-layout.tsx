@@ -18,7 +18,7 @@ export default function ErrorLayout({ minHeight }: ErrorLayoutProps) {
               An unexpected error has occurred
             </h1>
             <p className="mt-4 text-gray-500">
-              Unfortunately something goes wrong. Please attempt to refresh the
+              Unfortunately something went wrong. Please attempt to refresh the
               page, if the problem persists, kindly consider creating a GitHub
               issue for further assistance.
             </p>

@@ -35,7 +35,6 @@ export class AddMessagePairToHistoryJobConsumer {
     });
 
     answer.meta.replyTo = savedQuestion.id;
-
     await this.addMessageToChatUsecase.execute(roomId, answer);
 
     this.logger.debug(`Answer saved in chat history: `, {

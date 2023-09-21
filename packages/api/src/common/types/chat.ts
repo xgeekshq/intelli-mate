@@ -4,10 +4,16 @@ export interface AiMeta {
   llmModel: string;
 }
 
+export interface SourceMeta {
+  filename: string;
+  snippets: string[];
+}
+
 export interface ChatMessageMeta {
   tokens: number;
   replyTo?: string;
   ai?: AiMeta;
+  source?: SourceMeta;
 }
 
 export interface Sender {

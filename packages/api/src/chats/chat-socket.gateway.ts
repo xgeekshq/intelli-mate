@@ -89,12 +89,11 @@ export class ChatSocketGateway {
       await this.shouldSummarizeChat(data.roomId),
       await this.fetchDocumentsForContext(data.roomId)
     );
-
     this.server.to(data.roomId).emit(
       'message',
       createSocketMessageResponseFactory({
         id: data.id,
-        response: aiResponse,
+        response: aiResponse.output,
         isAi: true,
         createdAt: new Date().toISOString(),
       })
@@ -112,12 +111,22 @@ export class ChatSocketGateway {
         }),
         AddMessageToChatRequestSchema.parse({
           sender: { isAi: true },
-          content: aiResponse,
+          content: aiResponse.output,
           meta: {
-            tokens: encode(aiResponse).length,
+            tokens: encode(aiResponse.output).length,
             ai: {
               llmModel: this.appConfigService.getAiAppConfig().defaultAiModel,
             },
+            ...(aiResponse.document
+              ? {
+                  source: {
+                    filename: aiResponse.document,
+                    snippets: aiResponse.source.map(
+                      (source) => source.pageContent
+                    ),
+                  },
+                }
+              : {}),
           },
         }),
         data.userId

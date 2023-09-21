@@ -13,5 +13,11 @@ export const AddMessageToChatRequestSchema = z.object({
         llmModel: z.string(),
       })
       .optional(),
+    source: z
+      .object({
+        filename: z.string(),
+        snippets: z.array(z.string()),
+      })
+      .optional(),
   }),
 });

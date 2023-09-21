@@ -5,6 +5,7 @@ import { SimpleConversationChainService } from '@/ai/services/simple-conversatio
 import { VectorDbService } from '@/ai/services/vector-db.service';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
+import { AiResponse } from '@/common/types/ai-response';
 import { ChatDocument } from '@/common/types/chat';
 import { Injectable, Logger } from '@nestjs/common';
 import {
@@ -42,7 +43,7 @@ Helpful answer:`
     chatLlmId: string,
     shouldSummarize: boolean,
     documents: ChatDocument[]
-  ): Promise<string> {
+  ): Promise<AiResponse | ChainValues> {
     let summary: ChainValues;
     let aiExecutor: AIExecutor;
 
@@ -69,8 +70,7 @@ Helpful answer:`
     }
 
     try {
-      const aiResponse = await aiExecutor.call({ input });
-      return aiResponse.output;
+      return aiExecutor.call({ input });
     } catch (e) {
       this.logger.error(
         `Failed to ask AI in room ${roomId} for a response for question: `,

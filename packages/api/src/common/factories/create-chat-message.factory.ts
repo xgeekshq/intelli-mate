@@ -6,7 +6,6 @@ export function createChatMessageFactory(
   userId?: string
 ): Omit<ChatMessage, 'id'> {
   const { sender, content, meta } = addMessageToChatRequestDto;
-
   return {
     sender: {
       ...(userId ? { userId } : {}),
@@ -20,6 +19,14 @@ export function createChatMessageFactory(
         ? {
             ai: {
               llmModel: meta.ai.llmModel,
+            },
+          }
+        : {}),
+      ...(!!meta.source
+        ? {
+            source: {
+              filename: meta.source.filename,
+              snippets: meta.source.snippets,
             },
           }
         : {}),
