@@ -20,6 +20,20 @@ const MessageMetaSchema = new mongoose.Schema(
       _id: false,
       required: false,
     },
+    source: {
+      type: {
+        filename: {
+          type: String,
+          required: true,
+        },
+        snippets: {
+          type: [String],
+          required: true,
+        },
+      },
+      _id: false,
+      required: false,
+    },
   },
   { _id: false, required: true }
 );
