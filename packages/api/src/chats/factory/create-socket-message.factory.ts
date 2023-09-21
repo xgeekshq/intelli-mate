@@ -1,3 +1,4 @@
+import { SourceMeta } from '@/common/types/chat';
 import { SocketMessageResponseDto } from '@/contract/chats/socket-message.response.dto';
 
 interface CreateSocketMessageResponseFactoryType {
@@ -6,6 +7,7 @@ interface CreateSocketMessageResponseFactoryType {
   isAi: boolean;
   createdAt: string;
   userId?: string;
+  source?: SourceMeta;
 }
 export const createSocketMessageResponseFactory = ({
   id,
@@ -13,6 +15,7 @@ export const createSocketMessageResponseFactory = ({
   isAi,
   createdAt,
   userId,
+  source,
 }: CreateSocketMessageResponseFactoryType): SocketMessageResponseDto => {
   return {
     id,
@@ -20,5 +23,6 @@ export const createSocketMessageResponseFactory = ({
     isAi,
     createdAt,
     userId,
+    source,
   };
 };

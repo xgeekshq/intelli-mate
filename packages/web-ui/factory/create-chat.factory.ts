@@ -15,6 +15,7 @@ export const createChatMessageFactory = (
     id: message.id,
     content: message.content,
     response: aiMessage?.content,
+    source: aiMessage?.meta?.source,
     createdAt: message.createdAt,
     user,
   };
@@ -65,6 +66,7 @@ export const createChatMessagesWithResponseFactory = (
         id: message.id,
         content: message.content,
         response: response.response,
+        source: response.source,
         createdAt: message.createdAt,
         user: message.user,
       };

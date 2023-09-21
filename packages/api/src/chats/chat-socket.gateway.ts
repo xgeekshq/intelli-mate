@@ -95,6 +95,14 @@ export class ChatSocketGateway {
         id: data.id,
         response: aiResponse.output,
         isAi: true,
+        ...(aiResponse.document
+          ? {
+              source: {
+                filename: aiResponse.document,
+                snippets: aiResponse.source.map((source) => source.pageContent),
+              },
+            }
+          : {}),
         createdAt: new Date().toISOString(),
       })
     );
