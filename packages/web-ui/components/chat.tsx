@@ -136,7 +136,7 @@ export default function Chat({
     void setInitialData();
     scrollToBottom();
   }, [chat, parseMessageList]);
-
+  console.log(messages);
   return (
     <div className="flex h-full w-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">

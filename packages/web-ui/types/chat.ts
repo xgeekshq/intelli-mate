@@ -3,6 +3,7 @@ export interface ChatMessageType {
   content: string;
   response?: string;
   user?: ChatUserType;
+  source?: ChatMessageSourceType;
   createdAt: string;
 }
 
@@ -19,4 +20,9 @@ export interface SocketMessageType {
   aiModelId: string;
   content: string;
   userId: string;
+}
+
+export interface ChatMessageSourceType {
+  filename: string;
+  snippets: string[];
 }
