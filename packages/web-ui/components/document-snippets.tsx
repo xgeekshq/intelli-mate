@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import Markdown from '@/components/markdown';
 
 type DocumentSnippetsProps = {
   source: ChatMessageSourceType;
@@ -33,7 +34,7 @@ export function DocumentSnippets({ source }: DocumentSnippetsProps) {
         </DialogHeader>
         <>
           {source.snippets.map((snippet, index) => {
-            return <p key={index}>{snippet}</p>;
+            return <Markdown key={index} content={snippet}></Markdown>;
           })}
         </>
       </DialogContent>
