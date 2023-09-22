@@ -33,9 +33,9 @@ export function DocumentSnippets({ source }: DocumentSnippetsProps) {
           </DialogTitle>
         </DialogHeader>
         <>
-          {source.snippets.map((snippet, index) => {
-            return <Markdown key={index} content={snippet}></Markdown>;
-          })}
+          {source.snippets.map((snippet, index) => (
+            <Markdown key={index} content={snippet} />
+          ))}
         </>
       </DialogContent>
     </Dialog>
