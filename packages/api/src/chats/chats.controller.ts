@@ -7,6 +7,7 @@ import { RemoveDocumentFromChatRequestDto } from '@/chats/dtos/remove-document-f
 import { ChatNotFoundExceptionSchema } from '@/chats/exceptions/chat-not-found.exception';
 import { DocumentNotFoundExceptionSchema } from '@/chats/exceptions/document-not-found.exception';
 import { DocumentPermissionsMismatchExceptionSchema } from '@/chats/exceptions/document-permissions-mismatch.exception';
+import { DocumentTypeMismatchExceptionSchema } from '@/chats/exceptions/document-type-mismatch.exception';
 import { MaxDocumentSizeLimitExceptionSchema } from '@/chats/exceptions/max-document-size-limit.exception';
 import { FindChatByRoomIdUsecase } from '@/chats/usecases/find-chat-by-room-id.usecase';
 import { FindChatMessageHistoryByRoomIdUsecase } from '@/chats/usecases/find-chat-message-history-by-room-id.usecase';
@@ -41,6 +42,7 @@ import {
   ApiConflictResponse,
   ApiConsumes,
   ApiNoContentResponse,
+  ApiNotAcceptableResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -146,6 +148,7 @@ export class ChatsController {
   @ApiNoContentResponse({ description: 'No content' })
   @ApiBadRequestResponse({ schema: MaxDocumentSizeLimitExceptionSchema })
   @ApiConflictResponse({ schema: DocumentPermissionsMismatchExceptionSchema })
+  @ApiNotAcceptableResponse({ schema: DocumentTypeMismatchExceptionSchema })
   @ApiNotFoundResponse({ schema: ChatNotFoundExceptionSchema })
   @ApiOperation({ description: 'Upload documents into a chat' })
   uploadDocumentsToChat(

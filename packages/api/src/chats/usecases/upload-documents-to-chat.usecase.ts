@@ -1,11 +1,14 @@
-import { AiService } from '@/ai/facades/ai.service';
-import { AppConfigService } from '@/app-config/app-config.service';
+import { readFileSync } from 'fs';
 import { ClerkAuthUserProvider } from '@/auth/providers/clerk/clerk-auth-user.provider';
 import { ChatsRepository } from '@/chats/chats.repository';
 import { ChatNotFoundException } from '@/chats/exceptions/chat-not-found.exception';
 import { DocumentPermissionsMismatchException } from '@/chats/exceptions/document-permissions-mismatch.exception';
+import { DocumentTypeMismatchException } from '@/chats/exceptions/document-type-mismatch.exception';
 import { MaxDocumentSizeLimitException } from '@/chats/exceptions/max-document-size-limit.exception';
-import { ACCEPTED_FILE_SIZE_LIMIT } from '@/common/constants/files';
+import {
+  ACCEPTED_FILE_SIZE_LIMIT,
+  fileBufferSignatureByMimetypeMap,
+} from '@/common/constants/files';
 import { CHAT_DOCUMENT_UPLOAD_QUEUE } from '@/common/constants/queues';
 import { createChatDocUploadJobFactory } from '@/common/jobs/chat-doc-upload.job';
 import { Chat } from '@/common/types/chat';
@@ -21,9 +24,7 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     private readonly chatsRepository: ChatsRepository,
     private readonly clerkAuthUserProvider: ClerkAuthUserProvider,
     @InjectQueue(CHAT_DOCUMENT_UPLOAD_QUEUE)
-    private readonly chatDocUploadQueue: Queue,
-    private readonly appConfigService: AppConfigService,
-    private readonly aiService: AiService
+    private readonly chatDocUploadQueue: Queue
   ) {}
 
   async execute(
@@ -38,6 +39,8 @@ export class UploadDocumentsToChatUsecase implements Usecase {
     }
 
     this.checkMaxDocumentsSizePerRoomInvariant(existingChat, files);
+
+    this.checkForValidDocumentTypesInvariant(files);
 
     await this.checkDocumentRolesMatchUserRolesInvariant(
       existingChat,
@@ -76,6 +79,22 @@ export class UploadDocumentsToChatUsecase implements Usecase {
 
     if (totalDocumentsSize >= ACCEPTED_FILE_SIZE_LIMIT) {
       throw new MaxDocumentSizeLimitException();
+    }
+  }
+
+  private checkForValidDocumentTypesInvariant(files: Express.Multer.File[]) {
+    for (const file of files) {
+      const buffer = readFileSync(`${file.destination}/${file.filename}`);
+      const fileSignatureVerifier =
+        fileBufferSignatureByMimetypeMap[file.mimetype];
+      const fileSignature = buffer.toString(
+        'hex',
+        0,
+        fileSignatureVerifier.relevantBytes
+      );
+      if (!fileSignatureVerifier.signature.includes(fileSignature)) {
+        throw new DocumentTypeMismatchException();
+      }
     }
   }
 
