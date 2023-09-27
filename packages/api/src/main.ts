@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './chats/adapters/redis-io.adapter';
@@ -19,6 +20,7 @@ function getLogLevels(isProduction: boolean): LogLevel[] {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: getLogLevels(process.env.NODE_ENV === 'production'),
+    bufferLogs: true,
   });
   const configService = app.get(ConfigService);
   const cacheClient = app.get(CACHE_CLIENT);
@@ -34,6 +36,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.useGlobalPipes(new ZodValidationPipe());
+  app.useLogger(app.get(Logger));
 
   const config = new DocumentBuilder()
     .setTitle('Intelli-mate API documentation')

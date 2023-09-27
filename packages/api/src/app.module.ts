@@ -11,9 +11,20 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    LoggerModule.forRoot(
+      !(process.env.NODE_ENV === 'production') && {
+        pinoHttp: {
+          autoLogging: false,
+          transport: {
+            target: 'pino-pretty',
+          },
+        },
+      }
+    ),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
