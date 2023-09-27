@@ -55,7 +55,7 @@ export default async function AdminAiModels() {
               {aiModels.map((aiModel) => (
                 <TableRow key={aiModel.id}>
                   <TableCell>{aiModel.chatLlmName}</TableCell>
-                  <TableCell>{aiModel.chatLlmName ?? 'N/A'}</TableCell>
+                  <TableCell>{aiModel.alias ?? 'N/A'}</TableCell>
                   <TableCell>{aiModel.modelName}</TableCell>
                   <TableCell>{aiModel.temperature}</TableCell>
                   <TableCell>
