@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateRoom } from '@/api/requests/rooms/update-room';
 import { RoomResponseDto } from '@/contract/rooms/room.response.dto.d';
@@ -27,10 +28,13 @@ import { useToast } from '@/components/ui/use-toast';
 interface UpdateRoomFormProps {
   room: RoomResponseDto;
 }
+
 export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const { getToken } = useAuth();
+  const [originalName, setOriginalName] = useState(room.name);
+  const [originalPrivacy, setOriginalPrivacy] = useState(room.isPrivate);
   const { mutate: updateRoomMutationReq, isLoading } = useMutation({
     mutationFn: async (values: UpdateRoomSettingsRequestDto) =>
       updateRoom(room.id, values, await getToken()),
@@ -40,10 +44,12 @@ export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
         variant: 'destructive',
       });
     },
-    onSuccess: () => {
+    onSuccess: (room) => {
       toast({
         title: 'Room updated successfully!',
       });
+      setOriginalName(room.name);
+      setOriginalPrivacy(room.isPrivate);
       router.refresh();
     },
   });
@@ -54,6 +60,13 @@ export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
       isPrivate: room.isPrivate,
     },
   });
+  const isFormChanged = useMemo(() => {
+    const formValues = form.getValues();
+    return (
+      originalName !== formValues.name ||
+      originalPrivacy !== formValues.isPrivate
+    );
+  }, [originalName, originalPrivacy, form.getValues()]);
 
   async function onSubmit(values: UpdateRoomSettingsRequestDto) {
     try {
@@ -96,7 +109,11 @@ export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
                   />
                 </FormControl>
                 <div className="flex w-full justify-end">
-                  <Button disabled={isLoading} variant="success" type="submit">
+                  <Button
+                    disabled={isLoading || !isFormChanged}
+                    variant="success"
+                    type="submit"
+                  >
                     Save
                   </Button>
                 </div>

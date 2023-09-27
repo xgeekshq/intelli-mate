@@ -32,7 +32,7 @@ export default function SuperAdminLogin() {
         variant: 'destructive',
       });
     },
-    onSuccess: (room) => {
+    onSuccess: () => {
       router.push('/admin/manage/users');
     },
   });

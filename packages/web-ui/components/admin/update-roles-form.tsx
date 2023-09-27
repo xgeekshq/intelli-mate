@@ -62,7 +62,7 @@ export function UpdateRolesForm({
         variant: 'destructive',
       });
     },
-    onSuccess: (room) => {
+    onSuccess: () => {
       setOpen(false);
       toast({
         title: 'Roles updated successfully!',

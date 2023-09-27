@@ -55,7 +55,7 @@ export function AddAiModelsForm() {
         variant: 'destructive',
       });
     },
-    onSuccess: (room) => {
+    onSuccess: () => {
       setOpen(false);
       toast({
         title: 'AI Model added successfully!',
