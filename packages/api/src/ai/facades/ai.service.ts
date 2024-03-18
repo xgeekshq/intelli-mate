@@ -3,7 +3,6 @@ import { DocumentConversationChain } from '@/ai/services/document-conversation-c
 import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
-import { AppConfigService } from '@/app-config/app-config.service';
 import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
 import { AiResponse } from '@/common/types/ai-response';
 import { ChatDocument } from '@/common/types/chat';
@@ -31,7 +30,6 @@ Helpful answer:`
 
   constructor(
     private readonly simpleConversationChainService: SimpleConversationChainService,
-    private readonly appConfigService: AppConfigService,
     private readonly memoryService: MemoryService,
     private readonly vectorDbService: VectorDbService,
     private readonly chatModelService: ChatModelService
