@@ -2,6 +2,6 @@
   "name": "contract",
   "version": "1.0.0",
   "dependencies": {
-    "zod": "^3.21.4"
+    "zod": "^3.22.4"
   }
 }
