@@ -54,10 +54,7 @@ export default async function AdminUsers() {
                 <TableRow key={user.id}>
                   <TableCell>
                     <Avatar className="h-8 w-8 text-right">
-                      <AvatarImage
-                        src={user.profileImageUrl}
-                        alt="Profile Image"
-                      />
+                      <AvatarImage src={user.imageUrl} alt="Profile Image" />
                     </Avatar>
                   </TableCell>
                   <TableCell>
