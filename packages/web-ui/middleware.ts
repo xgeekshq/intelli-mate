@@ -3,8 +3,7 @@ import { authMiddleware } from '@clerk/nextjs';
 
 export default authMiddleware({
   publicRoutes: ['/', '/admin', /^\/admin\/.*/],
-  beforeAuth(req, evt) {
-    // SOLUTION: https://stackoverflow.com/a/77214970
+  beforeAuth(req) {
     const requestHeaders = new Headers(req.headers);
 
     const url = new URL(req.url);
