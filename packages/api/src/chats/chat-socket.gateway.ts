@@ -158,7 +158,7 @@ export class ChatSocketGateway {
       if (!curr.content) {
         return 0;
       }
-      return (acc += encode(curr.content).length);
+      return (acc += encode(curr.content as string).length);
     }, 0);
 
     return (

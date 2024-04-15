@@ -6,6 +6,7 @@ import { VectorDbService } from '@/ai/services/vector-db.service';
 import { RedisChatMemoryNotFoundException } from '@/chats/exceptions/redis-chat-memory-not-found.exception';
 import { AiResponse } from '@/common/types/ai-response';
 import { ChatDocument } from '@/common/types/chat';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   ConversationChain,
@@ -13,7 +14,6 @@ import {
   loadSummarizationChain,
 } from 'langchain/chains';
 import { Document } from 'langchain/document';
-import { PromptTemplate } from 'langchain/prompts';
 import { BaseMessage, ChainValues } from 'langchain/schema';
 
 type AIExecutor = DocumentConversationChain | ConversationChain;
