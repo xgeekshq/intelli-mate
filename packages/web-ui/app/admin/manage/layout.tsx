@@ -10,7 +10,7 @@ export default async function SuperAdminManageLayout({
   children,
 }: RootLayoutProps) {
   return (
-    <div className="flex h-full w-full">
+    <div className="flex size-full">
       <AdminSidebarMenu />
       <StateProvider>{children}</StateProvider>
     </div>

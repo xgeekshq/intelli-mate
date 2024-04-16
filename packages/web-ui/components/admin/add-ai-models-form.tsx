@@ -95,7 +95,7 @@ export function AddAiModelsForm() {
       <DialogTrigger asChild>
         <Button>Add AI Model</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[768px]">
+      <DialogContent className="sm:max-w-screen-md">
         <DialogHeader>
           <DialogTitle>Add AI Model</DialogTitle>
           <Separator className="!my-4" />

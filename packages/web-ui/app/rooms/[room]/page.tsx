@@ -27,7 +27,7 @@ export default async function Room({ params }: { params: { room: string } }) {
 
   return (
     <Hydrate state={dehydratedState}>
-      <div className="flex h-full w-full">
+      <div className="flex size-full">
         <Chat
           roomId={params.room}
           isOwner={isOwner}

@@ -31,11 +31,11 @@ export default async function AdminAiModels() {
   });
 
   return (
-    <div className="flex h-full w-full flex-col p-4">
+    <div className="flex size-full flex-col p-4">
       <div className="mb-4 flex w-full justify-end">
         <AddAiModelsForm />
       </div>
-      <Card className="h-full w-full">
+      <Card className="size-full">
         <ScrollArea className="h-full">
           <Table>
             <TableCaption>

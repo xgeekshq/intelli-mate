@@ -52,7 +52,7 @@ export default async function SuperAdminLayout({ children }: RootLayoutProps) {
   }
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex size-full">
       <StateProvider>{children}</StateProvider>
     </div>
   );

@@ -46,7 +46,7 @@ export function RoomHeader({ id, name, llmModel }: RoomHeaderProps) {
           href={`/rooms/${id}`}
           className="flex items-center gap-1 font-semibold tracking-tight"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="size-5" />
           {name} | settings
         </Link>
       ) : (
@@ -59,7 +59,7 @@ export function RoomHeader({ id, name, llmModel }: RoomHeaderProps) {
         <HoverCard>
           <HoverCardTrigger asChild>
             <Link href={`${id}/settings`}>
-              <Settings className="h-5 w-5" />
+              <Settings className="size-5" />
             </Link>
           </HoverCardTrigger>
           <HoverCardContent

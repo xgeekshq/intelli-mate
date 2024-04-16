@@ -138,7 +138,7 @@ export default function Chat({
   }, [chat, parseMessageList]);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex size-full flex-col">
       <ScrollArea ref={bottomEl} className="h-full">
         <div className="relative w-full px-4 pt-4">
           {messages.map((message) => {
@@ -148,7 +148,7 @@ export default function Chat({
             <Button
               onClick={scrollToBottom}
               variant="ghost"
-              className={`fixed bottom-20 h-7 w-7 rounded-full p-0 ${
+              className={`fixed bottom-20 size-7 rounded-full p-0 ${
                 hasDocuments
                   ? 'right-[calc(var(--chat-tools)+24px)]'
                   : 'right-6'

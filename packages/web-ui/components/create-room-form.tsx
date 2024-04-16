@@ -90,7 +90,7 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <Plus className="h-5 w-5" />
+          <Plus className="size-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -174,7 +174,7 @@ export function CreateRoomForm({ aiModels }: CreateRoomFormProps) {
                 name="isPrivate"
                 render={({ field }) => (
                   <FormItem className="flex items-center space-x-2 space-y-0">
-                    <Lock className="h-4 w-4" />
+                    <Lock className="size-4" />
                     <FormLabel>Is this room private?</FormLabel>
                     <FormControl>
                       <Checkbox

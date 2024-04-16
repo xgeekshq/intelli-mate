@@ -99,7 +99,7 @@ export function UpdateRoomForm({ room }: UpdateRoomFormProps) {
             name="isPrivate"
             render={({ field }) => (
               <FormItem className="flex w-full items-center space-x-2 space-y-0">
-                <Lock className="h-4 w-4" />
+                <Lock className="size-4" />
                 <FormLabel className="w-52">Is this room private?</FormLabel>
                 <FormControl>
                   <Checkbox

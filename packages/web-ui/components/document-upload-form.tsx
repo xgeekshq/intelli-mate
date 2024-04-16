@@ -118,7 +118,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
         <HoverCardTrigger asChild>
           <DialogTrigger asChild>
             <Button variant="ghost">
-              <Plus className="h-5 w-5" />
+              <Plus className="size-5" />
             </Button>
           </DialogTrigger>
         </HoverCardTrigger>
