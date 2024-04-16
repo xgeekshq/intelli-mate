@@ -28,7 +28,7 @@ export default async function RoomsLayout({ children }: RootLayoutProps) {
       <div className="flex h-full">
         <StateProvider>
           <Rooms />
-          <div className="h-full w-full">{children}</div>
+          <div className="size-full">{children}</div>
         </StateProvider>
       </div>
     </Hydrate>

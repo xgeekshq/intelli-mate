@@ -42,7 +42,7 @@ export default async function RoomLayout({
 
   return (
     <Hydrate state={dehydratedState}>
-      <div className="flex h-full w-full flex-col">
+      <div className="flex size-full flex-col">
         <RoomHeader id={room.id} name={room.name} llmModel={aiModel} />
         <div className="h-[calc(100%-41px)] w-full">{children}</div>
       </div>

@@ -65,7 +65,7 @@ export function Rooms() {
                     >
                       {room.name}
                     </p>
-                    {room.isPrivate && <Lock className="h-4 w-4" />}
+                    {room.isPrivate && <Lock className="size-4" />}
                   </Button>
                 </Link>
               </HoverCardTrigger>

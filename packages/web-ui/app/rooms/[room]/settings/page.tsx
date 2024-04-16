@@ -82,7 +82,7 @@ export default async function Settings({
           <div className="flex flex-col gap-2 rounded-lg border p-4">
             <p className="font-bold">Room owner</p>
             <div className="flex gap-4">
-              <Avatar className="h-16 w-16">
+              <Avatar className="size-16">
                 <AvatarImage src={owner.imageUrl} alt="Profile Image" />
               </Avatar>
               <div className="flex flex-col text-gray-500">
@@ -123,7 +123,7 @@ export default async function Settings({
             <ScrollArea className="flex h-96">
               {membersSearchList.map((item) => (
                 <div className="flex items-center gap-4 py-1">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="size-8">
                     <AvatarImage
                       src={item.imageUrl}
                       alt={item.value ?? 'profileImage'}

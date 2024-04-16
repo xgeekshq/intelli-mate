@@ -73,7 +73,7 @@ export function MessageForm({
         />
       </div>
       <Button type="submit" variant="ghost" disabled={input === ''}>
-        <Send className="h-5 w-5 rotate-45" />
+        <Send className="size-5 rotate-45" />
       </Button>
     </form>
   );

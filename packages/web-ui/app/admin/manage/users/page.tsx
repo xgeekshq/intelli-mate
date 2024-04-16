@@ -33,7 +33,7 @@ export default async function AdminUsers() {
   });
 
   return (
-    <div className="flex h-full w-full p-4">
+    <div className="flex size-full p-4">
       <Card className="w-full">
         <ScrollArea className="h-full">
           <Table>
@@ -53,7 +53,7 @@ export default async function AdminUsers() {
               {users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    <Avatar className="h-8 w-8 text-right">
+                    <Avatar className="size-8 text-right">
                       <AvatarImage src={user.imageUrl} alt="Profile Image" />
                     </Avatar>
                   </TableCell>

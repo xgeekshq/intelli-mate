@@ -26,7 +26,7 @@ export function AdminSidebarMenu() {
               className="w-full justify-between"
             >
               <p className="max-w-[140px] overflow-hidden text-clip">users</p>
-              <Users className="h-4 w-4" />
+              <Users className="size-4" />
             </Button>
           </Link>
           <Link key="admin-ai-models" href={`/admin/manage/ai-models`}>
@@ -38,7 +38,7 @@ export function AdminSidebarMenu() {
               <p className="max-w-[140px] overflow-hidden text-clip">
                 ai-models
               </p>
-              <BrainCircuit className="h-4 w-4" />
+              <BrainCircuit className="size-4" />
             </Button>
           </Link>
         </div>

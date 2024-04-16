@@ -43,7 +43,7 @@ export interface DocumentUploadFormProps {
 }
 
 export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
-  const { room: roomId } = useParams();
+  const { room: roomId } = useParams<{ room: string }>();
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { getToken } = useAuth();
@@ -118,7 +118,7 @@ export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
         <HoverCardTrigger asChild>
           <DialogTrigger asChild>
             <Button variant="ghost">
-              <Plus className="h-5 w-5" />
+              <Plus className="size-5" />
             </Button>
           </DialogTrigger>
         </HoverCardTrigger>

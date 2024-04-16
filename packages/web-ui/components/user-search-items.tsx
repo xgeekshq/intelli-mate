@@ -79,7 +79,7 @@ export default function UserSearchItems({
           key={item.value}
         >
           <div className="flex items-center gap-2 py-1">
-            <Avatar className="h-8 w-8">
+            <Avatar className="size-8">
               <AvatarImage src={item.imageUrl} alt="Profile Avatar" />
             </Avatar>
             <div className="flex flex-col">

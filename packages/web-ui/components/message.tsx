@@ -20,7 +20,7 @@ const Message = memo(function Message({ message }: MessageProps) {
       <div className="mb-2 flex items-center justify-between p-4 text-gray-500">
         {message.user && (
           <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
+            <Avatar className="size-8">
               <AvatarImage src={message.user.imageUrl} alt="Profile Image" />
             </Avatar>
             <p>{getUserIdentification(message.user)}</p>
@@ -34,7 +34,7 @@ const Message = memo(function Message({ message }: MessageProps) {
       {message.response ? (
         <div className="mt-4 flex flex-col gap-2 border-t bg-gray-50 p-4 dark:bg-gray-900">
           <div className="flex gap-2">
-            <Avatar className="h-8 w-8 rounded-none">
+            <Avatar className="size-8 rounded-none">
               <AvatarImage src={'/ai.png'} alt="AI Image" />
             </Avatar>
             <Markdown content={message.response} />
@@ -49,7 +49,7 @@ const Message = memo(function Message({ message }: MessageProps) {
           )}
         </div>
       ) : (
-        <div className="relative mx-4 h-8 w-8">
+        <div className="relative mx-4 size-8">
           <Image
             className="object-contain"
             src="/loading.gif"

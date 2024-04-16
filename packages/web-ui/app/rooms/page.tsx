@@ -38,7 +38,7 @@ export default async function Rooms() {
 
   return (
     <Hydrate state={dehydratedState}>
-      <div className="flex h-full w-full flex-col items-center gap-20 py-24">
+      <div className="flex size-full flex-col items-center gap-20 py-24">
         <p className="w-2/3 text-center text-xl">
           Start chatting with your co-workers and our helpful AI by joining a
           public room or by creating your own room.

@@ -98,7 +98,7 @@ export function ChatTools({ documents, roomId, isOwner }: ChatToolsProps) {
                           <AlertDialogTrigger asChild>
                             {document.meta.queryable && (
                               <Button variant="ghost" size="xs">
-                                <Trash className="h-4 w-4 text-red-500" />
+                                <Trash className="size-4 text-red-500" />
                               </Button>
                             )}
                           </AlertDialogTrigger>

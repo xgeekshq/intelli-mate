@@ -53,7 +53,7 @@ export default function SuperAdminLogin() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col items-center py-24">
+    <div className="flex size-full flex-col items-center py-24">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
