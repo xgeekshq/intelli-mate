@@ -43,7 +43,7 @@ export interface DocumentUploadFormProps {
 }
 
 export function DocumentUploadForm({ ownerRoles }: DocumentUploadFormProps) {
-  const { room: roomId } = useParams();
+  const { room: roomId } = useParams<{ room: string }>();
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { getToken } = useAuth();
