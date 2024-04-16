@@ -1,7 +1,7 @@
 import { AiModel } from '@/common/types/ai-models';
 import { decrypt } from '@/common/utils/encrypt-string';
-import { BaseChatModel } from 'langchain/chat_models';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import { ChatOpenAI } from '@langchain/openai';
 
 type Model = 'ChatOpenAI';
 

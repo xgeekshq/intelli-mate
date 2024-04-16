@@ -29,7 +29,7 @@ const getUserList = (users: UserResponseDto[]): UserListType[] => {
           ? `${user.firstName} ${user.lastName}`
           : null,
       userName: user.username,
-      imageUrl: user.profileImageUrl,
+      imageUrl: user.imageUrl,
       email:
         user.emailAddresses.find(
           (email) => user.primaryEmailAddressId === email.id
@@ -38,7 +38,7 @@ const getUserList = (users: UserResponseDto[]): UserListType[] => {
     return {
       label: userIdentification,
       value: userIdentification,
-      imageUrl: user.profileImageUrl,
+      imageUrl: user.imageUrl,
       userId: user.id,
       roles: user.roles,
     };
@@ -83,7 +83,7 @@ export default async function Settings({
             <p className="font-bold">Room owner</p>
             <div className="flex gap-4">
               <Avatar className="h-16 w-16">
-                <AvatarImage src={owner.profileImageUrl} alt="Profile Image" />
+                <AvatarImage src={owner.imageUrl} alt="Profile Image" />
               </Avatar>
               <div className="flex flex-col text-gray-500">
                 <p>{`Name: ${

@@ -2,8 +2,8 @@ import { AiModelsRepository } from '@/ai/ai-models.repository';
 import { createChatLlmModelFactory } from '@/ai/factories/create-chat-model.factory';
 import { AppConfigService } from '@/app-config/app-config.service';
 import { AiModel } from '@/common/types/ai-models';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { Injectable } from '@nestjs/common';
-import { BaseChatModel } from 'langchain/chat_models';
 
 @Injectable()
 export class ChatModelService {

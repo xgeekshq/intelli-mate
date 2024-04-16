@@ -1,12 +1,12 @@
 import { MemoryService } from '@/ai/services/memory.service';
-import { Injectable } from '@nestjs/common';
-import { ConversationChain } from 'langchain/chains';
-import { BaseChatModel } from 'langchain/chat_models';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   MessagesPlaceholder,
-} from 'langchain/prompts';
+} from '@langchain/core/prompts';
+import { Injectable } from '@nestjs/common';
+import { ConversationChain } from 'langchain/chains';
 
 @Injectable()
 export class SimpleConversationChainService {

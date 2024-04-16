@@ -1,8 +1,8 @@
 import { sanitizeFilename } from '@/common/constants/files';
+import { Chroma } from '@langchain/community/vectorstores/chroma';
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { Chroma } from 'langchain/vectorstores/chroma';
 
 @Injectable()
 export class VectorDbService {

@@ -155,9 +155,10 @@ export class ChatSocketGateway {
     );
 
     const numberOfTokensRedis = chatMessageHistory.reduce((acc, curr) => {
-      if (!curr.content) {
+      if (!curr.content || curr.content !== 'string') {
         return 0;
       }
+
       return (acc += encode(curr.content).length);
     }, 0);
 

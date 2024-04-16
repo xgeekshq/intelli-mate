@@ -2,10 +2,10 @@ import { MemoryService } from '@/ai/services/memory.service';
 import { SimpleConversationChainService } from '@/ai/services/simple-conversation-chain.service';
 import { VectorDbService } from '@/ai/services/vector-db.service';
 import { ChatDocument } from '@/common/types/chat';
+import { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { Injectable } from '@nestjs/common';
 import { RetrievalQAChain, loadQAStuffChain } from 'langchain/chains';
-import { BaseChatModel } from 'langchain/chat_models';
-import { PromptTemplate } from 'langchain/prompts';
 
 type DocumentConversationChainProps = {
   memoryService: MemoryService;

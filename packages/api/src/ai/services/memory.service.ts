@@ -1,8 +1,8 @@
 import { AppConfigService } from '@/app-config/app-config.service';
 import { CACHE_CLIENT } from '@/common/constants/cache';
+import { RedisChatMessageHistory } from '@langchain/redis';
 import { Inject, Injectable } from '@nestjs/common';
 import { BufferMemory } from 'langchain/memory';
-import { RedisChatMessageHistory } from 'langchain/stores/message/redis';
 import { RedisClientType } from 'redis';
 
 @Injectable()

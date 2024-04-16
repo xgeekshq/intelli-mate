@@ -27,7 +27,7 @@ export const createChatParticipantsFactory = (
   return participants.map((participant): ChatUserType => {
     return {
       userId: participant.id,
-      imageUrl: participant.profileImageUrl,
+      imageUrl: participant.imageUrl,
       userName: participant.username,
       name:
         participant.firstName && participant.lastName
